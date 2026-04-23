@@ -66,7 +66,6 @@ import {
 } from './types/request/v2/copytrading.js';
 import {
   BorrowLoanRequestV2,
-  RedeemEarnEliteRequestV2,
   EarnEliteSubscribeRequestV2,
   GetEarnEliteRecordsRequestV2,
   GetEarnEliteRedeemInfoRequestV2,
@@ -82,6 +81,7 @@ import {
   GetSharkfinAssetsRequestV2,
   GetSharkfinRecordsRequestV2,
   ModifyLoanPledgeRateRequestV2,
+  RedeemEarnEliteRequestV2,
   RedeemSavingsRequestV2,
   RepayLoanRequestV2,
 } from './types/request/v2/earn.js';
@@ -259,7 +259,6 @@ import {
   EarnEliteProductV2,
   EarnEliteRecordsV2,
   EarnEliteRedeemInfoV2,
-  RedeemEarnEliteResultV2,
   EarnEliteSubscribeInfoV2,
   EarnEliteSubscribeResultV2,
   EarnEliteSubscribeStatusV2,
@@ -281,6 +280,7 @@ import {
   EarnSharkfinProductsV2,
   EarnSharkfinRecordsV2,
   EarnSharkfinSubscriptionDetailV2,
+  RedeemEarnEliteResultV2,
 } from './types/response/v2/earn.js';
 import {
   FuturesAccountBillV2,

@@ -43,12 +43,12 @@ import {
   ModifyBrokerSubApiKeyRequestV3,
 } from './types/request/v3/broker.js';
 import {
-  RedeemEarnEliteRequestV3,
   EarnEliteSubscribeRequestV3,
   GetEarnEliteRecordsRequestV3,
   GetEarnEliteRedeemInfoRequestV3,
   GetEarnEliteSubscribeInfoRequestV3,
   GetEarnEliteSubscribeResultRequestV3,
+  RedeemEarnEliteRequestV3,
 } from './types/request/v3/earn.js';
 import {
   BindUidRequestV3,
@@ -160,10 +160,10 @@ import {
   EarnEliteProductV3,
   EarnEliteRecordsV3,
   EarnEliteRedeemInfoV3,
-  RedeemEarnEliteResultV3,
   EarnEliteSubscribeInfoV3,
   EarnEliteSubscribeResultV3,
   EarnEliteSubscribeStatusV3,
+  RedeemEarnEliteResultV3,
 } from './types/response/v3/earn.js';
 import {
   BindUidResponseV3,
