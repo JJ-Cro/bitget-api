@@ -320,3 +320,133 @@ export interface EarnLoanLiquidationRecordsV2 {
   runlockAmount: string;
   repayLoanAmount: string;
 }
+
+/**
+ *
+ *
+ * Earn | On-Chain Elite
+ *
+ *
+ */
+
+export interface EarnEliteSubscriptionCoinV2 {
+  subscriptionCoin: string;
+  precision: string;
+  feeRate: string;
+  exchangeRate: string;
+  remainQuota?: string;
+  minAmount?: string;
+}
+
+export interface EarnEliteProductV2 {
+  productId: string;
+  coin: string;
+  minApr: string;
+  maxApr: string;
+  subscriptionCoinList: EarnEliteSubscriptionCoinV2[];
+  sellOut: 'YES' | 'NO' | string;
+}
+
+export interface EarnEliteAssetProjectV2 {
+  projectName: string;
+}
+
+export interface EarnEliteAssetV2 {
+  productId: string;
+  productCoin: string;
+  holdingAmount: string;
+  usdtHoldingAmount: string;
+  exchangeRate: string;
+  apr: string;
+  minApy?: string;
+  maxApy?: string;
+  subscriptionCoin: string;
+  exchangeAmount: string;
+  projectList?: EarnEliteAssetProjectV2[];
+  unsettledBGPoints: string;
+  interestCoin: string;
+  totalProfit: string;
+}
+
+export interface EarnEliteAssetsV2 {
+  resultList: EarnEliteAssetV2[];
+}
+
+export interface EarnEliteRecordV2 {
+  recordId: string;
+  productId: string;
+  coin: string;
+  status: string;
+  exchangeRate: string;
+  receivedCoin: string;
+  receivedAmount: string;
+  investAmount: string;
+  feeRate: string;
+  redeemType?: string | string[];
+  receivingAccount: string;
+  actualReceivingAccount: string;
+  paymentAccount?: string[];
+  settlePoints: string;
+  fee: string;
+}
+
+export interface EarnEliteRecordsV2 {
+  recordList: EarnEliteRecordV2[];
+  endId: string;
+}
+
+export interface EarnEliteSubscribeInfoV2 {
+  productSubId: string;
+  minAmount: string;
+  remainQuota: string;
+  exchangeRate: string;
+  productCoin: string;
+  interestTime: string;
+  settleTime: string;
+  precision: string;
+  feeRate: string;
+  /** Present for BGUSD per API docs. */
+  subscriptionCoinList?: EarnEliteSubscriptionCoinV2[];
+}
+
+export interface EarnEliteSubscribeResultV2 {
+  orderId: string;
+}
+
+export interface EarnEliteSubscribeStatusV2 {
+  result: 'settled' | 'pending' | 'rejected' | string;
+}
+
+export interface EarnEliteRedeemInfoBgusdReceiveCoinV2 {
+  bgusdReceiveCoin: string;
+  bgusdExchangeRate: string;
+}
+
+export interface EarnEliteRedeemModeV2 {
+  redeemFeeRate: string;
+  remainQuota: string;
+  redeemType: 'fast' | 'standard' | string;
+  redeemScale: string;
+  redeemDelayDate: string;
+  minRedeemAmount: string;
+  redeemTime: string;
+}
+
+export interface EarnEliteRedeemInfoV2 {
+  productId: string;
+  productSubId: string;
+  productCoin: string;
+  subscriptionCoin: string;
+  profitCoin: string;
+  exchangeRate: string;
+  totalUnPayInterestAmount: string;
+  preSettleApr: string;
+  receivedCoin: string;
+  unsettledPoints: string;
+  bgusdReceiveCoinList: EarnEliteRedeemInfoBgusdReceiveCoinV2[];
+  redeemModeList: EarnEliteRedeemModeV2[];
+}
+
+export interface RedeemEarnEliteResultV2 {
+  orderId: string;
+}

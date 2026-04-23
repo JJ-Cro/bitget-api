@@ -276,3 +276,120 @@ export interface BrokerRebateInfoV2 {
   clientSpotRebateRatio: string;
   clientFuturesRebateRatio: string;
 }
+
+/**
+ *
+ * * Broker | Agent (affiliate) customer APIs
+ *
+ */
+
+export interface AgentCustomerCommissionItemV2 {
+  uid: string;
+  date: string;
+  coin: string;
+  symbol: string;
+  productType:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES'
+    | string;
+  dealAmount: string;
+  fee: string;
+  feeDeduction: string;
+  activityBonusDeduct: string;
+  spotCouponDeduct: string;
+  futuresCouponDeduct: string;
+  spotFeeDiscountDeduct: string;
+  negativeMakerFeeDeduct: string;
+  feePaid: string;
+  rebateAmount: string;
+  userTotalRebateAmount: string;
+  dayTotalRebateAmount: string;
+  totalRebateAmount: string;
+}
+
+export interface AgentCustomerCommissionsV2 {
+  endId: string;
+  commissionList: AgentCustomerCommissionItemV2[];
+}
+
+export interface AgentSubCustomerItemV2 {
+  uid: string;
+  registerTime: string;
+}
+
+export interface AgentSubCustomerListV2 {
+  list: AgentSubCustomerItemV2[];
+  minId: string;
+}
+
+export interface AgentCustomerTradeVolumeItemV2 {
+  uid: string;
+  /** API field name (Bitget spelling). */
+  volumn: string;
+  spotVolume: string;
+  futuresVolume: string;
+  time: string;
+}
+
+export interface AgentCustomerListItemV2 {
+  uid: string;
+  registerTime: string;
+}
+
+export interface AgentCustomerKycItemV2 {
+  uid: string;
+  kycResult: 'passed' | 'not_passed' | string;
+}
+
+export interface AgentCustomerKycResultV2 {
+  userList: AgentCustomerKycItemV2[];
+  endId: string;
+}
+
+export interface AgentCustomerDepositItemV2 {
+  orderId: string;
+  uid: string;
+  depositTime: string;
+  depositCoin: string;
+  depositAmount: string;
+}
+
+export interface AgentCustomerAssetItemV2 {
+  balance: string;
+  uid: string;
+  uTime: string;
+  remark: string;
+}
+
+export interface AgentCommissionDetailItemV2 {
+  uid: string;
+  bizType: 'spot' | 'futures' | string;
+  subBizType: string;
+  symbol: string;
+  coin: string;
+  fee: string;
+  volume: string;
+  activityBonusDeduct: string;
+  spotCouponDeduct: string;
+  futuresCouponDeduct: string;
+  spotFeeDiscountDeduct: string;
+  negativeMakerFeeDeduct: string;
+  feePaid: string;
+  directCommission: string;
+  subCommission: string;
+  partnerCommission: string;
+  partnerActualCommission: string;
+  traderType: string;
+  apiType: string;
+  status: 'settled' | 'unsettled' | 'notIssued' | string;
+  startCalculationTime: string;
+  endCalculationTime: string;
+}
+
+export interface AgentCommissionDetailV2 {
+  endId: string;
+  commissionList: AgentCommissionDetailItemV2[];
+}

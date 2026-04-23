@@ -83,6 +83,11 @@ export interface GetPositionTierRequestV3 {
 export interface GetRiskReserveRequestV3 {
   category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
   symbol: string;
+  marginCoin?: string;
+}
+
+export interface GetRiskReserveAllRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
 }
 
 export interface GetInstrumentsRequestV3 {

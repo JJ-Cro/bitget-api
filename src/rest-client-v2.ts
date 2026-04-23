@@ -1,6 +1,14 @@
 import { FuturesProductTypeV2, MarginType } from './types/request/shared.js';
 import {
+  AgentCustomerAssetRequestV2,
+  AgentCustomerDepositRequestV2,
+  AgentCustomerListRequestV2,
+  AgentCustomerTradeVolumeRequestV2,
   CreateSubAccountApiKeyRequestV2,
+  GetAgentCommissionDetailRequestV2,
+  GetAgentCustomerCommissionsRequestV2,
+  GetAgentCustomerKycResultRequestV2,
+  GetAgentSubCustomerListRequestV2,
   GetAllSubDepositWithdrawalRequestV2,
   GetBrokerCommissionsRequestV2,
   GetBrokerOrderCommissionRequestV2,
@@ -58,6 +66,12 @@ import {
 } from './types/request/v2/copytrading.js';
 import {
   BorrowLoanRequestV2,
+  RedeemEarnEliteRequestV2,
+  EarnEliteSubscribeRequestV2,
+  GetEarnEliteRecordsRequestV2,
+  GetEarnEliteRedeemInfoRequestV2,
+  GetEarnEliteSubscribeInfoRequestV2,
+  GetEarnEliteSubscribeResultRequestV2,
   GetEarnSavingsAssetsRequestV2,
   GetEarnSavingsRecordsRequestV2,
   GetLiquidationRecordsRequestV2,
@@ -153,6 +167,14 @@ import {
   SpotWithdrawalRequestV2,
 } from './types/request/v2/spot.js';
 import {
+  AgentCommissionDetailV2,
+  AgentCustomerAssetItemV2,
+  AgentCustomerCommissionsV2,
+  AgentCustomerDepositItemV2,
+  AgentCustomerKycResultV2,
+  AgentCustomerListItemV2,
+  AgentCustomerTradeVolumeItemV2,
+  AgentSubCustomerListV2,
   AllSubDepositWithdrawalRecordV2,
   BrokerCommissionV2,
   BrokerOrderCommissionV2,
@@ -233,6 +255,14 @@ import {
   CTSpotTraderUnrealizedProfitV2,
 } from './types/response/v2/copy-trading.js';
 import {
+  EarnEliteAssetsV2,
+  EarnEliteProductV2,
+  EarnEliteRecordsV2,
+  EarnEliteRedeemInfoV2,
+  RedeemEarnEliteResultV2,
+  EarnEliteSubscribeInfoV2,
+  EarnEliteSubscribeResultV2,
+  EarnEliteSubscribeStatusV2,
   EarnLoanCurrenciesV2,
   EarnLoanDebtsV2,
   EarnLoanHistoryV2,
@@ -2047,6 +2077,60 @@ export class RestClientV2 extends BaseRestClient {
 
   /**
    *
+   * * Broker | Agent (affiliate) customer APIs
+   *
+   */
+
+  getAgentCustomerCommissions(
+    params?: GetAgentCustomerCommissionsRequestV2,
+  ): Promise<APIResponse<AgentCustomerCommissionsV2>> {
+    return this.getPrivate('/api/v2/broker/customer-commissions', params);
+  }
+
+  getAgentSubCustomerList(
+    params?: GetAgentSubCustomerListRequestV2,
+  ): Promise<APIResponse<AgentSubCustomerListV2>> {
+    return this.getPrivate('/api/v2/broker/sub-customer-list', params);
+  }
+
+  getAgentCustomerTradeVolume(
+    params?: AgentCustomerTradeVolumeRequestV2,
+  ): Promise<APIResponse<AgentCustomerTradeVolumeItemV2[]>> {
+    return this.postPrivate('/api/v2/broker/customer-trade-volume', params);
+  }
+
+  getAgentCustomerList(
+    params?: AgentCustomerListRequestV2,
+  ): Promise<APIResponse<AgentCustomerListItemV2[]>> {
+    return this.postPrivate('/api/v2/broker/customer-list', params);
+  }
+
+  getAgentCustomerKycResult(
+    params?: GetAgentCustomerKycResultRequestV2,
+  ): Promise<APIResponse<AgentCustomerKycResultV2>> {
+    return this.getPrivate('/api/v2/broker/customer-kyc-result', params);
+  }
+
+  getAgentCustomerDeposits(
+    params?: AgentCustomerDepositRequestV2,
+  ): Promise<APIResponse<AgentCustomerDepositItemV2[]>> {
+    return this.postPrivate('/api/v2/broker/customer-deposit', params);
+  }
+
+  getAgentCustomerAssets(
+    params?: AgentCustomerAssetRequestV2,
+  ): Promise<APIResponse<AgentCustomerAssetItemV2[]>> {
+    return this.postPrivate('/api/v2/broker/customer-asset', params);
+  }
+
+  getAgentCommissionDetail(
+    params?: GetAgentCommissionDetailRequestV2,
+  ): Promise<APIResponse<AgentCommissionDetailV2>> {
+    return this.getPrivate('/api/v2/broker/agent-commission', params);
+  }
+
+  /**
+   *
    *
    * Margin
    *
@@ -3021,6 +3105,58 @@ export class RestClientV2 extends BaseRestClient {
     >
   > {
     return this.getPrivate('/api/v2/earn/account/assets', params);
+  }
+
+  /**
+   *
+   *
+   * Earn | On-Chain Elite
+   *
+   *
+   */
+
+  getEarnEliteProducts(): Promise<APIResponse<EarnEliteProductV2[]>> {
+    return this.getPrivate('/api/v2/earn/elite/product');
+  }
+
+  getEarnEliteAssets(): Promise<APIResponse<EarnEliteAssetsV2>> {
+    return this.getPrivate('/api/v2/earn/elite/assets');
+  }
+
+  getEarnEliteRecords(
+    params: GetEarnEliteRecordsRequestV2,
+  ): Promise<APIResponse<EarnEliteRecordsV2>> {
+    return this.getPrivate('/api/v2/earn/elite/records', params);
+  }
+
+  getEarnEliteSubscribeInfo(
+    params: GetEarnEliteSubscribeInfoRequestV2,
+  ): Promise<APIResponse<EarnEliteSubscribeInfoV2>> {
+    return this.getPrivate('/api/v2/earn/elite/subscribe-info', params);
+  }
+
+  subscribeEarnElite(
+    params: EarnEliteSubscribeRequestV2,
+  ): Promise<APIResponse<EarnEliteSubscribeResultV2>> {
+    return this.postPrivate('/api/v2/earn/elite/subscribe', params);
+  }
+
+  getEarnEliteSubscribeResult(
+    params: GetEarnEliteSubscribeResultRequestV2,
+  ): Promise<APIResponse<EarnEliteSubscribeStatusV2>> {
+    return this.getPrivate('/api/v2/earn/elite/subscribe-result', params);
+  }
+
+  getEarnEliteRedeemInfo(
+    params: GetEarnEliteRedeemInfoRequestV2,
+  ): Promise<APIResponse<EarnEliteRedeemInfoV2>> {
+    return this.getPrivate('/api/v2/earn/elite/redeem-info', params);
+  }
+
+  redeemEarnElite(
+    params: RedeemEarnEliteRequestV2,
+  ): Promise<APIResponse<RedeemEarnEliteResultV2>> {
+    return this.postPrivate('/api/v2/earn/elite/redeem', params);
   }
 
   /**

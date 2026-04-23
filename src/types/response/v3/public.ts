@@ -75,11 +75,34 @@ export interface RiskReserveRecordV3 {
   balance: string;
   amount: string;
   ts: string;
+  type?: string;
 }
 
 export interface RiskReserveV3 {
+  totalBalance?: string;
   coin: string;
   riskReserveRecords: RiskReserveRecordV3[];
+}
+
+export interface RiskReserveHourRecordV3 {
+  amount: string;
+  balance: string;
+  ts: string;
+}
+
+export interface RiskReserveHourV3 {
+  coin: string;
+  riskReserveRecords: RiskReserveHourRecordV3[];
+}
+
+export interface RiskReserveAllItemV3 {
+  symbols: string[];
+  coin: string;
+  balance: string;
+}
+
+export interface RiskReserveAllV3 {
+  list: RiskReserveAllItemV3[];
 }
 
 export interface InstrumentV3 {

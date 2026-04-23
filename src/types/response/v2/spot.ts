@@ -46,6 +46,8 @@ export interface SpotSymbolInfoV2 {
   sellLimitPriceRatio: string;
   orderQuantity: string;
   areaSymbol: string;
+  maxLimitOrderValue?: string;
+  maxMarketOrderValue?: string;
 }
 
 export interface SpotVipFeeRateV2 {
