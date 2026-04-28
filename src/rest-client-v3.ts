@@ -43,6 +43,14 @@ import {
   ModifyBrokerSubApiKeyRequestV3,
 } from './types/request/v3/broker.js';
 import {
+  EarnEliteSubscribeRequestV3,
+  GetEarnEliteRecordsRequestV3,
+  GetEarnEliteRedeemInfoRequestV3,
+  GetEarnEliteSubscribeInfoRequestV3,
+  GetEarnEliteSubscribeResultRequestV3,
+  RedeemEarnEliteRequestV3,
+} from './types/request/v3/earn.js';
+import {
   BindUidRequestV3,
   GetEnsureCoinsRequestV3,
   GetLoanBorrowHistoryRequestV3,
@@ -77,6 +85,7 @@ import {
   GetOrderBookRequestV3,
   GetPositionTierRequestV3,
   GetPublicFillsRequestV3,
+  GetRiskReserveAllRequestV3,
   GetRiskReserveRequestV3,
   GetTickersRequestV3,
 } from './types/request/v3/public.js';
@@ -143,6 +152,20 @@ import {
   ModifyBrokerSubApiKeyResponseV3,
 } from './types/response/v3/broker.js';
 import {
+  CopyFuturesPositionSummaryV3,
+  CopyFuturesTradingPairV3,
+} from './types/response/v3/copytrading.js';
+import {
+  EarnEliteAssetsV3,
+  EarnEliteProductV3,
+  EarnEliteRecordsV3,
+  EarnEliteRedeemInfoV3,
+  EarnEliteSubscribeInfoV3,
+  EarnEliteSubscribeResultV3,
+  EarnEliteSubscribeStatusV3,
+  RedeemEarnEliteResultV3,
+} from './types/response/v3/earn.js';
+import {
   BindUidResponseV3,
   CoinInfoV3,
   GetLoanCoinsResponseV3,
@@ -179,6 +202,8 @@ import {
   PositionTierV3,
   ProofOfReservesV3,
   PublicFillV3,
+  RiskReserveAllV3,
+  RiskReserveHourV3,
   RiskReserveV3,
   TickerV3,
 } from './types/response/v3/public.js';
@@ -420,6 +445,24 @@ export class RestClientV3 extends BaseRestClient {
   }
 
   /**
+   * Get Risk Reserve (Hourly)
+   */
+  getRiskReserveHour(
+    params: GetRiskReserveRequestV3,
+  ): Promise<APIResponse<RiskReserveHourV3>> {
+    return this.get('/api/v3/market/risk-reserve-hour', params);
+  }
+
+  /**
+   * Get Risk Reserve All — current insurance funds
+   */
+  getRiskReserveAll(
+    params: GetRiskReserveAllRequestV3,
+  ): Promise<APIResponse<RiskReserveAllV3>> {
+    return this.get('/api/v3/market/risk-reserve-all', params);
+  }
+
+  /**
    * Get Discount Rate
    */
   getDiscountRate(): Promise<APIResponse<DiscountRateV3[]>> {
@@ -460,6 +503,34 @@ export class RestClientV3 extends BaseRestClient {
     params: GetIndexComponentsRequestV3,
   ): Promise<APIResponse<IndexPriceComponentsV3>> {
     return this.get('/api/v3/market/index-components', params);
+  }
+
+  /**
+   *
+   * =====Copy Trading | Futures=====
+   *
+   */
+
+  /**
+   * Get copy-trading trading pair information
+   *
+   * Rate limit: 5/sec/UID. Permission: Unified Account — Futures Copy-Trading Orders — Read-only.
+   */
+  getCopyFuturesTradingPairs(): Promise<
+    APIResponse<CopyFuturesTradingPairV3[]>
+  > {
+    return this.getPrivate('/api/v3/copy/futures/trading-pairs');
+  }
+
+  /**
+   * Get copy-trading position summary
+   *
+   * Rate limit: 5/sec/UID. Permission: Unified Account — Futures Copy-Trading Positions — Read-only.
+   */
+  getCopyFuturesPositionSummary(): Promise<
+    APIResponse<CopyFuturesPositionSummaryV3[]>
+  > {
+    return this.getPrivate('/api/v3/copy/futures/position-summary');
   }
 
   /**
@@ -1431,5 +1502,55 @@ export class RestClientV3 extends BaseRestClient {
     params: GetBrokerSubApiKeyRequestV3,
   ): Promise<APIResponse<GetBrokerSubApiKeyResponseV3>> {
     return this.getPrivate('/api/v3/broker/query-sub-apikey', params);
+  }
+
+  /**
+   *
+   * =====Earn | On-Chain Elite (UTA)=====
+   *
+   */
+
+  getEarnEliteProducts(): Promise<APIResponse<EarnEliteProductV3[]>> {
+    return this.getPrivate('/api/v3/earn/elite-product');
+  }
+
+  getEarnEliteAssets(): Promise<APIResponse<EarnEliteAssetsV3>> {
+    return this.getPrivate('/api/v3/earn/elite-assets');
+  }
+
+  getEarnEliteRecords(
+    params: GetEarnEliteRecordsRequestV3,
+  ): Promise<APIResponse<EarnEliteRecordsV3>> {
+    return this.getPrivate('/api/v3/earn/elite-records', params);
+  }
+
+  getEarnEliteSubscribeInfo(
+    params: GetEarnEliteSubscribeInfoRequestV3,
+  ): Promise<APIResponse<EarnEliteSubscribeInfoV3>> {
+    return this.getPrivate('/api/v3/earn/elite-subscribe-info', params);
+  }
+
+  subscribeEarnElite(
+    params: EarnEliteSubscribeRequestV3,
+  ): Promise<APIResponse<EarnEliteSubscribeResultV3>> {
+    return this.postPrivate('/api/v3/earn/elite-subscribe', params);
+  }
+
+  getEarnEliteSubscribeResult(
+    params: GetEarnEliteSubscribeResultRequestV3,
+  ): Promise<APIResponse<EarnEliteSubscribeStatusV3>> {
+    return this.getPrivate('/api/v3/earn/elite-subscribe-result', params);
+  }
+
+  getEarnEliteRedeemInfo(
+    params: GetEarnEliteRedeemInfoRequestV3,
+  ): Promise<APIResponse<EarnEliteRedeemInfoV3>> {
+    return this.getPrivate('/api/v3/earn/elite-redeem-info', params);
+  }
+
+  redeemEarnElite(
+    params: RedeemEarnEliteRequestV3,
+  ): Promise<APIResponse<RedeemEarnEliteResultV3>> {
+    return this.postPrivate('/api/v3/earn/elite-redeem', params);
   }
 }

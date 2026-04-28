@@ -193,3 +193,80 @@ export interface GetBrokerOrderCommissionRequestV2 {
 export interface GetBrokerRebateInfoRequestV2 {
   uid: string;
 }
+
+/**
+ *
+ * * Broker | Agent (affiliate) customer APIs
+ *
+ */
+
+export interface GetAgentCustomerCommissionsRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  uid?: string;
+  coin?: string;
+  symbol?: string;
+  showSub?: 'yes' | 'no';
+}
+
+export interface GetAgentSubCustomerListRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+
+export interface AgentCustomerTradeVolumeRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageNo?: string;
+  pageSize?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+
+export interface AgentCustomerListRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageNo?: string;
+  pageSize?: string;
+  uid?: string;
+  referralCode?: string;
+  showSub?: 'yes' | 'no';
+}
+
+export interface GetAgentCustomerKycResultRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+
+export interface AgentCustomerDepositRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageNo?: string;
+  pageSize?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+
+export interface AgentCustomerAssetRequestV2 {
+  pageNo?: string;
+  pageSize?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+
+export interface GetAgentCommissionDetailRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+}

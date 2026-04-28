@@ -134,3 +134,48 @@ export interface GetLiquidationRecordsRequestV2 {
   pageNo?: string;
   pageSize?: string;
 }
+
+/**
+ *
+ *
+ * Earn | On-Chain Elite
+ *
+ *
+ */
+
+export interface GetEarnEliteRecordsRequestV2 {
+  type: 'subscribe' | 'redeem' | 'interest';
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+
+export interface GetEarnEliteSubscribeInfoRequestV2 {
+  productId: string;
+}
+
+export interface EarnEliteSubscribeRequestV2 {
+  productSubId: string;
+  amount: string;
+  coin?: string;
+  paymentAccount?: 'spot' | 'unified';
+}
+
+export interface GetEarnEliteSubscribeResultRequestV2 {
+  orderId: string;
+}
+
+export interface GetEarnEliteRedeemInfoRequestV2 {
+  productId: string;
+}
+
+export interface RedeemEarnEliteRequestV2 {
+  productId: string;
+  productSubId: string;
+  redeemType: 'fast' | 'standard';
+  amount: string;
+  receiveAccount: 'spot' | 'unified';
+  advancedSettle?: 'yes' | 'no';
+  coin?: string;
+}
