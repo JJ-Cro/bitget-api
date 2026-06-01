@@ -35,3 +35,28 @@ export interface CopyFuturesPositionSummaryV3 {
   markPrice: string;
   positionValue: string;
 }
+
+export interface CopyFuturesMaxTransferableV3 {
+  maxTransferable: string;
+  available: string;
+}
+
+export interface CopyFuturesTransferResponseV3 {
+  transferId: string;
+}
+
+export type CopyFuturesTransferAccountTypeV3 = 'spot' | 'uta' | 'lead';
+
+export interface CopyFuturesTransferRecordV3 {
+  transferId: string;
+  fromType: CopyFuturesTransferAccountTypeV3;
+  toType: CopyFuturesTransferAccountTypeV3;
+  amount: string;
+  coin: string;
+  status: 'Successful' | 'Failed' | 'Processing';
+  createdTime: string;
+}
+
+export interface CopyFuturesTransferRecordListV3 {
+  list: CopyFuturesTransferRecordV3[];
+}

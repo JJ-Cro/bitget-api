@@ -26,6 +26,7 @@ import {
 import {
   ConvertQuoteRequestV2,
   ConvertRequestV2,
+  CreateAgentSubaccountRequestV2,
   CreateVirtualSubApiKeyRequestV2,
   CreateVirtualSubRequestV2,
   GetAnnouncementsRequestV2,
@@ -205,6 +206,7 @@ import {
   ConvertQuotedPriceV2,
   ConvertRecordV2,
   ConvertTradeResponseV2,
+  CreateAgentSubaccountV2,
   CreateVirtualSubAccountAndApiKeyV2,
   CreateVirtualSubAccountApiKeyV2,
   CreateVirtualSubAccountV2,
@@ -732,6 +734,16 @@ export class RestClientV2 extends BaseRestClient {
       '/api/v2/user/virtual-subaccount-apikey-list',
       params,
     );
+  }
+
+  /**
+   * Create a dedicated sub-account for an AI Agent instance.
+   * Frequency limit: 1/s per UID. Agent sub-accounts cannot be edited after creation.
+   */
+  createAgentSubaccount(
+    params: CreateAgentSubaccountRequestV2,
+  ): Promise<APIResponse<CreateAgentSubaccountV2>> {
+    return this.postPrivate('/api/v2/user/create-agent-subaccount', params);
   }
 
   /**
@@ -2087,6 +2099,9 @@ export class RestClientV2 extends BaseRestClient {
     return this.getPrivate('/api/v2/broker/customer-commissions', params);
   }
 
+  /**
+   * Without startTime/endTime, returns all registered sub-customers (no time restriction).
+   */
   getAgentSubCustomerList(
     params?: GetAgentSubCustomerListRequestV2,
   ): Promise<APIResponse<AgentSubCustomerListV2>> {
@@ -2099,6 +2114,9 @@ export class RestClientV2 extends BaseRestClient {
     return this.postPrivate('/api/v2/broker/customer-trade-volume', params);
   }
 
+  /**
+   * Without startTime/endTime, returns all registered customers (no time restriction).
+   */
   getAgentCustomerList(
     params?: AgentCustomerListRequestV2,
   ): Promise<APIResponse<AgentCustomerListItemV2[]>> {

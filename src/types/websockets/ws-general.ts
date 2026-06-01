@@ -112,7 +112,12 @@ export type WsTopicV2 = WsPublicTopicV2 | WsPrivateTopicV2;
  */
 export type WsPublicTopicV3 = 'ticker' | 'kline' | 'books' | 'publicTrade';
 // Also update PRIVATE_TOPICS_V3 if this is updated
-export type WsPrivateTopicV3 = 'account' | 'position' | 'fill' | 'order';
+export type WsPrivateTopicV3 =
+  | 'account'
+  | 'position'
+  | 'fill'
+  | 'order'
+  | 'strategy-order';
 export type WsTopicV3 = WsPublicTopicV3 | WsPrivateTopicV3;
 
 /** This is used to differentiate between each of the available websocket streams */

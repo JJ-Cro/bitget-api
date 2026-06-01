@@ -1,4 +1,6 @@
 import {
+  AdjustAccountModeRequestV3,
+  CancelWithdrawalRequestV3,
   CreateSubAccountApiKeyRequestV3,
   CreateSubAccountRequestV3,
   DeleteSubAccountApiKeyRequestV3,
@@ -19,6 +21,7 @@ import {
   GetSubUnifiedAssetsRequestV3,
   GetTaxRecordsRequestV3,
   GetTransferableCoinsRequestV3,
+  GetWithdrawAddressBookRequestV3,
   GetWithdrawRecordsRequestV3,
   RepayRequestV3,
   SetDepositAccountRequestV3,
@@ -42,6 +45,11 @@ import {
   ModifyBrokerSubAccountRequestV3,
   ModifyBrokerSubApiKeyRequestV3,
 } from './types/request/v3/broker.js';
+import {
+  CopyFuturesTransferRequestV3,
+  GetCopyFuturesMaxTransferableRequestV3,
+  GetCopyFuturesTransferRecordRequestV3,
+} from './types/request/v3/copytrading.js';
 import {
   EarnEliteSubscribeRequestV3,
   GetEarnEliteRecordsRequestV3,
@@ -70,6 +78,22 @@ import {
   LoanRepayRequestV3,
   LoanRevisePledgeRequestV3,
 } from './types/request/v3/loan.js';
+import {
+  CreateP2pAdRequestV3,
+  GetP2pAdInfoRequestV3,
+  GetP2pAdLimitRequestV3,
+  GetP2pAdListRequestV3,
+  GetP2pAllOrdersRequestV3,
+  GetP2pBalanceRequestV3,
+  GetP2pExchangeRateRequestV3,
+  GetP2pMyAdsRequestV3,
+  GetP2pOrderInfoRequestV3,
+  GetP2pPendingOrdersRequestV3,
+  OperateP2pAdRequestV3,
+  P2pFeeSimulateRequestV3,
+  P2pOrderActionRequestV3,
+  UpdateP2pAdRequestV3,
+} from './types/request/v3/p2p.js';
 import {
   GetCandlesRequestV3,
   GetContractsOiRequestV3,
@@ -116,6 +140,8 @@ import {
 } from './types/request/v3/trade.js';
 import {
   AccountAssetsV3,
+  AccountDeltaInfoV3,
+  AccountInfoV3,
   AccountSettingsV3,
   ConvertRecordV3,
   CreateSubAccountApiKeyResponseV3,
@@ -136,6 +162,7 @@ import {
   TaxRecordV3,
   TransferResponseV3,
   UpdateSubAccountApiKeyResponseV3,
+  WithdrawAddressBookV3,
   WithdrawRecordV3,
   WithdrawResponseV3,
 } from './types/response/v3/account.js';
@@ -152,8 +179,11 @@ import {
   ModifyBrokerSubApiKeyResponseV3,
 } from './types/response/v3/broker.js';
 import {
+  CopyFuturesMaxTransferableV3,
   CopyFuturesPositionSummaryV3,
   CopyFuturesTradingPairV3,
+  CopyFuturesTransferRecordListV3,
+  CopyFuturesTransferResponseV3,
 } from './types/response/v3/copytrading.js';
 import {
   EarnEliteAssetsV3,
@@ -186,6 +216,22 @@ import {
   LTVConvertResponseV3,
   RepaidHistoryItemV3,
 } from './types/response/v3/loan.js';
+import {
+  P2pAdInfoV3,
+  P2pAdLimitV3,
+  P2pBalanceV3,
+  P2pCreateAdResponseV3,
+  P2pCurrenciesV3,
+  P2pCursorListV3,
+  P2pExchangeRateV3,
+  P2pFeeSimulateV3,
+  P2pMyAdListItemV3,
+  P2pOrderInfoV3,
+  P2pOrderListItemV3,
+  P2pPayMethodV3,
+  P2pPublicAdListItemV3,
+  P2pUserInfoV3,
+} from './types/response/v3/p2p.js';
 import {
   CandlestickV3,
   ContractOiV3,
@@ -534,6 +580,36 @@ export class RestClientV3 extends BaseRestClient {
   }
 
   /**
+   * Get max transferable amount and available balance for the copy-trading lead account.
+   * Rate limit: 1/sec/UID.
+   */
+  getCopyFuturesMaxTransferable(
+    params: GetCopyFuturesMaxTransferableRequestV3,
+  ): Promise<APIResponse<CopyFuturesMaxTransferableV3>> {
+    return this.getPrivate('/api/v3/copy/futures/max-transferable', params);
+  }
+
+  /**
+   * Transfer funds between spot/funding and the copy-trading lead account.
+   * Rate limit: 1/sec/UID.
+   */
+  copyFuturesTransfer(
+    params: CopyFuturesTransferRequestV3,
+  ): Promise<APIResponse<CopyFuturesTransferResponseV3>> {
+    return this.postPrivate('/api/v3/copy/futures/transfer', params);
+  }
+
+  /**
+   * Query copy-trading lead account transfer history.
+   * Rate limit: 1/sec/UID.
+   */
+  getCopyFuturesTransferRecords(
+    params?: GetCopyFuturesTransferRecordRequestV3,
+  ): Promise<APIResponse<CopyFuturesTransferRecordListV3>> {
+    return this.getPrivate('/api/v3/copy/futures/transfer-record', params);
+  }
+
+  /**
    *
    * =====Account======= endpoints
    *
@@ -556,10 +632,36 @@ export class RestClientV3 extends BaseRestClient {
   }
 
   /**
-   * Get Account Info
+   * Query account metadata (UID, inviter, parent account, channel, IP whitelist, permissions).
+   * Rate limit: 5/sec/UID
+   */
+  getAccountInfo(): Promise<APIResponse<AccountInfoV3>> {
+    return this.getPrivate('/api/v3/account/info');
+  }
+
+  /**
+   * Get account settings (hold mode, margin mode, leverage, symbol/coin config).
+   * Rate limit: 20/sec/UID
    */
   getAccountSettings(): Promise<APIResponse<AccountSettingsV3>> {
     return this.getPrivate('/api/v3/account/settings');
+  }
+
+  /**
+   * Switch account level (basic / advanced / delta-neutral). Rate limit: 1/sec/UID.
+   */
+  adjustAccountMode(
+    params: AdjustAccountModeRequestV3,
+  ): Promise<APIResponse<null>> {
+    return this.postPrivate('/api/v3/account/adjust-account-mode', params);
+  }
+
+  /**
+   * Delta-neutral metrics (equity ratio, thresholds, per-coin position ratios).
+   * Only available when the account is in delta-neutral mode. Rate limit: 20/sec/UID.
+   */
+  getDeltaInfo(): Promise<APIResponse<AccountDeltaInfoV3>> {
+    return this.getPrivate('/api/v3/account/delta-info');
   }
 
   /**
@@ -937,6 +1039,24 @@ export class RestClientV3 extends BaseRestClient {
     params: GetWithdrawRecordsRequestV3,
   ): Promise<APIResponse<WithdrawRecordV3[]>> {
     return this.getPrivate('/api/v3/account/withdrawal-records', params);
+  }
+
+  /**
+   * Query the withdrawal address book. Rate limit: 1/sec/UID.
+   */
+  getWithdrawAddressBook(
+    params?: GetWithdrawAddressBookRequestV3,
+  ): Promise<APIResponse<WithdrawAddressBookV3>> {
+    return this.getPrivate('/api/v3/account/withdraw-address', params);
+  }
+
+  /**
+   * Cancel a withdrawal still in the cooling-off period. Rate limit: 1/sec/UID.
+   */
+  cancelWithdrawal(
+    params: CancelWithdrawalRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/account/cancel-withdrawal', params);
   }
 
   /**
@@ -1502,6 +1622,110 @@ export class RestClientV3 extends BaseRestClient {
     params: GetBrokerSubApiKeyRequestV3,
   ): Promise<APIResponse<GetBrokerSubApiKeyResponseV3>> {
     return this.getPrivate('/api/v3/broker/query-sub-apikey', params);
+  }
+
+  /**
+   *
+   * =====P2P Merchant (UTA)=====
+   *
+   */
+
+  getP2pAdList(
+    params: GetP2pAdListRequestV3,
+  ): Promise<APIResponse<P2pPublicAdListItemV3[]>> {
+    return this.getPrivate('/api/v3/p2p/ad-list', params);
+  }
+
+  getP2pExchangeRate(
+    params: GetP2pExchangeRateRequestV3,
+  ): Promise<APIResponse<P2pExchangeRateV3>> {
+    return this.getPrivate('/api/v3/p2p/exchange-rate', params);
+  }
+
+  simulateP2pFee(
+    params: P2pFeeSimulateRequestV3,
+  ): Promise<APIResponse<P2pFeeSimulateV3>> {
+    return this.postPrivate('/api/v3/p2p/fee-simulate', params);
+  }
+
+  getP2pAdLimit(
+    params: GetP2pAdLimitRequestV3,
+  ): Promise<APIResponse<P2pAdLimitV3>> {
+    return this.getPrivate('/api/v3/p2p/ad-limit', params);
+  }
+
+  createP2pAd(
+    params: CreateP2pAdRequestV3,
+  ): Promise<APIResponse<P2pCreateAdResponseV3>> {
+    return this.postPrivate('/api/v3/p2p/ad-create', params);
+  }
+
+  updateP2pAd(params: UpdateP2pAdRequestV3): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/p2p/ad-update', params);
+  }
+
+  operateP2pAd(params: OperateP2pAdRequestV3): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/p2p/ad-operate', params);
+  }
+
+  getP2pAdInfo(
+    params: GetP2pAdInfoRequestV3,
+  ): Promise<APIResponse<P2pAdInfoV3>> {
+    return this.getPrivate('/api/v3/p2p/ad-info', params);
+  }
+
+  getP2pMyAds(
+    params?: GetP2pMyAdsRequestV3,
+  ): Promise<APIResponse<P2pCursorListV3<P2pMyAdListItemV3>>> {
+    return this.getPrivate('/api/v3/p2p/my-ads', params);
+  }
+
+  getP2pPendingOrders(
+    params?: GetP2pPendingOrdersRequestV3,
+  ): Promise<APIResponse<P2pCursorListV3<P2pOrderListItemV3>>> {
+    return this.getPrivate('/api/v3/p2p/pending-orders', params);
+  }
+
+  getP2pAllOrders(
+    params?: GetP2pAllOrdersRequestV3,
+  ): Promise<APIResponse<P2pCursorListV3<P2pOrderListItemV3>>> {
+    return this.getPrivate('/api/v3/p2p/all-orders', params);
+  }
+
+  getP2pOrderInfo(
+    params: GetP2pOrderInfoRequestV3,
+  ): Promise<APIResponse<P2pOrderInfoV3>> {
+    return this.getPrivate('/api/v3/p2p/order-info', params);
+  }
+
+  confirmP2pOrderPayment(
+    params: P2pOrderActionRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/p2p/order-pay', params);
+  }
+
+  releaseP2pOrderAsset(
+    params: P2pOrderActionRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/p2p/order-release', params);
+  }
+
+  getP2pUserInfo(): Promise<APIResponse<P2pUserInfoV3>> {
+    return this.getPrivate('/api/v3/p2p/user-info');
+  }
+
+  getP2pCurrencies(): Promise<APIResponse<P2pCurrenciesV3>> {
+    return this.getPrivate('/api/v3/p2p/currencies');
+  }
+
+  getP2pPayMethods(): Promise<APIResponse<P2pPayMethodV3[]>> {
+    return this.getPrivate('/api/v3/p2p/pay-method');
+  }
+
+  getP2pBalance(
+    params: GetP2pBalanceRequestV3,
+  ): Promise<APIResponse<P2pBalanceV3>> {
+    return this.getPrivate('/api/v3/p2p/balance', params);
   }
 
   /**

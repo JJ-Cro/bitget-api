@@ -134,6 +134,8 @@ export interface PlaceBatchOrdersRequestV3 {
   reduceOnly?: 'yes' | 'no';
 }
 
+export type FuturesMarginModeV3 = 'crossed' | 'isolated';
+
 export interface PlaceOrderRequestV3 {
   category:
     | 'SPOT'
@@ -150,6 +152,8 @@ export interface PlaceOrderRequestV3 {
   posSide?: 'long' | 'short';
   clientOid?: string;
   reduceOnly?: 'yes' | 'no';
+  /** Futures only. Defaults to crossed */
+  marginMode?: FuturesMarginModeV3;
   stpMode?: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
   takeProfitPrice?: string;
   stopLossPrice?: string;

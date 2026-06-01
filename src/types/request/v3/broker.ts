@@ -59,7 +59,7 @@ export interface CreateBrokerSubApiKeyRequestV3 {
   passphrase: string;
   label: string;
   ipList?: string[];
-  permType: 'read_and_write' | 'readonly';
+  permType: 'read_write' | 'read_only';
   permList: string[];
 }
 
@@ -69,7 +69,7 @@ export interface ModifyBrokerSubApiKeyRequestV3 {
   apiKey: string;
   label?: string;
   ipList?: string[];
-  permType?: 'read_and_write' | 'readonly';
+  permType?: 'read_write' | 'read_only';
   permList?: string[];
 }
 

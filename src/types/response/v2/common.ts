@@ -312,6 +312,15 @@ export interface ModifyVirtualSubAccountApiKeyV2 {
   ipList: string[];
 }
 
+export interface CreateAgentSubaccountV2 {
+  username: string;
+  subUid: string;
+  apiKey: string;
+  secret: string;
+  note: string;
+  createdTime: string;
+}
+
 export interface SubAccountApiKeyItemV2 {
   subAccountUid: string;
   label: string;
