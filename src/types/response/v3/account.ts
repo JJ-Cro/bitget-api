@@ -11,11 +11,50 @@ export interface AccountCoinConfigV3 {
   leverage: string;
 }
 
+export type AccountPermissionV3 =
+  | 'uta_mgt'
+  | 'uta_trade'
+  | 'withdraw'
+  | 'copy_futures_position'
+  | 'copy_futures_order';
+
+export interface AccountInfoV3 {
+  userId: string;
+  inviterId: string;
+  /** Only set when the calling account is a sub-account */
+  parentId: string;
+  channelCode: string;
+  channel: string;
+  ips: string;
+  permType: 'read-only' | 'read-and-write';
+  permissions: AccountPermissionV3[];
+  regisTime: string;
+}
+
+export type AccountLevelV3 = 'basic' | 'advanced' | 'isolated' | 'delta';
+
 export interface AccountSettingsV3 {
+  uid: string;
+  accountMode: 'unified' | 'hybrid' | 'upgrading' | 'switching';
   assetMode: string;
+  accountLevel: AccountLevelV3;
   holdMode: string;
+  stpMode: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
   symbolConfigList: AccountSymbolConfigV3[];
   coinConfigList: AccountCoinConfigV3[];
+}
+
+export interface AccountDeltaCoinPositionV3 {
+  coin: string;
+  positionRatio: string;
+}
+
+/** Delta-neutral mode metrics. Only available when accountLevel is delta. */
+export interface AccountDeltaInfoV3 {
+  deltaEquityRatio: string;
+  deltaThreshold: string;
+  positionThreshold: string;
+  list: AccountDeltaCoinPositionV3[];
 }
 
 export interface AccountAssetV3 {
@@ -122,10 +161,27 @@ export interface SubAccountV3 {
   username: string;
   status: string;
   accountMode: string;
-  type: string;
+  type: 'normal' | 'virtual' | 'custodian';
   note: string;
   createdTime: string;
   updatedTime: string;
+}
+
+export interface WithdrawAddressBookEntryV3 {
+  coin: string;
+  chain: string;
+  address: string;
+  countryCode: string;
+  label: string;
+  memo: string;
+  type: 'regular' | 'EVM' | 'universal' | 'internal';
+  internalType: '' | 'uid' | 'mobile' | 'email';
+  createdTime: string;
+}
+
+export interface WithdrawAddressBookV3 {
+  addressList: WithdrawAddressBookEntryV3[];
+  cursor?: string;
 }
 
 // Transfer Response Types

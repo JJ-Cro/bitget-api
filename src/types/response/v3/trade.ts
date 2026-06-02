@@ -73,10 +73,22 @@ export interface OrderInfoV3 {
   updatedTime: string;
 }
 
+export type FillCategoryV3 =
+  | 'spot'
+  | 'margin'
+  | 'usdt-futures'
+  | 'coin-futures'
+  | 'usdc-futures'
+  | 'SPOT'
+  | 'MARGIN'
+  | 'USDT-FUTURES'
+  | 'COIN-FUTURES'
+  | 'USDC-FUTURES';
+
 export interface FillV3 {
   execId: string;
   orderId: string;
-  category: string;
+  category: FillCategoryV3;
   symbol: string;
   orderType: string;
   side: string;

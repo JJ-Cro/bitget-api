@@ -95,8 +95,10 @@ src/
       v3/
         account.ts
         broker.ts
+        copytrading.ts
         earn.ts
         loan.ts
+        p2p.ts
         public.ts
         strategy.ts
         trade.ts
@@ -116,6 +118,7 @@ src/
         copytrading.ts
         earn.ts
         loan.ts
+        p2p.ts
         public.ts
         strategy.ts
         trade.ts
@@ -359,195 +362,100 @@ import { RestClientV2, RestClientV3 } from '../../src/index.js';
 // });
 
 ================
-File: src/types/request/v2/common.ts
+File: examples/README.md
 ================
-import { FuturesProductTypeV2, MarginType } from '../shared.js';
-⋮----
-/**
- *
- * * Common | Notice
- *
- */
-⋮----
-export interface GetAnnouncementsRequestV2 {
-  annType?: string;
-  startTime?: string;
-  endTime?: string;
-  language: string;
+# Examples
+
+These samples can be executed using `ts-node`:
+
+```
+ts-node ./examples/rest-spot-public.ts
+```
+
+Samples that require authentication can be edited directly but also support environmental variables. E.g. on mac/unix:
+
+```
+API_KEY_COM='yourkeyhere' API_SECRET_COM='yoursecrethere' API_PASS_COM='yourapipasshere' ts-node examples/rest-trade-futures.ts
+```
+
+They can also be converted to JavaScript by changing the imports to require & removing any type annotations.
+
+## V3 / Unified Trading Account (UTA)
+
+These newer examples are for Bitget's V3 APIs and WebSockets. They can be found in the examples/V3 folder.
+
+Refer to the V3 / UTA API documentation for more information on the V3 APIs:
+https://www.bitget.com/api-doc/uta/intro
+
+These APIs require your account to be upgraded to the Unified Trading Account, if you plan on using the account-level REST APIs and WebSockets. Once upgraded, the V2 APIs are no longer available to you, unless you revert back to Classic Account mode.
+
+### WebSocket API (WS API)
+
+The V3/UTA API introduces order placement via a persisted WebSocket connection. This Bitget Node.js, JavaScript & TypeScript SDK supports Bitget's full V3 API offering, including the WebSocket API.
+
+There are two approaches to placing orders via the Bitget WebSocket APIs
+
+#### WebsocketAPIClient (recommended)
+
+This integration looks & feels like a REST API client, but uses WebSockets, via the WebsocketClient's sendWSAPIRequest method. It returns promises and has end to end types.
+
+This is the recommended approach to easily start sending orders via an automatically persisted WebSocket connection. A simple example is below, but for a more thorough example, check the example here: [./V3/ws-api-client-trade.ts](./V3/ws-api-client-trade.ts)
+
+```typescript
+import { WebsocketAPIClient } from 'bitget-api';
+// or if you prefer require:
+// const { WebsocketAPIClient } = require("bitget-api");
+
+// Make an instance of the WS API Client class with your API keys
+const wsClient = new WebsocketAPIClient({
+  apiKey: API_KEY,
+  apiSecret: API_SECRET,
+  apiPass: API_PASS,
+
+  // Whether to use the demo trading wss connection
+  // demoTrading: true,
+});
+
+async function start() {
+  // Start using it like a REST API. All actions are sent via a persisted WebSocket connection.
+
+  /**
+   * Place Order
+   * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+   */
+  try {
+    const res = await wsClient.submitNewOrder('spot', {
+      orderType: 'limit',
+      price: '100',
+      qty: '0.1',
+      side: 'buy',
+      symbol: 'BTCUSDT',
+      timeInForce: 'gtc',
+    });
+
+    console.log(new Date(), 'WS API "submitNewOrder()" result: ', res);
+  } catch (e) {
+    console.error(new Date(), 'Exception with WS API "submitNewOrder()": ', e);
+  }
 }
-⋮----
-/**
- *
- * * Common | Public
- *
- */
-⋮----
-export interface GetTradeRateRequestV2 {
-  symbol: string;
-  businessType: string;
-}
-⋮----
-/**
- *
- * * Common | Tax
- *
- */
-⋮----
-export interface GetSpotTransactionsRequestV2 {
-  coin?: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-export interface GetFuturesTransactionsRequestV2 {
-  productType?: FuturesProductTypeV2;
-  marginCoin?: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-export interface GetMarginTransactionsRequestV2 {
-  marginType?: MarginType;
-  coin?: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-export interface GetP2PTransactionsRequestV2 {
-  coin?: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-/**
- *
- * * Common | P2P
- *
- */
-⋮----
-export interface GetP2PMerchantsRequestV2 {
-  online?: 'yes' | 'no';
-  idLessThan?: string;
-  limit?: string;
-}
-⋮----
-export interface GetMerchantP2POrdersRequestV2 {
-  startTime: string;
-  endTime?: string;
-  idLessThan?: string;
-  limit?: string;
-  status?: string;
-  advNo: string;
-  side?: string;
-  coin?: string;
-  language: string;
-  fiat?: string;
-  orderNo?: string;
-}
-⋮----
-export interface GetMerchantAdvertisementsRequestV2 {
-  startTime: string;
-  endTime?: string;
-  idLessThan?: string;
-  limit?: string;
-  status: string;
-  advNo?: string;
-  side: string;
-  coin: string;
-  language?: string;
-  fiat: string;
-  orderBy?: string;
-  payMethodId?: string;
-  sourceType?: string;
-}
-⋮----
-/**
- *
- * * Common | Virtual Subaccount
- *
- */
-⋮----
-export interface ModifyVirtualSubRequestV2 {
-  subAccountUid: string;
-  permList: string[];
-  status: string;
-}
-⋮----
-export interface CreateVirtualSubRequestV2 {
-  subAccountName: string;
-  passphrase: string;
-  label: string;
-  ipList?: string[];
-  permList?: string[];
-}
-⋮----
-export interface CreateVirtualSubApiKeyRequestV2 {
-  subAccountUid: string;
-  passphrase: string;
-  label: string;
-  ipList?: string[];
-  permList?: string[];
-}
-⋮----
-export interface ModifyVirtualSubApiKeyRequestV2 {
-  subAccountUid: string;
-  subAccountApiKey: string;
-  passphrase: string;
-  label: string;
-  ipList?: string[];
-  permList?: string[];
-}
-⋮----
-/**
- *
- * * Common | Convert
- *
- */
-⋮----
-export interface ConvertQuoteRequestV2 {
-  fromCoin: string;
-  fromCoinSize?: string;
-  toCoin: string;
-  toCoinSize?: string;
-}
-⋮----
-export interface ConvertRequestV2 {
-  fromCoin: string;
-  fromCoinSize: string;
-  cnvtPrice: string;
-  toCoin: string;
-  toCoinSize: string;
-  traceId: string;
-}
-⋮----
-export interface GetConvertHistoryRequestV2 {
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-/**
- *
- * * Common | BGB Convert
- *
- */
-⋮----
-export interface GetConvertBGBHistoryRequestV2 {
-  orderId?: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  idLessThan?: string;
-}
+
+start().catch((e) => console.error('Exception in example: '.e));
+```
+
+#### ws.sendWSAPIRequest(wsKey, command, category, operation)
+
+This is the "raw" integration within the existing WebSocket client. It uses an automatically persisted & authenticated connection to send events through Bitget's WebSocket API. It automatically tracks and connects outgoing requests with incoming responses, and returns promises that resolve/reject when a matching response is received.
+
+Refer to [V3/ws-api-trade-raw.ts](./V3/ws-api-trade-raw.ts) to see an example.
+
+Note: The WebsocketClient is built around this. For a more user friendly experience, it is recommended to use the WebsocketClient for WS API requests. It uses this method but has the convenience of behaving similar to a REST API (while all communication automatically happens over a persisted WebSocket connection).
+
+## V2
+
+These examples are for Bitget's V2 APIs and WebSockets. They can be found in the examples/V2 folder.
+
+Refer to the V2 API documentation for more information on the V2 APIs:
+https://www.bitget.com/api-doc/common/intro
 
 ================
 File: src/types/request/v2/copytrading.ts
@@ -774,191 +682,6 @@ export interface GetSpotFollowerOpenOrdersRequestV2 {
   startTime?: string;
   endTime?: string;
   limit?: string;
-}
-
-================
-File: src/types/request/v2/earn.ts
-================
-/**
- *
- *
- * Earn | Savings
- *
- *
- */
-⋮----
-export interface GetEarnSavingsAssetsRequestV2 {
-  periodType: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-export interface GetEarnSavingsRecordsRequestV2 {
-  coin?: string;
-  periodType: string;
-  orderType?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-export interface RedeemSavingsRequestV2 {
-  productId: string;
-  orderId?: string;
-  periodType: string;
-  amount: string;
-}
-⋮----
-/**
- *
- *
- * Earn | Shark Fin
- *
- *
- */
-⋮----
-export interface GetSharkfinAssetsRequestV2 {
-  status: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-export interface GetSharkfinRecordsRequestV2 {
-  coin?: string;
-  type: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-/**
- *
- *
- * Earn | Loan
- *
- *
- */
-⋮----
-export interface GetLoanEstInterestAndBorrowableRequestV2 {
-  loanCoin: string;
-  pledgeCoin: string;
-  daily: 'SEVEN' | 'THIRTY';
-  pledgeAmount?: string;
-}
-⋮----
-export interface BorrowLoanRequestV2 {
-  loanCoin: string;
-  pledgeCoin: string;
-  daily: 'SEVEN' | 'THIRTY';
-  pledgeAmount?: string;
-  loanAmount?: string;
-}
-⋮----
-export interface RepayLoanRequestV2 {
-  orderId: string;
-  amount?: string;
-  repayUnlock?: string;
-  repayAll: string;
-}
-⋮----
-export interface GetLoanRepayHistoryRequestV2 {
-  orderId?: string;
-  loanCoin?: string;
-  pledgeCoin?: string;
-  startTime: string;
-  endTime: string;
-  pageNo?: string;
-  pageSize?: string;
-}
-⋮----
-export interface ModifyLoanPledgeRateRequestV2 {
-  orderId: string;
-  amount: string;
-  pledgeCoin: string;
-  reviseType: string;
-}
-⋮----
-export interface GetLoanPledgeRateHistoryRequestV2 {
-  orderId?: string;
-  reviseSide?: string;
-  pledgeCoin?: string;
-  startTime: string;
-  endTime: string;
-  pageNo?: string;
-  pageSize?: string;
-}
-⋮----
-export interface GetLoanHistoryRequestV2 {
-  orderId?: string;
-  loanCoin?: string;
-  pledgeCoin?: string;
-  status?: string;
-  startTime: string;
-  endTime: string;
-  pageNo?: string;
-  pageSize?: string;
-}
-⋮----
-export interface GetLiquidationRecordsRequestV2 {
-  orderId?: string;
-  loanCoin?: string;
-  pledgeCoin?: string;
-  status?: string;
-  startTime: string;
-  endTime: string;
-  pageNo?: string;
-  pageSize?: string;
-}
-⋮----
-/**
- *
- *
- * Earn | On-Chain Elite
- *
- *
- */
-⋮----
-export interface GetEarnEliteRecordsRequestV2 {
-  type: 'subscribe' | 'redeem' | 'interest';
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetEarnEliteSubscribeInfoRequestV2 {
-  productId: string;
-}
-⋮----
-export interface EarnEliteSubscribeRequestV2 {
-  productSubId: string;
-  amount: string;
-  coin?: string;
-  paymentAccount?: 'spot' | 'unified';
-}
-⋮----
-export interface GetEarnEliteSubscribeResultRequestV2 {
-  orderId: string;
-}
-⋮----
-export interface GetEarnEliteRedeemInfoRequestV2 {
-  productId: string;
-}
-⋮----
-export interface RedeemEarnEliteRequestV2 {
-  productId: string;
-  productSubId: string;
-  redeemType: 'fast' | 'standard';
-  amount: string;
-  receiveAccount: 'spot' | 'unified';
-  advancedSettle?: 'yes' | 'no';
-  coin?: string;
 }
 
 ================
@@ -1469,276 +1192,6 @@ export interface GetSpotDepositRecordRequestV2 {
 }
 
 ================
-File: src/types/request/v3/earn.ts
-================
-/**
- *
- *
- * Earn | On-Chain Elite (UTA)
- *
- *
- */
-⋮----
-export interface GetEarnEliteRecordsRequestV3 {
-  type: 'subscribe' | 'redeem' | 'interest';
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetEarnEliteSubscribeInfoRequestV3 {
-  productId: string;
-}
-⋮----
-export interface EarnEliteSubscribeRequestV3 {
-  productSubId: string;
-  amount: string;
-  coin?: string;
-  paymentAccount?: 'spot' | 'unified';
-}
-⋮----
-export interface GetEarnEliteSubscribeResultRequestV3 {
-  orderId: string;
-}
-⋮----
-export interface GetEarnEliteRedeemInfoRequestV3 {
-  productId: string;
-}
-⋮----
-export interface RedeemEarnEliteRequestV3 {
-  productId: string;
-  productSubId: string;
-  redeemType: 'fast' | 'standard';
-  amount: string;
-  receiveAccount: 'spot' | 'unified';
-  advancedSettle?: 'yes' | 'no';
-  coin?: string;
-}
-
-================
-File: src/types/request/v3/strategy.ts
-================
-export interface PlaceStrategyOrderRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol: string;
-  clientOid?: string;
-  type?: 'tpsl';
-  tpslMode?: 'full' | 'partial';
-  qty: string;
-  posSide: 'long' | 'short';
-  tpTriggerBy?: 'market' | 'mark';
-  slTriggerBy?: 'market' | 'mark';
-  takeProfit?: string;
-  stopLoss?: string;
-  tpOrderType?: 'limit' | 'market';
-  slOrderType?: 'limit' | 'market';
-  tpLimitPrice?: string;
-  slLimitPrice?: string;
-}
-⋮----
-export interface ModifyStrategyOrderRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-  qty: string;
-  tpTriggerBy?: 'market' | 'mark';
-  slTriggerBy?: 'market' | 'mark';
-  takeProfit?: string;
-  stopLoss?: string;
-  tpOrderType?: 'limit' | 'market';
-  slOrderType?: 'limit' | 'market';
-  tpLimitPrice?: string;
-  slLimitPrice?: string;
-}
-⋮----
-export interface CancelStrategyOrderRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-}
-⋮----
-export interface GetUnfilledStrategyOrdersRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  type?: 'tpsl';
-}
-⋮----
-export interface GetHistoryStrategyOrdersRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  type?: 'tpsl';
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-
-================
-File: src/types/request/v3/trade.ts
-================
-export interface BatchModifyOrderRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-  qty?: string;
-  price?: string;
-  autoCancel?: 'yes' | 'no';
-}
-⋮----
-export interface CancelAllOrdersRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol?: string;
-}
-⋮----
-export interface CancelBatchOrdersRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol: string;
-}
-⋮----
-export interface CloseAllPositionsRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-  posSide?: 'long' | 'short';
-}
-⋮----
-export interface CancelOrderRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-}
-⋮----
-export interface GetMaxOpenAvailableRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol: string;
-  orderType: 'limit' | 'market';
-  side: 'buy' | 'sell';
-  price?: string;
-  size?: string;
-}
-⋮----
-export interface GetOrderInfoRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-}
-⋮----
-export interface GetFillsRequestV3 {
-  orderId?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetUnfilledOrdersRequestV3 {
-  category?:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetHistoryOrdersRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetPositionHistoryRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetCurrentPositionRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-  posSide?: 'long' | 'short';
-}
-⋮----
-export interface ModifyOrderRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-  qty?: string;
-  price?: string;
-  autoCancel?: 'yes' | 'no';
-}
-⋮----
-export interface PlaceBatchOrdersRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol: string;
-  qty: string;
-  price?: string;
-  side: 'buy' | 'sell';
-  orderType: 'limit' | 'market';
-  timeInForce?: 'ioc' | 'fok' | 'gtc' | 'post_only';
-  posSide?: 'long' | 'short';
-  clientOid?: string;
-  reduceOnly?: 'yes' | 'no';
-}
-⋮----
-export interface PlaceOrderRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol: string;
-  qty: string;
-  price?: string;
-  side: 'buy' | 'sell';
-  orderType: 'limit' | 'market';
-  timeInForce?: 'ioc' | 'fok' | 'gtc' | 'post_only';
-  posSide?: 'long' | 'short';
-  clientOid?: string;
-  reduceOnly?: 'yes' | 'no';
-  stpMode?: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
-  takeProfitPrice?: string;
-  stopLossPrice?: string;
-  takeProfitTriggerType?: 'mark_price' | 'last_price';
-  stopLossTriggerType?: 'mark_price' | 'last_price';
-}
-⋮----
-export interface CountdownCancelAllRequestV3 {
-  countdown: string; // seconds until auto-cancel (5-60, or 0 to disable)
-}
-⋮----
-countdown: string; // seconds until auto-cancel (5-60, or 0 to disable)
-
-================
 File: src/types/request/shared.ts
 ================
 /** Pagination */
@@ -1786,435 +1239,6 @@ export type FuturesPlanTypeV2 =
   | 'moving_plan'
   | 'pos_profit'
   | 'pos_loss';
-
-================
-File: src/types/response/v2/common.ts
-================
-/**
- *
- * * Common | Notice
- *
- */
-⋮----
-export interface AnnouncementV2 {
-  annId: string;
-  annTitle: string;
-  annDesc: string;
-  cTime: string;
-  language: string;
-  annUrl: string;
-}
-⋮----
-/**
- *
- * * Common | Public
- *
- */
-⋮----
-/**
- *
- * * Common | Tax
- *
- */
-⋮----
-export interface SpotTransactionRecordV2 {
-  id: string;
-  coin: string;
-  spotTaxType: string;
-  amount: string;
-  fee: string;
-  balance: string;
-  ts: string;
-}
-⋮----
-export interface FuturesTransactionRecordV2 {
-  id: string;
-  symbol: string;
-  marginCoin: string;
-  futureTaxType: string;
-  amount: string;
-  fee: string;
-  ts: string;
-}
-⋮----
-export interface MarginTransactionRecordV2 {
-  id: string;
-  coin: string;
-  marginTaxType: string;
-  amount: string;
-  fee: string;
-  total: string;
-  symbol: string;
-  ts: string;
-}
-⋮----
-export interface P2PMerchantOrdersV2 {
-  id: string;
-  coin: string;
-  p2pTaxType: string;
-  total: string;
-  ts: string;
-}
-⋮----
-/**
- *
- * * Common | P2P
- *
- */
-⋮----
-export interface P2PMerchantV2 {
-  registerTime: string;
-  nickName: string;
-  isOnline: string;
-  avgPaymentTime: string;
-  avgReleaseTime: string;
-  totalTrades: string;
-  totalBuy: string;
-  totalSell: string;
-  totalCompletionRate: string;
-  trades30d: string;
-  sell30d: string;
-  buy30d: string;
-  completionRate30d: string;
-}
-⋮----
-export interface P2PMerchantInfoV2 {
-  registerTime: string;
-  nickName: string;
-  merchantId: string;
-  avgPaymentTime: string;
-  avgReleaseTime: string;
-  totalTrades: string;
-  totalBuy: string;
-  totalSell: string;
-  totalCompletionRate: string;
-  trades30d: string;
-  sell30d: string;
-  buy30d: string;
-  completionRate30d: string;
-  kycStatus: boolean;
-  emailBindStatus: boolean;
-  mobileBindStatus: boolean;
-  email: string;
-  mobile: string;
-}
-⋮----
-export interface P2PMerchantOrderV2 {
-  orderId: string;
-  orderNo: string;
-  advNo: string;
-  side: string;
-  count: string;
-  coin: string;
-  price: string;
-  fiat: string;
-  withdrawTime: string;
-  representTime: string;
-  releaseTime: string;
-  paymentTime: string;
-  amount: string;
-  status: string;
-  buyerRealName: string;
-  sellerRealName: string;
-  ctime: string;
-  utime: string;
-  paymentInfo: {
-    paymethodName: string;
-    paymethodId: string;
-    paymethodInfo: {
-      name: string;
-      required: string;
-      type: string;
-      value: string;
-    }[];
-  };
-}
-⋮----
-export interface P2PMerchantAdvertismentV2 {
-  advId: string;
-  advNo: string;
-  side: string;
-  advSize: string;
-  size: string;
-  coin: string;
-  price: string;
-  coinPrecision: string;
-  fiat: string;
-  fiatPrecision: string;
-  fiatSymbol: string;
-  status: string;
-  hide: string;
-  maxTradeAmount: string;
-  minTradeAmount: string;
-  payDuration: string;
-  turnoverNum: string;
-  turnoverRate: string;
-  label: string | null;
-  userLimitList: {
-    minCompleteNum: string;
-    maxCompleteNum: string;
-    placeOrderNum: string;
-    allowMerchantPlace: string;
-    completeRate30d: string;
-    country: string;
-  };
-  paymentMethodList: {
-    paymentMethod: string;
-    paymentId: string;
-    paymentInfo: {
-      name: string;
-      required: boolean;
-      type: string;
-    }[];
-  }[];
-  merchantCertifiedList: {
-    imageUrl: string;
-    desc: string;
-  }[];
-  utime: string;
-  ctime: string;
-}
-⋮----
-/**
- *
- * * Common | Trading insights
- *
- */
-⋮----
-export interface SpotWhaleNetFlowV2 {
-  volume: string;
-  date: string;
-}
-⋮----
-export interface FuturesActiveBuySellVolumeV2 {
-  buyVolume: string;
-  sellVolume: string;
-  ts: string;
-}
-⋮----
-export interface FuturesActiveLongShortPositionV2 {
-  longPositionRatio: string;
-  shortPositionRatio: string;
-  longShortPositionRatio: string;
-  ts: string;
-}
-⋮----
-export interface LeveragedLongShortRatioV2 {
-  ts: string;
-  longShortRatio: string;
-}
-⋮----
-export interface MarginLoanGrowthRateV2 {
-  ts: string;
-  growthRate: string;
-}
-⋮----
-export interface IsolatedMarginBorrowingRatioV2 {
-  ts: string;
-  borrowRate: string;
-}
-⋮----
-export interface FuturesLongShortRatioV2 {
-  longRatio: string;
-  shortRatio: string;
-  longShortRatio: string;
-  ts: string;
-}
-⋮----
-export interface SpotFundFlowV2 {
-  whaleBuyVolume: string;
-  dolphinBuyVolume: string;
-  fishBuyVolume: string;
-  whaleSellVolume: string;
-  dolphinSellVolume: string;
-  fishSellVolume: string;
-  whaleBuyRatio: string;
-  dolphinBuyRatio: string;
-  fishBuyRatio: string;
-  whaleSellRatio: string;
-  dolphinSellRatio: string;
-  fishSellRatio: string;
-}
-⋮----
-export interface FuturesActiveLongShortAccountV2 {
-  longAccountRatio: string;
-  shortAccountRatio: string;
-  longShortAccountRatio: string;
-  ts: string;
-}
-⋮----
-/**
- *
- * * Common | Virtual Subaccount
- *
- */
-⋮----
-export interface CreateVirtualSubAccountV2 {
-  failureList: {
-    subaAccountName: string;
-  }[];
-  successList: {
-    subaAccountUid: string;
-    subaAccountName: string;
-    status: string;
-    label: string;
-    permList: string[];
-    cTime: string;
-    uTime: string;
-  }[];
-}
-⋮----
-export interface CreateVirtualSubAccountAndApiKeyV2 {
-  subAccountUid: string;
-  subAccountName: string;
-  label: string;
-  subAccountApiKey: string;
-  secretKey: string;
-  permList: string[];
-  ipList: string[];
-}
-⋮----
-export interface VirtualSubAccountV2 {
-  subAccountUid: string;
-  subAccountName: string;
-  status: string;
-  permList: string[];
-  label: string;
-  accountType: string;
-  bindingTime: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-export interface CreateVirtualSubAccountApiKeyV2 {
-  subAccountUid: string;
-  label: string;
-  subAccountApiKey: string;
-  secretKey: string;
-  permList: string[];
-  ipList: string[];
-}
-⋮----
-export interface ModifyVirtualSubAccountApiKeyV2 {
-  subAccountUid: string;
-  label: string;
-  subAccountApiKey: string;
-  secretKey: string;
-  permList: string[];
-  ipList: string[];
-}
-⋮----
-export interface SubAccountApiKeyItemV2 {
-  subAccountUid: string;
-  label: string;
-  subAccountApiKey: string;
-  permList: string[];
-  ipList: string[];
-}
-⋮----
-/**
- *
- * * Common | Assets
- *
- */
-⋮----
-export interface FundingAssetV2 {
-  coin: string;
-  available: string;
-  frozen: string;
-  usdtValue: string;
-}
-⋮----
-export interface BotAssetV2 {
-  coin: string;
-  available: string;
-  equity: string;
-  bonus: string;
-  frozen: string;
-  usdtValue: string;
-}
-⋮----
-/**
- *
- * * Common | Convert
- *
- */
-⋮----
-export interface ConvertCurrencyV2 {
-  coin: string;
-  available: string;
-  maxAmount: string;
-  minAmount: string;
-}
-⋮----
-export interface ConvertQuotedPriceV2 {
-  fee: string;
-  fromCoinSize: string;
-  fromCoin: string;
-  cnvtPrice: string;
-  toCoinSize: string;
-  toCoin: string;
-  traceId: string;
-}
-⋮----
-export interface ConvertTradeResponseV2 {
-  ts: string;
-  cnvtPrice: string;
-  toCoinSize: string;
-  toCoin: string;
-}
-⋮----
-export interface ConvertRecordV2 {
-  id: string;
-  ts: string;
-  cnvtPrice: string;
-  fee: string;
-  fromCoinSize: string;
-  fromCoin: string;
-  toCoinSize: string;
-  toCoin: string;
-}
-⋮----
-/**
- *
- * * Common | BGB Convert
- *
- */
-⋮----
-export interface BGBConvertCoinV2 {
-  coin: string;
-  available: string;
-  bgbEstAmount: string;
-  precision: string;
-  feeDetail: {
-    feeRate: string;
-    fee: string;
-  }[];
-  cTime: string;
-}
-⋮----
-export interface ConvertBGBResponseV2 {
-  orderList: {
-    coin: string;
-    orderId: string;
-  }[];
-}
-⋮----
-export interface BGBConvertHistoryV2 {
-  orderId: string;
-  fromCoin: string;
-  fromAmount: string;
-  fromCoinPrice: string;
-  toCoin: string;
-  toAmount: string;
-  toCoinPrice: string;
-  feeDetail: {
-    feeCoin: string;
-    fee: string;
-  }[];
-  status: string;
-  ctime: string;
-}
 
 ================
 File: src/types/response/v2/copy-trading.ts
@@ -2645,464 +1669,6 @@ export interface CTSpotFollowerCurrentOrdersV2 {
 }
 
 ================
-File: src/types/response/v2/earn.ts
-================
-/**
- *
- *
- * Earn | Savings
- *
- *
- */
-⋮----
-export interface EarnSavingsProductsV2 {
-  productId: string;
-  coin: string;
-  periodType: string;
-  period: string;
-  apyType: string;
-  advanceRedeem: string;
-  settleMethod: string;
-  apyList: {
-    rateLevel: string;
-    minStepVal: string;
-    maxStepVal: string;
-    currentApy: string;
-  }[];
-  status: string;
-  productLevel: string;
-}
-⋮----
-export interface EarnSavingsAccountV2 {
-  btcAmount: string;
-  usdtAmount: string;
-  btc24hEarning: string;
-  usdt24hEarning: string;
-  btcTotalEarning: string;
-  usdtTotalEarning: string;
-}
-⋮----
-export interface EarnSavingsAssetV2 {
-  productId: string;
-  orderId: string;
-  productCoin: string;
-  interestCoin: string;
-  periodType: string;
-  period: string;
-  holdAmount: string;
-  lastProfit: string;
-  totalProfit: string;
-  holdDays: string;
-  status: string;
-  allowRedemption: string;
-  productLevel: string;
-  apy: {
-    rateLevel: string;
-    minApy: string;
-    maxApy: string;
-    currentApy: string;
-  }[];
-}
-⋮----
-export interface EarnSavingsAssetsV2 {
-  resultList: EarnSavingsAssetV2[];
-  endId: string;
-}
-⋮----
-export interface EarnSavingsRecordV2 {
-  orderId: string;
-  coinName: string;
-  settleCoinName: string;
-  productType: string;
-  period: string;
-  productLevel: string;
-  amount: string;
-  ts: string;
-  orderType: string;
-}
-⋮----
-export interface EarnSavingsRecordsV2 {
-  resultList: EarnSavingsRecordV2[];
-  endId: string;
-}
-⋮----
-export interface EarnSavingsSubscriptionDetailV2 {
-  singleMinAmount: string;
-  singleMaxAmount: string;
-  remainingAmount: string;
-  subscribePrecision: string;
-  profitPrecision: string;
-  subscribeTime: string;
-  interestTime: string;
-  settleTime: string;
-  expireTime: string;
-  redeemTime: string;
-  settleMethod: string;
-  apyList: {
-    rateLevel: string;
-    minStepVal: string;
-    maxStepVal: string;
-    currentApy: string;
-  }[];
-  redeemDelay: string;
-}
-⋮----
-/**
- *
- *
- * Earn | Earn Account
- *
- *
- */
-⋮----
-/**
- *
- *
- * Earn | Shark Fin
- *
- *
- */
-⋮----
-export interface EarnSharkfinProductV2 {
-  productId: string;
-  productName: string;
-  productCoin: string;
-  subscribeCoin: string;
-  farmingStartTime: string;
-  farmingEndTime: string;
-  lowerRate: string;
-  defaultRate: string;
-  upperRate: string;
-  period: string;
-  interestStartTime: string;
-  status: string;
-  minAmount: string;
-  limitAmount: string;
-  soldAmount: string;
-  endTime: string;
-  startTime: string;
-}
-⋮----
-export interface EarnSharkfinProductsV2 {
-  resultList: EarnSharkfinProductV2[];
-  endId: string;
-}
-⋮----
-export interface EarnSharkfinAccountV2 {
-  btcSubscribeAmount: string;
-  usdtSubscribeAmount: string;
-  btcHistoricalAmount: string;
-  usdtHistoricalAmount: string;
-  btcTotalEarning: string;
-  usdtTotalEarning: string;
-}
-⋮----
-export interface EarnSharkfinAssetV2 {
-  productId: string;
-  interestStartTime: string;
-  interestEndTime: string;
-  productCoin: string;
-  subscribeCoin: string;
-  trend: string;
-  settleTime: string;
-  interestAmount: string;
-  productStatus: string;
-}
-⋮----
-export interface EarnSharkfinAssetsV2 {
-  resultList: EarnSharkfinAssetV2[];
-  endId: string;
-}
-⋮----
-export interface EarnSharkfinRecordV2 {
-  orderId: string;
-  product: string;
-  period: string;
-  amount: string;
-  ts: string;
-  type: string;
-}
-export interface EarnSharkfinRecordsV2 {
-  resultList: EarnSharkfinRecordV2[];
-  endId: string;
-}
-⋮----
-export interface EarnSharkfinSubscriptionDetailV2 {
-  productCoin: string;
-  subscribeCoin: string;
-  interestTime: string;
-  expirationTime: string;
-  minPrice: string;
-  currentPrice: string;
-  maxPrice: string;
-  minRate: string;
-  defaultRate: string;
-  maxRate: string;
-  period: string;
-  productMinAmount: string;
-  availableBalance: string;
-  userAmount: string;
-  remainingAmount: string;
-  profitPrecision: string;
-  subscribePrecision: string;
-}
-⋮----
-/**
- *
- *
- * Earn | Loan
- *
- *
- */
-⋮----
-export interface EarnLoanCurrencyLoanInfoV2 {
-  coin: string;
-  hourRate7D: string;
-  rate7D: string;
-  hourRate30D: string;
-  rate30D: string;
-  minUsdt: string;
-  maxUsdt: string;
-  min: string;
-  max: string;
-}
-export interface EarnLoanCurrencyPledgeInfoV2 {
-  coin: string;
-  initRate: string;
-  supRate: string;
-  forceRate: string;
-  minUsdt: string;
-  maxUsdt: string;
-}
-⋮----
-export interface EarnLoanCurrenciesV2 {
-  loanInfos: EarnLoanCurrencyLoanInfoV2[];
-  pledgeInfos: EarnLoanCurrencyPledgeInfoV2[];
-}
-⋮----
-export interface EarnLoanOrdersV2 {
-  orderId: string;
-  loanCoin: string;
-  loanAmount: string;
-  interestAmount: string;
-  hourInterestRate: string;
-  pledgeCoin: string;
-  pledgeAmount: string;
-  pledgeRate: string;
-  supRate: string;
-  forceRate: string;
-  borrowTime: string;
-  expireTime: string;
-}
-⋮----
-export interface EarnLoanRepayResponseV2 {
-  loanCoin: string;
-  pledgeCoin: string;
-  repayAmount: string;
-  payInterest: string;
-  repayLoanAmount: string;
-  repayUnlockAmount: string;
-}
-⋮----
-export interface EarnLoanRepayHistoryV2 {
-  orderId: string;
-  loanCoin: string;
-  pledgeCoin: string;
-  repayAmount: string;
-  payInterest: string;
-  repayLoanAmount: string;
-  repayUnlockAmount: string;
-  repayTime: string;
-}
-⋮----
-export interface EarnLoanPledgeRateHistoryV2 {
-  loanCoin: string;
-  pledgeCoin: string;
-  orderId: string;
-  reviseTime: string;
-  reviseSide: string;
-  reviseAmount: string;
-  afterPledgeRate: string;
-  beforePledgeRate: string;
-}
-⋮----
-export interface EarnLoanHistoryV2 {
-  orderId: string;
-  loanCoin: string;
-  pledgeCoin: string;
-  initPledgeAmount: string;
-  initLoanAmount: string;
-  hourRate: string;
-  daily: string;
-  borrowTime: string;
-  status: string;
-}
-⋮----
-export interface EarnLoanDebtPledgeInfoV2 {
-  coin: string;
-  amount: string;
-  amountUsdt: string;
-}
-⋮----
-export interface EarnLoanDebtLoanInfoV2 {
-  coin: string;
-  amount: string;
-  amountUsdt: string;
-}
-⋮----
-export interface EarnLoanDebtsV2 {
-  pledgeInfos: EarnLoanDebtPledgeInfoV2[];
-  loanInfos: EarnLoanDebtLoanInfoV2[];
-}
-⋮----
-export interface EarnLoanLiquidationRecordsV2 {
-  orderId: string;
-  loanCoin: string;
-  pledgeCoin: string;
-  reduceTime: string;
-  pledgeRate: string;
-  pledgePrice: string;
-  status: string;
-  pledgeAmount: string;
-  reduceFee: string;
-  residueAmount: string;
-  runlockAmount: string;
-  repayLoanAmount: string;
-}
-⋮----
-/**
- *
- *
- * Earn | On-Chain Elite
- *
- *
- */
-⋮----
-export interface EarnEliteSubscriptionCoinV2 {
-  subscriptionCoin: string;
-  precision: string;
-  feeRate: string;
-  exchangeRate: string;
-  remainQuota?: string;
-  minAmount?: string;
-}
-⋮----
-export interface EarnEliteProductV2 {
-  productId: string;
-  coin: string;
-  minApr: string;
-  maxApr: string;
-  subscriptionCoinList: EarnEliteSubscriptionCoinV2[];
-  sellOut: 'YES' | 'NO' | string;
-}
-⋮----
-export interface EarnEliteAssetProjectV2 {
-  projectName: string;
-}
-⋮----
-export interface EarnEliteAssetV2 {
-  productId: string;
-  productCoin: string;
-  holdingAmount: string;
-  usdtHoldingAmount: string;
-  exchangeRate: string;
-  apr: string;
-  minApy?: string;
-  maxApy?: string;
-  subscriptionCoin: string;
-  exchangeAmount: string;
-  projectList?: EarnEliteAssetProjectV2[];
-  unsettledBGPoints: string;
-  interestCoin: string;
-  totalProfit: string;
-}
-⋮----
-export interface EarnEliteAssetsV2 {
-  resultList: EarnEliteAssetV2[];
-}
-⋮----
-export interface EarnEliteRecordV2 {
-  recordId: string;
-  productId: string;
-  coin: string;
-  status: string;
-  exchangeRate: string;
-  receivedCoin: string;
-  receivedAmount: string;
-  investAmount: string;
-  feeRate: string;
-  redeemType?: string | string[];
-  receivingAccount: string;
-  actualReceivingAccount: string;
-  paymentAccount?: string[];
-  settlePoints: string;
-  fee: string;
-}
-⋮----
-export interface EarnEliteRecordsV2 {
-  recordList: EarnEliteRecordV2[];
-  endId: string;
-}
-⋮----
-export interface EarnEliteSubscribeInfoV2 {
-  productSubId: string;
-  minAmount: string;
-  remainQuota: string;
-  exchangeRate: string;
-  productCoin: string;
-  interestTime: string;
-  settleTime: string;
-  precision: string;
-  feeRate: string;
-  /** Present for BGUSD per API docs. */
-  subscriptionCoinList?: EarnEliteSubscriptionCoinV2[];
-}
-⋮----
-/** Present for BGUSD per API docs. */
-⋮----
-export interface EarnEliteSubscribeResultV2 {
-  orderId: string;
-}
-⋮----
-export interface EarnEliteSubscribeStatusV2 {
-  result: 'settled' | 'pending' | 'rejected' | string;
-}
-⋮----
-export interface EarnEliteRedeemInfoBgusdReceiveCoinV2 {
-  bgusdReceiveCoin: string;
-  bgusdExchangeRate: string;
-}
-⋮----
-export interface EarnEliteRedeemModeV2 {
-  redeemFeeRate: string;
-  remainQuota: string;
-  redeemType: 'fast' | 'standard' | string;
-  redeemScale: string;
-  redeemDelayDate: string;
-  minRedeemAmount: string;
-  redeemTime: string;
-}
-⋮----
-export interface EarnEliteRedeemInfoV2 {
-  productId: string;
-  productSubId: string;
-  productCoin: string;
-  subscriptionCoin: string;
-  profitCoin: string;
-  exchangeRate: string;
-  totalUnPayInterestAmount: string;
-  preSettleApr: string;
-  receivedCoin: string;
-  unsettledPoints: string;
-  bgusdReceiveCoinList: EarnEliteRedeemInfoBgusdReceiveCoinV2[];
-  redeemModeList: EarnEliteRedeemModeV2[];
-}
-⋮----
-export interface RedeemEarnEliteResultV2 {
-  orderId: string;
-}
-
-================
 File: src/types/response/v2/margin.ts
 ================
 /**
@@ -3407,668 +1973,6 @@ export interface MarginLiquidationOrderV2 {
 }
 
 ================
-File: src/types/response/v2/spot.ts
-================
-/**
- *
- * * Spot | Market
- *
- */
-⋮----
-export interface SpotCoinChainV2 {
-  chain: string;
-  needTag: boolean;
-  withdrawable: boolean;
-  rechargeable: boolean;
-  withdrawFee: string;
-  extraWithdrawFee: string;
-  depositConfirm: string;
-  withdrawConfirm: string;
-  minDepositAmount: string;
-  minWithdrawAmount: string;
-  browserUrl: string;
-  contractAddress: string;
-  withdrawStep: string;
-  withdrawMinScale: string;
-  congestion: string;
-}
-⋮----
-export interface SpotCoinInfoV2 {
-  coinId: string;
-  coin: string;
-  transfer: boolean;
-  chains: SpotCoinChainV2[];
-}
-⋮----
-export interface SpotSymbolInfoV2 {
-  symbol: string;
-  baseCoin: string;
-  quoteCoin: string;
-  minTradeAmount: string;
-  maxTradeAmount: string;
-  takerFeeRate: string;
-  makerFeeRate: string;
-  pricePrecision: string;
-  quantityPrecision: string;
-  quotePrecision: string;
-  minTradeUSDT: string;
-  status: string;
-  buyLimitPriceRatio: string;
-  sellLimitPriceRatio: string;
-  orderQuantity: string;
-  areaSymbol: string;
-  maxLimitOrderValue?: string;
-  maxMarketOrderValue?: string;
-}
-⋮----
-export interface SpotVipFeeRateV2 {
-  level: number;
-  dealAmount: string;
-  assetAmount: string;
-  takerFeeRate: string;
-  makerFeeRate: string;
-  btcWithdrawAmount: string;
-  usdtWithdrawAmount: string;
-}
-⋮----
-export interface SpotTickerV2 {
-  symbol: string;
-  high24h: string;
-  open: string;
-  low24h: string;
-  lastPr: string;
-  quoteVolume: string;
-  baseVolume: string;
-  usdtVolume: string;
-  bidPr: string;
-  askPr: string;
-  bidSz: string;
-  askSz: string;
-  openUtc: string;
-  ts: string;
-  changeUtc24h: string;
-  change24h: string;
-}
-⋮----
-export interface SpotMergeDepthV2 {
-  asks: [string, string][];
-  bids: [string, string][];
-  ts: string;
-  scale: string;
-  precision: string;
-  isMaxPrecision: string;
-}
-⋮----
-export interface SpotOrderBookDepthV2 {
-  asks: [string, string][];
-  bids: [string, string][];
-  ts: string;
-}
-⋮----
-export type SpotCandlestickV2 = [
-  string, // timestamp
-  string, // open
-  string, // high
-  string, // low
-  string, // close
-  string, // baseVolume
-  string, // usdtVolume
-  string, // quoteVolume
-];
-⋮----
-string, // timestamp
-string, // open
-string, // high
-string, // low
-string, // close
-string, // baseVolume
-string, // usdtVolume
-string, // quoteVolume
-⋮----
-export interface SpotTradeV2 {
-  symbol: string;
-  tradeId: string;
-  side: string;
-  price: string;
-  size: string;
-  ts: string;
-}
-⋮----
-/**
- *
- * * Spot | Trade
- *
- */
-⋮----
-export interface CancelAndSubmitSpotOrderResponseV2 {
-  orderId: string;
-  clientOid: string | null;
-  success: string;
-  msg: string | null;
-}
-⋮----
-export interface SubmitSpotBatchOrdersResponseV2 {
-  successList: {
-    orderId: string;
-    clientOid: string;
-  }[];
-  failureList: {
-    orderId: string;
-    clientOid: string;
-    errorMsg: string;
-    errorCode?: string;
-  }[];
-}
-⋮----
-export interface SpotOrderInfoV2 {
-  userId: string;
-  symbol: string;
-  orderId: string;
-  clientOid: string;
-  price: string;
-  size: string;
-  orderType: string;
-  side: string;
-  status: string;
-  priceAvg: string;
-  baseVolume: string;
-  quoteVolume: string;
-  enterPointSource: string;
-  feeDetail: {
-    BGB?: {
-      deduction: boolean;
-      feeCoinCode: string;
-      totalDeductionFee: string;
-      totalFee: string;
-    };
-    newFees?: {
-      c: number;
-      d: number;
-      deduction: boolean;
-      r: string;
-      t: string;
-      totalDeductionFee: number;
-    };
-  };
-  orderSource: string;
-  cancelReason: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-export interface SpotOpenOrderV2 {
-  userId: string;
-  symbol: string;
-  orderId: string;
-  clientOid: string;
-  priceAvg: string;
-  size: string;
-  orderType: string;
-  side: string;
-  status: string;
-  basePrice: string;
-  baseVolume: string;
-  quoteVolume: string;
-  enterPointSource: string;
-  orderSource?: string;
-  presetTakeProfitPrice: string;
-  executeTakeProfitPrice: string;
-  presetStopLossPrice: string;
-  executeStopLossPrice: string;
-  cTime: string;
-  uTime?: string;
-  tpslType: string;
-  triggerPrice: string | null;
-}
-⋮----
-export interface SpotFillV2 {
-  userId: string;
-  symbol: string;
-  orderId: string;
-  tradeId: string;
-  orderType: string;
-  side: string;
-  priceAvg: string;
-  size: string;
-  amount: string;
-  feeDetail: {
-    deduction: string;
-    feeCoin: string;
-    totalDeductionFee: string;
-    totalFee: string;
-  };
-  tradeScope: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-/**
- *
- * * Spot | Trigger Orders
- *
- */
-⋮----
-export interface SpotCurrentPlanOrderV2 {
-  orderId: string;
-  clientOid: string;
-  symbol: string;
-  size: string;
-  executePrice: string;
-  triggerPrice: string;
-  status: string;
-  orderType: string;
-  side: string;
-  planType: string;
-  triggerType: string;
-  enterPointSource: string;
-  uTime: string;
-  cTime: string;
-}
-⋮----
-export interface SpotHistoryPlanOrderV2 {
-  orderId: string;
-  clientOid: string;
-  symbol: string;
-  size: string;
-  executePrice: string;
-  triggerPrice: string;
-  status: string;
-  orderType: string;
-  side: string;
-  planType: string;
-  triggerType: string;
-  enterPointSource: string;
-  uTime: string;
-  cTime: string;
-}
-⋮----
-export interface SpotPlanSubOrderV2 {
-  orderId: string;
-  price: string;
-  type: string;
-  status: string;
-}
-⋮----
-export interface SpotCancelPlanOrdersV2 {
-  successList: {
-    orderId: string;
-    clientOid: string;
-  }[];
-  failureList: {
-    orderId: string;
-    clientOid: string;
-    errorMsg: string;
-  }[];
-}
-⋮----
-/**
- *
- * * Spot | Account
- *
- */
-⋮----
-export interface SpotAccountInfoV2 {
-  userId: string;
-  inviterId: string;
-  ips: string;
-  authorities: string[];
-  parentId: number;
-  traderType: string;
-  channelCode: string;
-  channel: string;
-  regisTime: string;
-}
-⋮----
-export interface SpotAccountAssetV2 {
-  coin: string;
-  available: string;
-  frozen: string;
-  locked: string;
-  limitAvailable: string;
-  uTime: string;
-}
-⋮----
-export interface SpotSubAccountAssetV2 {
-  coin: string;
-  available: string;
-  limitAvailable: string;
-  frozen: string;
-  locked: string;
-  uTime: string;
-}
-export interface SpotSubAccountAssetsV2 {
-  userId: number;
-  assetsList: SpotSubAccountAssetV2[];
-}
-⋮----
-export interface SpotAccountBillV2 {
-  cTime: string;
-  coin: string;
-  groupType: string;
-  businessType: string;
-  size: string;
-  balance: string;
-  fees: string;
-  billId: string;
-}
-⋮----
-export interface SpotMainSubTransferRecordV2 {
-  coin: string;
-  status: string;
-  toType: string;
-  fromType: string;
-  size: string;
-  ts: string;
-  clientOid: string;
-  transferId: string;
-  fromUserId: string;
-  toUserId: string;
-}
-⋮----
-export interface SpotTransferRecordV2 {
-  coin: string;
-  status: string;
-  toType: string;
-  toSymbol: string;
-  fromType: string;
-  fromSymbol: string;
-  size: string;
-  ts: string;
-  clientOid: string;
-  transferId: string;
-}
-⋮----
-export interface SpotDepositAddressV2 {
-  address: string;
-  chain: string;
-  coin: string;
-  tag: string;
-  url: string;
-}
-⋮----
-export interface SpotSubAccountDepositRecordV2 {
-  orderId: string;
-  tradeId: string;
-  coin: string;
-  size: string;
-  status: string;
-  toAddress: string;
-  dest: string;
-  chain: string;
-  fromAddress: string;
-  clientOid?: string;
-  confirm?: string;
-  tag?: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-export interface SpotWithdrawalRecordV2 {
-  orderId: string;
-  tradeId: string;
-  coin: string;
-  dest: string;
-  clientOid: string;
-  type: string;
-  tag: string;
-  size: string;
-  fee: string;
-  status: string;
-  toAddress: string;
-  fromAddress: string;
-  confirm: string;
-  chain: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-export interface SpotDepositRecordV2 {
-  orderId: string;
-  tradeId: string;
-  coin: string;
-  type: string;
-  size: string;
-  status: string;
-  toAddress: string;
-  dest: string;
-  chain: string;
-  fromAddress: string;
-  cTime: string;
-  uTime: string;
-}
-
-================
-File: src/types/response/v3/copytrading.ts
-================
-/**
- *
- *
- * Copy Trading | Futures (UTA)
- *
- *
- */
-⋮----
-export interface CopyFuturesMarginDetailV3 {
-  marginCoin: string;
-  maxLongCount: string;
-  remainingLongCount: string;
-  maxShortCount: string;
-  remainingShortCount: string;
-}
-⋮----
-export interface CopyFuturesTradingPairV3 {
-  symbol: string;
-  leverage: string;
-  marginDetails: CopyFuturesMarginDetailV3[];
-}
-⋮----
-export interface CopyFuturesPositionSummaryV3 {
-  unrealizedPnl: string;
-  realizedPnl: string;
-  holdSize: string;
-  avgPrice: string;
-  symbol: string;
-  leverage: string;
-  marginMode: string;
-  liqPrice: string;
-  margin: string;
-  holdSide: string;
-  roi: string;
-  markPrice: string;
-  positionValue: string;
-}
-
-================
-File: src/types/response/v3/earn.ts
-================
-/**
- *
- *
- * Earn | On-Chain Elite (UTA)
- *
- *
- */
-⋮----
-export interface EarnEliteSubscriptionCoinV3 {
-  subscriptionCoin: string;
-  precision: string;
-  feeRate: string;
-  exchangeRate: string;
-  remainQuota?: string;
-  minAmount?: string;
-}
-⋮----
-export interface EarnEliteProductV3 {
-  productId: string;
-  coin: string;
-  minApr: string;
-  maxApr: string;
-  subscriptionCoinList: EarnEliteSubscriptionCoinV3[];
-  sellOut: 'YES' | 'NO' | string;
-}
-⋮----
-export interface EarnEliteAssetProjectV3 {
-  projectName: string;
-}
-⋮----
-export interface EarnEliteAssetV3 {
-  productId: string;
-  productCoin: string;
-  holdingAmount: string;
-  usdtHoldingAmount: string;
-  exchangeRate: string;
-  apr: string;
-  minApy?: string;
-  maxApy?: string;
-  subscriptionCoin: string;
-  exchangeAmount: string;
-  projectList?: EarnEliteAssetProjectV3[];
-  unsettledBGPoints: string;
-  interestCoin: string;
-  totalProfit: string;
-}
-⋮----
-export interface EarnEliteAssetsV3 {
-  resultList: EarnEliteAssetV3[];
-}
-⋮----
-export interface EarnEliteRecordV3 {
-  recordId: string;
-  productId: string;
-  coin: string;
-  status: string;
-  exchangeRate: string;
-  receivedCoin: string;
-  receivedAmount: string;
-  investAmount: string;
-  feeRate: string;
-  redeemType?: string | string[];
-  receivingAccount: string;
-  actualReceivingAccount: string;
-  paymentAccount?: string[];
-  settlePoints: string;
-  fee: string;
-}
-⋮----
-export interface EarnEliteRecordsV3 {
-  recordList: EarnEliteRecordV3[];
-  endId: string;
-}
-⋮----
-export interface EarnEliteSubscribeInfoV3 {
-  productSubId: string;
-  minAmount: string;
-  remainQuota: string;
-  exchangeRate: string;
-  productCoin: string;
-  interestTime: string;
-  settleTime: string;
-  precision: string;
-  feeRate: string;
-  subscriptionCoinList?: EarnEliteSubscriptionCoinV3[];
-}
-⋮----
-export interface EarnEliteSubscribeResultV3 {
-  orderId: string;
-}
-⋮----
-export interface EarnEliteSubscribeStatusV3 {
-  result: 'settled' | 'pending' | 'rejected' | string;
-}
-⋮----
-export interface EarnEliteRedeemInfoBgusdReceiveCoinV3 {
-  bgusdReceiveCoin: string;
-  bgusdExchangeRate: string;
-}
-⋮----
-export interface EarnEliteRedeemModeV3 {
-  redeemFeeRate: string;
-  remainQuota: string;
-  redeemType: 'fast' | 'standard' | string;
-  redeemScale: string;
-  redeemDelayDate: string;
-  minRedeemAmount: string;
-  redeemTime: string;
-}
-⋮----
-export interface EarnEliteRedeemInfoV3 {
-  productId: string;
-  productSubId: string;
-  productCoin: string;
-  subscriptionCoin: string;
-  profitCoin: string;
-  exchangeRate: string;
-  totalUnPayInterestAmount: string;
-  preSettleApr: string;
-  receivedCoin: string;
-  unsettledPoints: string;
-  bgusdReceiveCoinList: EarnEliteRedeemInfoBgusdReceiveCoinV3[];
-  redeemModeList: EarnEliteRedeemModeV3[];
-}
-⋮----
-export interface RedeemEarnEliteResultV3 {
-  orderId: string;
-}
-
-================
-File: src/types/response/v3/strategy.ts
-================
-export interface PlaceStrategyOrderResponseV3 {
-  orderId: string;
-  clientOid: string;
-}
-⋮----
-export interface ModifyStrategyOrderResponseV3 {
-  orderId: string;
-  clientOid: string;
-}
-⋮----
-export interface StrategyOrderV3 {
-  orderId: string;
-  clientOid: string;
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol: string;
-  qty: string;
-  posSide: 'long' | 'short';
-  tpTriggerBy: 'market' | 'mark';
-  slTriggerBy: 'market' | 'mark';
-  takeProfit: string;
-  stopLoss: string;
-  tpOrderType: 'limit' | 'market';
-  slOrderType: 'limit' | 'market';
-  tpLimitPrice: string;
-  slLimitPrice: string;
-  createdTime: string;
-  updatedTime: string;
-}
-
-================
-File: src/types/websockets/ws-api-request.ts
-================
-export interface WSAPIPlaceOrderRequestV3 {
-  symbol: string;
-  orderType: 'limit' | 'market';
-  qty: string;
-  price?: string;
-  side: 'buy' | 'sell';
-  posSide?: 'long' | 'short';
-  timeInForce?: 'gtc' | 'ioc' | 'fok' | 'post_only';
-  reduceOnly?: 'YES' | 'NO'; // Note: reduceOnly is not supported for batch place WS API. Might be supported starting late Q4 2025, but not supported yet.
-  clientOid?: string;
-  stpMode?: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
-  tpTriggerBy?: 'market' | 'mark';
-  slTriggerBy?: 'market' | 'mark';
-  takeProfit?: string;
-  stopLoss?: string;
-  tpOrderType?: 'limit' | 'market';
-  slOrderType?: 'limit' | 'market';
-  tpLimitPrice?: string;
-  slLimitPrice?: string;
-}
-⋮----
-reduceOnly?: 'YES' | 'NO'; // Note: reduceOnly is not supported for batch place WS API. Might be supported starting late Q4 2025, but not supported yet.
-
-================
 File: src/types/websockets/ws-api-response.ts
 ================
 export interface WSAPIPlaceOrderResponseV3 {
@@ -4077,149 +1981,6 @@ export interface WSAPIPlaceOrderResponseV3 {
   clientOid: string;
   cTime: string;
 }
-
-================
-File: src/types/websockets/ws-api.ts
-================
-import { WS_KEY_MAP } from '../../util/websocket-util.js';
-import { CancelOrderRequestV3 } from '../request/v3/trade.js';
-import { CancelOrderResponseV3 } from '../response/v3/trade.js';
-import { WSAPIPlaceOrderRequestV3 } from './ws-api-request.js';
-import { WSAPIPlaceOrderResponseV3 } from './ws-api-response.js';
-import { BitgetInstTypeV3, WsKey } from './ws-general.js';
-⋮----
-export type WSOperation = 'subscribe' | 'unsubscribe' | 'login';
-⋮----
-// When new WS API operations are added, make sure to also update WS_API_Operations[] below
-export type WSAPIOperation =
-  | 'place-order'
-  | 'batch-place'
-  | 'cancel-order'
-  | 'batch-cancel';
-⋮----
-export interface WSOperationLoginParams {
-  apiKey: string;
-  passphrase: string;
-  timestamp: number;
-  sign: string;
-}
-⋮----
-export interface WSAPIRequestBitgetV3<TWSParams> {
-  op: 'trade';
-  id: string;
-  category: BitgetInstTypeV3;
-  topic: WSAPIOperation;
-  args: TWSParams | TWSParams[];
-}
-⋮----
-export interface WSAPIRequestFlags {
-  /** If true, will skip auth requirement for WS API connection */
-  authIsOptional?: boolean | undefined;
-}
-⋮----
-/** If true, will skip auth requirement for WS API connection */
-⋮----
-export type Exact<T> = {
-  // This part says: if there's any key that's not in T, it's an error
-  [K: string]: never;
-} & {
-  [K in keyof T]: T[K];
-};
-⋮----
-// This part says: if there's any key that's not in T, it's an error
-⋮----
-/**
-
-/**
- * V2 request looks like this:
-{
-  "op":"subscribe",
-  "args":[
-      {
-          "instType":"SPOT",
-          "channel":"ticker",
-          "instId":"BTCUSDT"
-      },
-      {
-          "instType":"SPOT",
-          "channel":"candle5m",
-          "instId":"BTCUSDT"
-      }
-  ]
-}
- */
-export interface WsRequestOperationBitget<TWSRequestArg> {
-  op: WSOperation;
-  args?: (TWSRequestArg | string | number)[];
-}
-export interface WSAPIResponse<
-  TResponseData extends object = object,
-  TOperation extends WSAPIOperation = WSAPIOperation,
-> {
-  wsKey: WsKey;
-  /** Auto-generated */
-  id: string;
-  event: 'trade';
-  category: BitgetInstTypeV3;
-  topic: TOperation;
-  args: TResponseData;
-  code: '0' | string;
-  msg: 'success' | string;
-  ts: string;
-}
-⋮----
-/** Auto-generated */
-⋮----
-/**
- * List of operations supported for this WsKey (connection)
- */
-export interface WsAPIWsKeyTopicMap {
-  [WS_KEY_MAP.v3Private]: WSAPIOperation;
-}
-⋮----
-/**
- * Request parameters expected per operation
- */
-export interface WsAPITopicRequestParamMap {
-  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-  'place-order': WSAPIPlaceOrderRequestV3;
-  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-  'batch-place': WSAPIPlaceOrderRequestV3[];
-  // https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-  'cancel-order': CancelOrderRequestV3;
-  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
-  'batch-cancel': CancelOrderRequestV3[];
-}
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
-⋮----
-/**
- * Response structure expected for each operation
- */
-export interface WsAPIOperationResponseMap {
-  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-  'place-order': WSAPIResponse<[WSAPIPlaceOrderResponseV3], 'place-order'>;
-  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-  'batch-place': WSAPIResponse<WSAPIPlaceOrderResponseV3[], 'batch-place'>;
-  // https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-  'cancel-order': WSAPIResponse<[CancelOrderResponseV3], 'cancel-order'>;
-  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
-  'batch-cancel': WSAPIResponse<CancelOrderResponseV3[], 'batch-cancel'>;
-}
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
 
 ================
 File: src/types/websockets/ws-events.ts
@@ -4968,191 +2729,467 @@ import { RestClientV3 } from '../../../src/index.js';
 // import { RestClientV3 } from 'bitget-api';
 
 ================
-File: examples/README.md
-================
-# Examples
-
-These samples can be executed using `ts-node`:
-
-```
-ts-node ./examples/rest-spot-public.ts
-```
-
-Samples that require authentication can be edited directly but also support environmental variables. E.g. on mac/unix:
-
-```
-API_KEY_COM='yourkeyhere' API_SECRET_COM='yoursecrethere' API_PASS_COM='yourapipasshere' ts-node examples/rest-trade-futures.ts
-```
-
-They can also be converted to JavaScript by changing the imports to require & removing any type annotations.
-
-## V3 / Unified Trading Account (UTA)
-
-These newer examples are for Bitget's V3 APIs and WebSockets. They can be found in the examples/V3 folder.
-
-Refer to the V3 / UTA API documentation for more information on the V3 APIs:
-https://www.bitget.com/api-doc/uta/intro
-
-These APIs require your account to be upgraded to the Unified Trading Account, if you plan on using the account-level REST APIs and WebSockets. Once upgraded, the V2 APIs are no longer available to you, unless you revert back to Classic Account mode.
-
-### WebSocket API (WS API)
-
-The V3/UTA API introduces order placement via a persisted WebSocket connection. This Bitget Node.js, JavaScript & TypeScript SDK supports Bitget's full V3 API offering, including the WebSocket API.
-
-There are two approaches to placing orders via the Bitget WebSocket APIs
-
-#### WebsocketAPIClient (recommended)
-
-This integration looks & feels like a REST API client, but uses WebSockets, via the WebsocketClient's sendWSAPIRequest method. It returns promises and has end to end types.
-
-This is the recommended approach to easily start sending orders via an automatically persisted WebSocket connection. A simple example is below, but for a more thorough example, check the example here: [./V3/ws-api-client-trade.ts](./V3/ws-api-client-trade.ts)
-
-```typescript
-import { WebsocketAPIClient } from 'bitget-api';
-// or if you prefer require:
-// const { WebsocketAPIClient } = require("bitget-api");
-
-// Make an instance of the WS API Client class with your API keys
-const wsClient = new WebsocketAPIClient({
-  apiKey: API_KEY,
-  apiSecret: API_SECRET,
-  apiPass: API_PASS,
-
-  // Whether to use the demo trading wss connection
-  // demoTrading: true,
-});
-
-async function start() {
-  // Start using it like a REST API. All actions are sent via a persisted WebSocket connection.
-
-  /**
-   * Place Order
-   * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-   */
-  try {
-    const res = await wsClient.submitNewOrder('spot', {
-      orderType: 'limit',
-      price: '100',
-      qty: '0.1',
-      side: 'buy',
-      symbol: 'BTCUSDT',
-      timeInForce: 'gtc',
-    });
-
-    console.log(new Date(), 'WS API "submitNewOrder()" result: ', res);
-  } catch (e) {
-    console.error(new Date(), 'Exception with WS API "submitNewOrder()": ', e);
-  }
-}
-
-start().catch((e) => console.error('Exception in example: '.e));
-```
-
-#### ws.sendWSAPIRequest(wsKey, command, category, operation)
-
-This is the "raw" integration within the existing WebSocket client. It uses an automatically persisted & authenticated connection to send events through Bitget's WebSocket API. It automatically tracks and connects outgoing requests with incoming responses, and returns promises that resolve/reject when a matching response is received.
-
-Refer to [V3/ws-api-trade-raw.ts](./V3/ws-api-trade-raw.ts) to see an example.
-
-Note: The WebsocketClient is built around this. For a more user friendly experience, it is recommended to use the WebsocketClient for WS API requests. It uses this method but has the convenience of behaving similar to a REST API (while all communication automatically happens over a persisted WebSocket connection).
-
-## V2
-
-These examples are for Bitget's V2 APIs and WebSockets. They can be found in the examples/V2 folder.
-
-Refer to the V2 API documentation for more information on the V2 APIs:
-https://www.bitget.com/api-doc/common/intro
-
-================
 File: src/constants/enum.ts
 ================
 /** Parameter verification exception margin mode == FIXED */
 
 ================
-File: src/types/request/v3/broker.ts
+File: src/types/request/v2/common.ts
 ================
-export interface CreateBrokerSubAccountRequestV3 {
-  subaccountName: string;
-  label: string;
-}
+import { FuturesProductTypeV2, MarginType } from '../shared.js';
 ⋮----
-export interface GetBrokerSubAccountListRequestV3 {
-  limit?: string;
-  cursor?: string;
-  status?: 'normal' | 'freeze';
-}
+/**
+ *
+ * * Common | Notice
+ *
+ */
 ⋮----
-export interface ModifyBrokerSubAccountRequestV3 {
-  subUid: string;
-  status?: 'normal' | 'freeze';
-  permList?: string[];
-}
-⋮----
-export interface BrokerSubWithdrawalRequestV3 {
-  subUid: string;
-  coin: string;
-  dest: 'on_chain' | 'internal_transfer';
-  address: string;
-  amount: string;
-  chain?: string;
-  tag?: string;
-  clientOid?: string;
-}
-⋮----
-export interface GetBrokerSubDepositAddressRequestV3 {
-  subUid: string;
-  coin: string;
-  chain?: string;
-}
-⋮----
-export interface GetBrokerAllSubDepositWithdrawalRequestV3 {
+export interface GetAnnouncementsRequestV2 {
+  annType?: string;
   startTime?: string;
   endTime?: string;
+  language: string;
+}
+⋮----
+/**
+ *
+ * * Common | Public
+ *
+ */
+⋮----
+export interface GetTradeRateRequestV2 {
+  symbol: string;
+  businessType: string;
+}
+⋮----
+/**
+ *
+ * * Common | Tax
+ *
+ */
+⋮----
+export interface GetSpotTransactionsRequestV2 {
+  coin?: string;
+  startTime: string;
+  endTime: string;
   limit?: string;
-  cursor?: string;
-  status?: 'pending' | 'fail' | 'success';
+  idLessThan?: string;
 }
 ⋮----
-export interface GetBrokerCommissionRequestV3 {
-  startTime?: string;
+export interface GetFuturesTransactionsRequestV2 {
+  productType?: FuturesProductTypeV2;
+  marginCoin?: string;
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+export interface GetMarginTransactionsRequestV2 {
+  marginType?: MarginType;
+  coin?: string;
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+export interface GetP2PTransactionsRequestV2 {
+  coin?: string;
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+/**
+ *
+ * * Common | P2P
+ *
+ */
+⋮----
+export interface GetP2PMerchantsRequestV2 {
+  online?: 'yes' | 'no';
+  idLessThan?: string;
+  limit?: string;
+}
+⋮----
+export interface GetMerchantP2POrdersRequestV2 {
+  startTime: string;
   endTime?: string;
-  pageSize?: string;
-  pageNo?: string;
-  bizType?: 'spot' | 'futures';
-  subBizType?:
-    | 'spot_trade'
-    | 'spot_margin'
-    | 'usdt_futures'
-    | 'usdc_futures'
-    | 'coin_futures';
+  idLessThan?: string;
+  limit?: string;
+  status?: string;
+  advNo: string;
+  side?: string;
+  coin?: string;
+  language: string;
+  fiat?: string;
+  orderNo?: string;
 }
 ⋮----
-export interface CreateBrokerSubApiKeyRequestV3 {
-  subUid: string;
-  passphrase: string;
-  label: string;
-  ipList?: string[];
-  permType: 'read_and_write' | 'readonly';
+export interface GetMerchantAdvertisementsRequestV2 {
+  startTime: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  status: string;
+  advNo?: string;
+  side: string;
+  coin: string;
+  language?: string;
+  fiat: string;
+  orderBy?: string;
+  payMethodId?: string;
+  sourceType?: string;
+}
+⋮----
+/**
+ *
+ * * Common | Virtual Subaccount
+ *
+ */
+⋮----
+export interface ModifyVirtualSubRequestV2 {
+  subAccountUid: string;
   permList: string[];
+  status: string;
 }
 ⋮----
-export interface ModifyBrokerSubApiKeyRequestV3 {
-  subUid: string;
+export interface CreateVirtualSubRequestV2 {
+  subAccountName: string;
   passphrase: string;
-  apiKey: string;
-  label?: string;
+  label: string;
   ipList?: string[];
-  permType?: 'read_and_write' | 'readonly';
   permList?: string[];
 }
 ⋮----
-export interface DeleteBrokerSubApiKeyRequestV3 {
-  subUid: string;
-  apiKey: string;
+export interface CreateVirtualSubApiKeyRequestV2 {
+  subAccountUid: string;
+  passphrase: string;
+  label: string;
+  ipList?: string[];
+  permList?: string[];
 }
 ⋮----
-export interface GetBrokerSubApiKeyRequestV3 {
-  subUid: string;
+export interface ModifyVirtualSubApiKeyRequestV2 {
+  subAccountUid: string;
+  subAccountApiKey: string;
+  passphrase: string;
+  label: string;
+  ipList?: string[];
+  permList?: string[];
+}
+⋮----
+export interface CreateAgentSubaccountRequestV2 {
+  /** Lowercase letters only; max 20 characters */
+  username: string;
+  /** 8–32 characters, letters and numbers */
+  passphrase: string;
+  note?: string;
+}
+⋮----
+/** Lowercase letters only; max 20 characters */
+⋮----
+/** 8–32 characters, letters and numbers */
+⋮----
+/**
+ *
+ * * Common | Convert
+ *
+ */
+⋮----
+export interface ConvertQuoteRequestV2 {
+  fromCoin: string;
+  fromCoinSize?: string;
+  toCoin: string;
+  toCoinSize?: string;
+}
+⋮----
+export interface ConvertRequestV2 {
+  fromCoin: string;
+  fromCoinSize: string;
+  cnvtPrice: string;
+  toCoin: string;
+  toCoinSize: string;
+  traceId: string;
+}
+⋮----
+export interface GetConvertHistoryRequestV2 {
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+/**
+ *
+ * * Common | BGB Convert
+ *
+ */
+⋮----
+export interface GetConvertBGBHistoryRequestV2 {
+  orderId?: string;
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  idLessThan?: string;
+}
+
+================
+File: src/types/request/v2/earn.ts
+================
+/**
+ *
+ *
+ * Earn | Savings
+ *
+ *
+ */
+⋮----
+export interface GetEarnSavingsAssetsRequestV2 {
+  periodType: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+export interface GetEarnSavingsRecordsRequestV2 {
+  coin?: string;
+  periodType: string;
+  orderType?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+export interface RedeemSavingsRequestV2 {
+  productId: string;
+  orderId?: string;
+  periodType: string;
+  amount: string;
+}
+⋮----
+/**
+ *
+ *
+ * Earn | Shark Fin
+ *
+ *
+ */
+⋮----
+export interface GetSharkfinAssetsRequestV2 {
+  status: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+export interface GetSharkfinRecordsRequestV2 {
+  coin?: string;
+  type: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+/**
+ *
+ *
+ * Earn | Loan
+ *
+ *
+ */
+⋮----
+export interface GetLoanEstInterestAndBorrowableRequestV2 {
+  loanCoin: string;
+  pledgeCoin: string;
+  daily: 'SEVEN' | 'THIRTY';
+  pledgeAmount?: string;
+}
+⋮----
+export interface BorrowLoanRequestV2 {
+  loanCoin: string;
+  pledgeCoin: string;
+  daily: 'SEVEN' | 'THIRTY';
+  pledgeAmount?: string;
+  loanAmount?: string;
+}
+⋮----
+export interface RepayLoanRequestV2 {
+  orderId: string;
+  amount?: string;
+  repayUnlock?: string;
+  repayAll: string;
+}
+⋮----
+export interface GetLoanRepayHistoryRequestV2 {
+  orderId?: string;
+  loanCoin?: string;
+  pledgeCoin?: string;
+  startTime: string;
+  endTime: string;
+  pageNo?: string;
+  pageSize?: string;
+}
+⋮----
+export interface ModifyLoanPledgeRateRequestV2 {
+  orderId: string;
+  amount: string;
+  pledgeCoin: string;
+  reviseType: string;
+}
+⋮----
+export interface GetLoanPledgeRateHistoryRequestV2 {
+  orderId?: string;
+  reviseSide?: string;
+  pledgeCoin?: string;
+  startTime: string;
+  endTime: string;
+  pageNo?: string;
+  pageSize?: string;
+}
+⋮----
+export interface GetLoanHistoryRequestV2 {
+  orderId?: string;
+  loanCoin?: string;
+  pledgeCoin?: string;
+  status?: string;
+  startTime: string;
+  endTime: string;
+  pageNo?: string;
+  pageSize?: string;
+}
+⋮----
+export interface GetLiquidationRecordsRequestV2 {
+  orderId?: string;
+  loanCoin?: string;
+  pledgeCoin?: string;
+  status?: string;
+  startTime: string;
+  endTime: string;
+  pageNo?: string;
+  pageSize?: string;
+}
+⋮----
+/**
+ *
+ *
+ * Earn | On-Chain Elite
+ *
+ *
+ */
+⋮----
+export interface GetEarnEliteRecordsRequestV2 {
+  type: 'subscribe' | 'redeem' | 'interest';
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetEarnEliteSubscribeInfoRequestV2 {
+  productId: string;
+}
+⋮----
+export interface EarnEliteSubscribeRequestV2 {
+  productSubId: string;
+  amount: string;
+  coin?: string;
+  paymentAccount?: 'spot' | 'unified';
+}
+⋮----
+export interface GetEarnEliteSubscribeResultRequestV2 {
+  orderId: string;
+}
+⋮----
+export interface GetEarnEliteRedeemInfoRequestV2 {
+  productId: string;
+}
+⋮----
+export interface RedeemEarnEliteRequestV2 {
+  productId: string;
+  productSubId: string;
+  redeemType: 'fast' | 'standard';
+  amount: string;
+  receiveAccount: 'spot' | 'unified';
+  advancedSettle?: 'yes' | 'no';
+  coin?: string;
+}
+
+================
+File: src/types/request/v3/copytrading.ts
+================
+export interface GetCopyFuturesMaxTransferableRequestV3 {
+  coin: string;
+}
+⋮----
+export interface CopyFuturesTransferRequestV3 {
+  type: 'in' | 'out';
+  coin: string;
+  amount: string;
+}
+⋮----
+export interface GetCopyFuturesTransferRecordRequestV3 {
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  /** Pass transferId from the previous page to paginate forward */
+  cursor?: string;
+}
+⋮----
+/** Pass transferId from the previous page to paginate forward */
+
+================
+File: src/types/request/v3/earn.ts
+================
+/**
+ *
+ *
+ * Earn | On-Chain Elite (UTA)
+ *
+ *
+ */
+⋮----
+export interface GetEarnEliteRecordsRequestV3 {
+  type: 'subscribe' | 'redeem' | 'interest';
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetEarnEliteSubscribeInfoRequestV3 {
+  productId: string;
+}
+⋮----
+export interface EarnEliteSubscribeRequestV3 {
+  productSubId: string;
+  amount: string;
+  coin?: string;
+  paymentAccount?: 'spot' | 'unified';
+}
+⋮----
+export interface GetEarnEliteSubscribeResultRequestV3 {
+  orderId: string;
+}
+⋮----
+export interface GetEarnEliteRedeemInfoRequestV3 {
+  productId: string;
+}
+⋮----
+export interface RedeemEarnEliteRequestV3 {
+  productId: string;
+  productSubId: string;
+  redeemType: 'fast' | 'standard';
+  amount: string;
+  receiveAccount: 'spot' | 'unified';
+  advancedSettle?: 'yes' | 'no';
+  coin?: string;
 }
 
 ================
@@ -5282,115 +3319,2306 @@ export interface GetLoanReducesRequestV3 {
 }
 
 ================
-File: src/types/response/v3/broker.ts
+File: src/types/request/v3/p2p.ts
 ================
-export interface CreateBrokerSubAccountResponseV3 {
-  subUid: string;
-  subaccountName: string;
-  subaccountEmail: string;
-  status: 'normal' | 'freeze';
-  permList: string[];
-  label: string;
-  cTime: string;
+export type P2pSideV3 = 'buy' | 'sell';
+⋮----
+export type P2pPriceTypeV3 = 'fixed' | 'floating';
+⋮----
+export type P2pMarketTypeV3 = 'public' | 'private';
+⋮----
+export type P2pAdStatusV3 = 'publish' | 'delist' | 'remove';
+⋮----
+export type P2pAdOperationV3 = 'publish' | 'delist' | 'remove';
+⋮----
+export type P2pOrderStatusV3 =
+  | 'pending_payment'
+  | 'pending_release'
+  | 'completed'
+  | 'cancelled'
+  | 'in_appeal';
+⋮----
+export interface P2pPayMethodIdRefV3 {
+  payMethodId: string;
+  userPayMethodId?: string;
 }
 ⋮----
-export interface BrokerSubAccountV3 {
-  subUid: string;
-  subaccountName: string;
-  subaccountEmail: string | null;
-  status: 'normal' | 'freeze';
-  permList: string[];
-  label: string;
-  language: string;
-  cTime: string;
-  uTime: string;
+export interface GetP2pAdListRequestV3 {
+  token: string;
+  fiat: string;
+  side: P2pSideV3;
+  amount?: string;
+  pageNum: string;
+  limit: string;
 }
 ⋮----
-export interface GetBrokerSubAccountListResponseV3 {
-  subList: BrokerSubAccountV3[];
+export interface GetP2pExchangeRateRequestV3 {
+  token: string;
+  fiat: string;
 }
 ⋮----
-export interface ModifyBrokerSubAccountResponseV3 {
-  subUid: string;
-  subaccountName: string;
-  status: 'normal' | 'freeze';
-  permList: string[];
-  label: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-export interface BrokerSubWithdrawalResponseV3 {
-  orderId: string;
-  clientOid: string;
-}
-⋮----
-export interface BrokerSubDepositAddressV3 {
-  subUid: string;
-  coin: string;
-  address: string;
-  chain: string;
-  tag: string | null;
-  url: string;
-  cTime: string;
-}
-⋮----
-export interface BrokerSubDepositWithdrawalRecordV3 {
-  uid: string;
-  txId: string;
-  type: 'deposit' | 'withdrawal';
-  subType: 'onchain' | 'internal' | 'fast';
-  coin: string;
+export interface P2pFeeSimulateRequestV3 {
+  token: string;
+  fiat: string;
+  side: P2pSideV3;
+  marketType: P2pMarketTypeV3;
   amount: string;
-  status: 'pending' | 'fail' | 'success';
+}
+⋮----
+export interface GetP2pAdLimitRequestV3 {
+  token: string;
+  fiat: string;
+  side: P2pSideV3;
+}
+⋮----
+export interface CreateP2pAdRequestV3 {
+  token: string;
+  fiat: string;
+  side: P2pSideV3;
+  priceType: P2pPriceTypeV3;
+  price?: string;
+  premium?: string;
+  minAmount: string;
+  maxAmount: string;
+  quantity: string;
+  payMethodIds: P2pPayMethodIdRefV3[];
+  remark?: string;
+  tradeTerms?: string;
+  payTimeLimit: string;
+}
+⋮----
+export interface UpdateP2pAdRequestV3 {
+  advId: string;
+  priceType?: P2pPriceTypeV3;
+  price?: string;
+  premium?: string;
+  minAmount?: string;
+  maxAmount?: string;
+  quantity?: string;
+  payMethodIds?: P2pPayMethodIdRefV3[];
+  payTimeLimit?: string;
+  remark?: string;
+  tradeTerms?: string;
+}
+⋮----
+export interface OperateP2pAdRequestV3 {
+  advId: string;
+  operation: P2pAdOperationV3;
+}
+⋮----
+export interface GetP2pAdInfoRequestV3 {
+  advId: string;
+}
+⋮----
+export interface GetP2pMyAdsRequestV3 {
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+  advId?: string;
+  token?: string;
+  fiat?: string;
+  status?: P2pAdStatusV3;
+}
+⋮----
+export interface GetP2pPendingOrdersRequestV3 {
+  orderId?: string;
+  side?: P2pSideV3;
+  startTime?: string;
+  endTime?: string;
+  cursor?: string;
+  limit?: string;
+}
+⋮----
+export interface GetP2pAllOrdersRequestV3 {
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+  orderId?: string;
+  side?: P2pSideV3;
+  status?: P2pOrderStatusV3;
+}
+⋮----
+export interface GetP2pOrderInfoRequestV3 {
+  orderId: string;
+}
+⋮----
+export interface P2pOrderActionRequestV3 {
+  orderId: string;
+}
+⋮----
+export interface GetP2pBalanceRequestV3 {
+  token: string;
+}
+
+================
+File: src/types/request/v3/strategy.ts
+================
+export type StrategyOrderTypeV3 = 'tpsl' | 'trigger';
+⋮----
+export type StrategyOrderStatusV3 =
+  | 'pending'
+  | 'success'
+  | 'failed'
+  | 'cancelled'
+  | 'submitting';
+⋮----
+export type StrategyTriggerByV3 = 'market' | 'mark';
+⋮----
+export type StrategyTriggerOrderTypeV3 = 'limit' | 'market';
+⋮----
+export interface PlaceStrategyOrderRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  clientOid?: string;
+  type?: StrategyOrderTypeV3;
+  tpslMode?: 'full' | 'partial';
+  /** Required when tpslMode=partial or for trigger orders */
+  qty?: string;
+  side?: 'buy' | 'sell';
+  posSide?: 'long' | 'short';
+  reduceOnly?: 'yes' | 'no';
+  tpTriggerBy?: StrategyTriggerByV3;
+  slTriggerBy?: StrategyTriggerByV3;
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: StrategyTriggerOrderTypeV3;
+  slOrderType?: StrategyTriggerOrderTypeV3;
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
+  triggerBy?: StrategyTriggerByV3;
+  triggerPrice?: string;
+  triggerOrderType?: StrategyTriggerOrderTypeV3;
+  triggerOrderPrice?: string;
+}
+⋮----
+/** Required when tpslMode=partial or for trigger orders */
+⋮----
+export interface ModifyStrategyOrderRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+  qty: string;
+  tpTriggerBy?: StrategyTriggerByV3;
+  slTriggerBy?: StrategyTriggerByV3;
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: StrategyTriggerOrderTypeV3;
+  slOrderType?: StrategyTriggerOrderTypeV3;
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
+  triggerBy?: StrategyTriggerByV3;
+  triggerPrice?: string;
+  triggerOrderType?: StrategyTriggerOrderTypeV3;
+  triggerOrderPrice?: string;
+}
+⋮----
+export interface CancelStrategyOrderRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+}
+⋮----
+export interface GetUnfilledStrategyOrdersRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  type?: StrategyOrderTypeV3;
+}
+⋮----
+export interface GetHistoryStrategyOrdersRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  type?: StrategyOrderTypeV3;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+
+================
+File: src/types/request/v3/trade.ts
+================
+export interface BatchModifyOrderRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+  qty?: string;
+  price?: string;
+  autoCancel?: 'yes' | 'no';
+}
+⋮----
+export interface CancelAllOrdersRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol?: string;
+}
+⋮----
+export interface CancelBatchOrdersRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol: string;
+}
+⋮----
+export interface CloseAllPositionsRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  posSide?: 'long' | 'short';
+}
+⋮----
+export interface CancelOrderRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+}
+⋮----
+export interface GetMaxOpenAvailableRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol: string;
+  orderType: 'limit' | 'market';
+  side: 'buy' | 'sell';
+  price?: string;
+  size?: string;
+}
+⋮----
+export interface GetOrderInfoRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+}
+⋮----
+export interface GetFillsRequestV3 {
+  orderId?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetUnfilledOrdersRequestV3 {
+  category?:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetHistoryOrdersRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetPositionHistoryRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetCurrentPositionRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  posSide?: 'long' | 'short';
+}
+⋮----
+export interface ModifyOrderRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+  qty?: string;
+  price?: string;
+  autoCancel?: 'yes' | 'no';
+}
+⋮----
+export interface PlaceBatchOrdersRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol: string;
+  qty: string;
+  price?: string;
+  side: 'buy' | 'sell';
+  orderType: 'limit' | 'market';
+  timeInForce?: 'ioc' | 'fok' | 'gtc' | 'post_only';
+  posSide?: 'long' | 'short';
+  clientOid?: string;
+  reduceOnly?: 'yes' | 'no';
+}
+⋮----
+export type FuturesMarginModeV3 = 'crossed' | 'isolated';
+⋮----
+export interface PlaceOrderRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol: string;
+  qty: string;
+  price?: string;
+  side: 'buy' | 'sell';
+  orderType: 'limit' | 'market';
+  timeInForce?: 'ioc' | 'fok' | 'gtc' | 'post_only';
+  posSide?: 'long' | 'short';
+  clientOid?: string;
+  reduceOnly?: 'yes' | 'no';
+  /** Futures only. Defaults to crossed */
+  marginMode?: FuturesMarginModeV3;
+  stpMode?: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
+  takeProfitPrice?: string;
+  stopLossPrice?: string;
+  takeProfitTriggerType?: 'mark_price' | 'last_price';
+  stopLossTriggerType?: 'mark_price' | 'last_price';
+}
+⋮----
+/** Futures only. Defaults to crossed */
+⋮----
+export interface CountdownCancelAllRequestV3 {
+  countdown: string; // seconds until auto-cancel (5-60, or 0 to disable)
+}
+⋮----
+countdown: string; // seconds until auto-cancel (5-60, or 0 to disable)
+
+================
+File: src/types/response/v2/common.ts
+================
+/**
+ *
+ * * Common | Notice
+ *
+ */
+⋮----
+export interface AnnouncementV2 {
+  annId: string;
+  annTitle: string;
+  annDesc: string;
+  cTime: string;
+  language: string;
+  annUrl: string;
+}
+⋮----
+/**
+ *
+ * * Common | Public
+ *
+ */
+⋮----
+/**
+ *
+ * * Common | Tax
+ *
+ */
+⋮----
+export interface SpotTransactionRecordV2 {
+  id: string;
+  coin: string;
+  spotTaxType: string;
+  amount: string;
+  fee: string;
+  balance: string;
   ts: string;
 }
 ⋮----
-export interface GetBrokerAllSubDepositWithdrawalResponseV3 {
-  list: BrokerSubDepositWithdrawalRecordV3[];
-  endId: string;
-}
-⋮----
-export interface BrokerCommissionRecordV3 {
-  uid: string;
-  coin: string;
+export interface FuturesTransactionRecordV2 {
+  id: string;
   symbol: string;
-  dealtAmount: string;
-  totalFee: string;
-  deductedFee: string;
-  paidFee: string;
-  markUpFee: string;
-  totalCommission: string;
+  marginCoin: string;
+  futureTaxType: string;
+  amount: string;
+  fee: string;
+  ts: string;
 }
 ⋮----
-export interface CreateBrokerSubApiKeyResponseV3 {
-  subUid: string;
+export interface MarginTransactionRecordV2 {
+  id: string;
+  coin: string;
+  marginTaxType: string;
+  amount: string;
+  fee: string;
+  total: string;
+  symbol: string;
+  ts: string;
+}
+⋮----
+export interface P2PMerchantOrdersV2 {
+  id: string;
+  coin: string;
+  p2pTaxType: string;
+  total: string;
+  ts: string;
+}
+⋮----
+/**
+ *
+ * * Common | P2P
+ *
+ */
+⋮----
+export interface P2PMerchantV2 {
+  registerTime: string;
+  nickName: string;
+  isOnline: string;
+  avgPaymentTime: string;
+  avgReleaseTime: string;
+  totalTrades: string;
+  totalBuy: string;
+  totalSell: string;
+  totalCompletionRate: string;
+  trades30d: string;
+  sell30d: string;
+  buy30d: string;
+  completionRate30d: string;
+}
+⋮----
+export interface P2PMerchantInfoV2 {
+  registerTime: string;
+  nickName: string;
+  merchantId: string;
+  avgPaymentTime: string;
+  avgReleaseTime: string;
+  totalTrades: string;
+  totalBuy: string;
+  totalSell: string;
+  totalCompletionRate: string;
+  trades30d: string;
+  sell30d: string;
+  buy30d: string;
+  completionRate30d: string;
+  kycStatus: boolean;
+  emailBindStatus: boolean;
+  mobileBindStatus: boolean;
+  email: string;
+  mobile: string;
+}
+⋮----
+export interface P2PMerchantOrderV2 {
+  orderId: string;
+  orderNo: string;
+  advNo: string;
+  side: string;
+  count: string;
+  coin: string;
+  price: string;
+  fiat: string;
+  withdrawTime: string;
+  representTime: string;
+  releaseTime: string;
+  paymentTime: string;
+  amount: string;
+  status: string;
+  buyerRealName: string;
+  sellerRealName: string;
+  ctime: string;
+  utime: string;
+  paymentInfo: {
+    paymethodName: string;
+    paymethodId: string;
+    paymethodInfo: {
+      name: string;
+      required: string;
+      type: string;
+      value: string;
+    }[];
+  };
+}
+⋮----
+export interface P2PMerchantAdvertismentV2 {
+  advId: string;
+  advNo: string;
+  side: string;
+  advSize: string;
+  size: string;
+  coin: string;
+  price: string;
+  coinPrecision: string;
+  fiat: string;
+  fiatPrecision: string;
+  fiatSymbol: string;
+  status: string;
+  hide: string;
+  maxTradeAmount: string;
+  minTradeAmount: string;
+  payDuration: string;
+  turnoverNum: string;
+  turnoverRate: string;
+  label: string | null;
+  userLimitList: {
+    minCompleteNum: string;
+    maxCompleteNum: string;
+    placeOrderNum: string;
+    allowMerchantPlace: string;
+    completeRate30d: string;
+    country: string;
+  };
+  paymentMethodList: {
+    paymentMethod: string;
+    paymentId: string;
+    paymentInfo: {
+      name: string;
+      required: boolean;
+      type: string;
+    }[];
+  }[];
+  merchantCertifiedList: {
+    imageUrl: string;
+    desc: string;
+  }[];
+  utime: string;
+  ctime: string;
+}
+⋮----
+/**
+ *
+ * * Common | Trading insights
+ *
+ */
+⋮----
+export interface SpotWhaleNetFlowV2 {
+  volume: string;
+  date: string;
+}
+⋮----
+export interface FuturesActiveBuySellVolumeV2 {
+  buyVolume: string;
+  sellVolume: string;
+  ts: string;
+}
+⋮----
+export interface FuturesActiveLongShortPositionV2 {
+  longPositionRatio: string;
+  shortPositionRatio: string;
+  longShortPositionRatio: string;
+  ts: string;
+}
+⋮----
+export interface LeveragedLongShortRatioV2 {
+  ts: string;
+  longShortRatio: string;
+}
+⋮----
+export interface MarginLoanGrowthRateV2 {
+  ts: string;
+  growthRate: string;
+}
+⋮----
+export interface IsolatedMarginBorrowingRatioV2 {
+  ts: string;
+  borrowRate: string;
+}
+⋮----
+export interface FuturesLongShortRatioV2 {
+  longRatio: string;
+  shortRatio: string;
+  longShortRatio: string;
+  ts: string;
+}
+⋮----
+export interface SpotFundFlowV2 {
+  whaleBuyVolume: string;
+  dolphinBuyVolume: string;
+  fishBuyVolume: string;
+  whaleSellVolume: string;
+  dolphinSellVolume: string;
+  fishSellVolume: string;
+  whaleBuyRatio: string;
+  dolphinBuyRatio: string;
+  fishBuyRatio: string;
+  whaleSellRatio: string;
+  dolphinSellRatio: string;
+  fishSellRatio: string;
+}
+⋮----
+export interface FuturesActiveLongShortAccountV2 {
+  longAccountRatio: string;
+  shortAccountRatio: string;
+  longShortAccountRatio: string;
+  ts: string;
+}
+⋮----
+/**
+ *
+ * * Common | Virtual Subaccount
+ *
+ */
+⋮----
+export interface CreateVirtualSubAccountV2 {
+  failureList: {
+    subaAccountName: string;
+  }[];
+  successList: {
+    subaAccountUid: string;
+    subaAccountName: string;
+    status: string;
+    label: string;
+    permList: string[];
+    cTime: string;
+    uTime: string;
+  }[];
+}
+⋮----
+export interface CreateVirtualSubAccountAndApiKeyV2 {
+  subAccountUid: string;
+  subAccountName: string;
   label: string;
-  apiKey: string;
+  subAccountApiKey: string;
   secretKey: string;
-  permType: 'read_and_write' | 'readonly';
-  permList: string[];
-  ipList: string[] | null;
-}
-⋮----
-export interface ModifyBrokerSubApiKeyResponseV3 {
-  subUid: string;
-  label: string;
-  apiKey: string;
-  permType: 'read_and_write' | 'readonly';
   permList: string[];
   ipList: string[];
 }
 ⋮----
-export interface GetBrokerSubApiKeyResponseV3 {
-  subUid: string;
-  label: string;
-  apiKey: string;
-  secretKey: string;
-  permType: 'read_and_write' | 'readonly';
+export interface VirtualSubAccountV2 {
+  subAccountUid: string;
+  subAccountName: string;
+  status: string;
   permList: string[];
-  ipList: string[] | null;
+  label: string;
+  accountType: string;
+  bindingTime: string;
+  cTime: string;
+  uTime: string;
 }
+⋮----
+export interface CreateVirtualSubAccountApiKeyV2 {
+  subAccountUid: string;
+  label: string;
+  subAccountApiKey: string;
+  secretKey: string;
+  permList: string[];
+  ipList: string[];
+}
+⋮----
+export interface ModifyVirtualSubAccountApiKeyV2 {
+  subAccountUid: string;
+  label: string;
+  subAccountApiKey: string;
+  secretKey: string;
+  permList: string[];
+  ipList: string[];
+}
+⋮----
+export interface CreateAgentSubaccountV2 {
+  username: string;
+  subUid: string;
+  apiKey: string;
+  secret: string;
+  note: string;
+  createdTime: string;
+}
+⋮----
+export interface SubAccountApiKeyItemV2 {
+  subAccountUid: string;
+  label: string;
+  subAccountApiKey: string;
+  permList: string[];
+  ipList: string[];
+}
+⋮----
+/**
+ *
+ * * Common | Assets
+ *
+ */
+⋮----
+export interface FundingAssetV2 {
+  coin: string;
+  available: string;
+  frozen: string;
+  usdtValue: string;
+}
+⋮----
+export interface BotAssetV2 {
+  coin: string;
+  available: string;
+  equity: string;
+  bonus: string;
+  frozen: string;
+  usdtValue: string;
+}
+⋮----
+/**
+ *
+ * * Common | Convert
+ *
+ */
+⋮----
+export interface ConvertCurrencyV2 {
+  coin: string;
+  available: string;
+  maxAmount: string;
+  minAmount: string;
+}
+⋮----
+export interface ConvertQuotedPriceV2 {
+  fee: string;
+  fromCoinSize: string;
+  fromCoin: string;
+  cnvtPrice: string;
+  toCoinSize: string;
+  toCoin: string;
+  traceId: string;
+}
+⋮----
+export interface ConvertTradeResponseV2 {
+  ts: string;
+  cnvtPrice: string;
+  toCoinSize: string;
+  toCoin: string;
+}
+⋮----
+export interface ConvertRecordV2 {
+  id: string;
+  ts: string;
+  cnvtPrice: string;
+  fee: string;
+  fromCoinSize: string;
+  fromCoin: string;
+  toCoinSize: string;
+  toCoin: string;
+}
+⋮----
+/**
+ *
+ * * Common | BGB Convert
+ *
+ */
+⋮----
+export interface BGBConvertCoinV2 {
+  coin: string;
+  available: string;
+  bgbEstAmount: string;
+  precision: string;
+  feeDetail: {
+    feeRate: string;
+    fee: string;
+  }[];
+  cTime: string;
+}
+⋮----
+export interface ConvertBGBResponseV2 {
+  orderList: {
+    coin: string;
+    orderId: string;
+  }[];
+}
+⋮----
+export interface BGBConvertHistoryV2 {
+  orderId: string;
+  fromCoin: string;
+  fromAmount: string;
+  fromCoinPrice: string;
+  toCoin: string;
+  toAmount: string;
+  toCoinPrice: string;
+  feeDetail: {
+    feeCoin: string;
+    fee: string;
+  }[];
+  status: string;
+  ctime: string;
+}
+
+================
+File: src/types/response/v2/earn.ts
+================
+/**
+ *
+ *
+ * Earn | Savings
+ *
+ *
+ */
+⋮----
+export interface EarnSavingsProductsV2 {
+  productId: string;
+  coin: string;
+  periodType: string;
+  period: string;
+  apyType: string;
+  advanceRedeem: string;
+  settleMethod: string;
+  apyList: {
+    rateLevel: string;
+    minStepVal: string;
+    maxStepVal: string;
+    currentApy: string;
+  }[];
+  status: string;
+  productLevel: string;
+}
+⋮----
+export interface EarnSavingsAccountV2 {
+  btcAmount: string;
+  usdtAmount: string;
+  btc24hEarning: string;
+  usdt24hEarning: string;
+  btcTotalEarning: string;
+  usdtTotalEarning: string;
+}
+⋮----
+export interface EarnSavingsAssetV2 {
+  productId: string;
+  orderId: string;
+  productCoin: string;
+  interestCoin: string;
+  periodType: string;
+  period: string;
+  holdAmount: string;
+  lastProfit: string;
+  totalProfit: string;
+  holdDays: string;
+  status: string;
+  allowRedemption: string;
+  productLevel: string;
+  apy: {
+    rateLevel: string;
+    minApy: string;
+    maxApy: string;
+    currentApy: string;
+  }[];
+}
+⋮----
+export interface EarnSavingsAssetsV2 {
+  resultList: EarnSavingsAssetV2[];
+  endId: string;
+}
+⋮----
+export interface EarnSavingsRecordV2 {
+  orderId: string;
+  coinName: string;
+  settleCoinName: string;
+  productType: string;
+  period: string;
+  productLevel: string;
+  amount: string;
+  ts: string;
+  orderType: string;
+}
+⋮----
+export interface EarnSavingsRecordsV2 {
+  resultList: EarnSavingsRecordV2[];
+  endId: string;
+}
+⋮----
+export interface EarnSavingsSubscriptionDetailV2 {
+  singleMinAmount: string;
+  singleMaxAmount: string;
+  remainingAmount: string;
+  subscribePrecision: string;
+  profitPrecision: string;
+  subscribeTime: string;
+  interestTime: string;
+  settleTime: string;
+  expireTime: string;
+  redeemTime: string;
+  settleMethod: string;
+  apyList: {
+    rateLevel: string;
+    minStepVal: string;
+    maxStepVal: string;
+    currentApy: string;
+  }[];
+  redeemDelay: string;
+}
+⋮----
+/**
+ *
+ *
+ * Earn | Earn Account
+ *
+ *
+ */
+⋮----
+/**
+ *
+ *
+ * Earn | Shark Fin
+ *
+ *
+ */
+⋮----
+export interface EarnSharkfinProductV2 {
+  productId: string;
+  productName: string;
+  productCoin: string;
+  subscribeCoin: string;
+  farmingStartTime: string;
+  farmingEndTime: string;
+  lowerRate: string;
+  defaultRate: string;
+  upperRate: string;
+  period: string;
+  interestStartTime: string;
+  status: string;
+  minAmount: string;
+  limitAmount: string;
+  soldAmount: string;
+  endTime: string;
+  startTime: string;
+}
+⋮----
+export interface EarnSharkfinProductsV2 {
+  resultList: EarnSharkfinProductV2[];
+  endId: string;
+}
+⋮----
+export interface EarnSharkfinAccountV2 {
+  btcSubscribeAmount: string;
+  usdtSubscribeAmount: string;
+  btcHistoricalAmount: string;
+  usdtHistoricalAmount: string;
+  btcTotalEarning: string;
+  usdtTotalEarning: string;
+}
+⋮----
+export interface EarnSharkfinAssetV2 {
+  productId: string;
+  interestStartTime: string;
+  interestEndTime: string;
+  productCoin: string;
+  subscribeCoin: string;
+  trend: string;
+  settleTime: string;
+  interestAmount: string;
+  productStatus: string;
+}
+⋮----
+export interface EarnSharkfinAssetsV2 {
+  resultList: EarnSharkfinAssetV2[];
+  endId: string;
+}
+⋮----
+export interface EarnSharkfinRecordV2 {
+  orderId: string;
+  product: string;
+  period: string;
+  amount: string;
+  ts: string;
+  type: string;
+}
+export interface EarnSharkfinRecordsV2 {
+  resultList: EarnSharkfinRecordV2[];
+  endId: string;
+}
+⋮----
+export interface EarnSharkfinSubscriptionDetailV2 {
+  productCoin: string;
+  subscribeCoin: string;
+  interestTime: string;
+  expirationTime: string;
+  minPrice: string;
+  currentPrice: string;
+  maxPrice: string;
+  minRate: string;
+  defaultRate: string;
+  maxRate: string;
+  period: string;
+  productMinAmount: string;
+  availableBalance: string;
+  userAmount: string;
+  remainingAmount: string;
+  profitPrecision: string;
+  subscribePrecision: string;
+}
+⋮----
+/**
+ *
+ *
+ * Earn | Loan
+ *
+ *
+ */
+⋮----
+export interface EarnLoanCurrencyLoanInfoV2 {
+  coin: string;
+  hourRate7D: string;
+  rate7D: string;
+  hourRate30D: string;
+  rate30D: string;
+  minUsdt: string;
+  maxUsdt: string;
+  min: string;
+  max: string;
+}
+export interface EarnLoanCurrencyPledgeInfoV2 {
+  coin: string;
+  initRate: string;
+  supRate: string;
+  forceRate: string;
+  minUsdt: string;
+  maxUsdt: string;
+}
+⋮----
+export interface EarnLoanCurrenciesV2 {
+  loanInfos: EarnLoanCurrencyLoanInfoV2[];
+  pledgeInfos: EarnLoanCurrencyPledgeInfoV2[];
+}
+⋮----
+export interface EarnLoanOrdersV2 {
+  orderId: string;
+  loanCoin: string;
+  loanAmount: string;
+  interestAmount: string;
+  hourInterestRate: string;
+  pledgeCoin: string;
+  pledgeAmount: string;
+  pledgeRate: string;
+  supRate: string;
+  forceRate: string;
+  borrowTime: string;
+  expireTime: string;
+}
+⋮----
+export interface EarnLoanRepayResponseV2 {
+  loanCoin: string;
+  pledgeCoin: string;
+  repayAmount: string;
+  payInterest: string;
+  repayLoanAmount: string;
+  repayUnlockAmount: string;
+}
+⋮----
+export interface EarnLoanRepayHistoryV2 {
+  orderId: string;
+  loanCoin: string;
+  pledgeCoin: string;
+  repayAmount: string;
+  payInterest: string;
+  repayLoanAmount: string;
+  repayUnlockAmount: string;
+  repayTime: string;
+}
+⋮----
+export interface EarnLoanPledgeRateHistoryV2 {
+  loanCoin: string;
+  pledgeCoin: string;
+  orderId: string;
+  reviseTime: string;
+  reviseSide: string;
+  reviseAmount: string;
+  afterPledgeRate: string;
+  beforePledgeRate: string;
+}
+⋮----
+export interface EarnLoanHistoryV2 {
+  orderId: string;
+  loanCoin: string;
+  pledgeCoin: string;
+  initPledgeAmount: string;
+  initLoanAmount: string;
+  hourRate: string;
+  daily: string;
+  borrowTime: string;
+  status: string;
+}
+⋮----
+export interface EarnLoanDebtPledgeInfoV2 {
+  coin: string;
+  amount: string;
+  amountUsdt: string;
+}
+⋮----
+export interface EarnLoanDebtLoanInfoV2 {
+  coin: string;
+  amount: string;
+  amountUsdt: string;
+}
+⋮----
+export interface EarnLoanDebtsV2 {
+  pledgeInfos: EarnLoanDebtPledgeInfoV2[];
+  loanInfos: EarnLoanDebtLoanInfoV2[];
+}
+⋮----
+export interface EarnLoanLiquidationRecordsV2 {
+  orderId: string;
+  loanCoin: string;
+  pledgeCoin: string;
+  reduceTime: string;
+  pledgeRate: string;
+  pledgePrice: string;
+  status: string;
+  pledgeAmount: string;
+  reduceFee: string;
+  residueAmount: string;
+  runlockAmount: string;
+  repayLoanAmount: string;
+}
+⋮----
+/**
+ *
+ *
+ * Earn | On-Chain Elite
+ *
+ *
+ */
+⋮----
+export interface EarnEliteSubscriptionCoinV2 {
+  subscriptionCoin: string;
+  precision: string;
+  feeRate: string;
+  exchangeRate: string;
+  remainQuota?: string;
+  minAmount?: string;
+}
+⋮----
+export interface EarnEliteProductV2 {
+  productId: string;
+  coin: string;
+  minApr: string;
+  maxApr: string;
+  subscriptionCoinList: EarnEliteSubscriptionCoinV2[];
+  sellOut: 'YES' | 'NO' | string;
+}
+⋮----
+export interface EarnEliteAssetProjectV2 {
+  projectName: string;
+}
+⋮----
+export interface EarnEliteAssetV2 {
+  productId: string;
+  productCoin: string;
+  holdingAmount: string;
+  usdtHoldingAmount: string;
+  exchangeRate: string;
+  apr: string;
+  minApy?: string;
+  maxApy?: string;
+  subscriptionCoin: string;
+  exchangeAmount: string;
+  projectList?: EarnEliteAssetProjectV2[];
+  unsettledBGPoints: string;
+  interestCoin: string;
+  totalProfit: string;
+}
+⋮----
+export interface EarnEliteAssetsV2 {
+  resultList: EarnEliteAssetV2[];
+}
+⋮----
+export interface EarnEliteRecordV2 {
+  recordId: string;
+  productId: string;
+  coin: string;
+  status: string;
+  exchangeRate: string;
+  receivedCoin: string;
+  receivedAmount: string;
+  investAmount: string;
+  feeRate: string;
+  redeemType?: string | string[];
+  receivingAccount: string;
+  actualReceivingAccount: string;
+  paymentAccount?: string[];
+  settlePoints: string;
+  fee: string;
+}
+⋮----
+export interface EarnEliteRecordsV2 {
+  recordList: EarnEliteRecordV2[];
+  endId: string;
+}
+⋮----
+export interface EarnEliteSubscribeInfoV2 {
+  productSubId: string;
+  minAmount: string;
+  remainQuota: string;
+  exchangeRate: string;
+  productCoin: string;
+  interestTime: string;
+  settleTime: string;
+  precision: string;
+  feeRate: string;
+  /** Present for BGUSD per API docs. */
+  subscriptionCoinList?: EarnEliteSubscriptionCoinV2[];
+}
+⋮----
+/** Present for BGUSD per API docs. */
+⋮----
+export interface EarnEliteSubscribeResultV2 {
+  orderId: string;
+}
+⋮----
+export interface EarnEliteSubscribeStatusV2 {
+  result: 'settled' | 'pending' | 'rejected' | string;
+}
+⋮----
+export interface EarnEliteRedeemInfoBgusdReceiveCoinV2 {
+  bgusdReceiveCoin: string;
+  bgusdExchangeRate: string;
+}
+⋮----
+export interface EarnEliteRedeemModeV2 {
+  redeemFeeRate: string;
+  remainQuota: string;
+  redeemType: 'fast' | 'standard' | string;
+  redeemScale: string;
+  redeemDelayDate: string;
+  minRedeemAmount: string;
+  redeemTime: string;
+}
+⋮----
+export interface EarnEliteRedeemInfoV2 {
+  productId: string;
+  productSubId: string;
+  productCoin: string;
+  subscriptionCoin: string;
+  profitCoin: string;
+  exchangeRate: string;
+  totalUnPayInterestAmount: string;
+  preSettleApr: string;
+  receivedCoin: string;
+  unsettledPoints: string;
+  bgusdReceiveCoinList: EarnEliteRedeemInfoBgusdReceiveCoinV2[];
+  redeemModeList: EarnEliteRedeemModeV2[];
+}
+⋮----
+export interface RedeemEarnEliteResultV2 {
+  orderId: string;
+}
+
+================
+File: src/types/response/v2/spot.ts
+================
+/**
+ *
+ * * Spot | Market
+ *
+ */
+⋮----
+export interface SpotCoinChainV2 {
+  chain: string;
+  needTag: boolean;
+  withdrawable: boolean;
+  rechargeable: boolean;
+  withdrawFee: string;
+  extraWithdrawFee: string;
+  depositConfirm: string;
+  withdrawConfirm: string;
+  minDepositAmount: string;
+  minWithdrawAmount: string;
+  browserUrl: string;
+  contractAddress: string;
+  withdrawStep: string;
+  withdrawMinScale: string;
+  congestion: string;
+}
+⋮----
+export interface SpotCoinInfoV2 {
+  coinId: string;
+  coin: string;
+  transfer: boolean;
+  chains: SpotCoinChainV2[];
+}
+⋮----
+export interface SpotSymbolInfoV2 {
+  symbol: string;
+  baseCoin: string;
+  quoteCoin: string;
+  minTradeAmount: string;
+  maxTradeAmount: string;
+  takerFeeRate: string;
+  makerFeeRate: string;
+  pricePrecision: string;
+  quantityPrecision: string;
+  quotePrecision: string;
+  minTradeUSDT: string;
+  status: string;
+  buyLimitPriceRatio: string;
+  sellLimitPriceRatio: string;
+  orderQuantity: string;
+  areaSymbol: string;
+  maxLimitOrderValue?: string;
+  maxMarketOrderValue?: string;
+}
+⋮----
+export interface SpotVipFeeRateV2 {
+  level: number;
+  dealAmount: string;
+  assetAmount: string;
+  takerFeeRate: string;
+  makerFeeRate: string;
+  btcWithdrawAmount: string;
+  usdtWithdrawAmount: string;
+}
+⋮----
+export interface SpotTickerV2 {
+  symbol: string;
+  high24h: string;
+  open: string;
+  low24h: string;
+  lastPr: string;
+  quoteVolume: string;
+  baseVolume: string;
+  usdtVolume: string;
+  bidPr: string;
+  askPr: string;
+  bidSz: string;
+  askSz: string;
+  openUtc: string;
+  ts: string;
+  changeUtc24h: string;
+  change24h: string;
+}
+⋮----
+export interface SpotMergeDepthV2 {
+  asks: [string, string][];
+  bids: [string, string][];
+  ts: string;
+  scale: string;
+  precision: string;
+  isMaxPrecision: string;
+}
+⋮----
+export interface SpotOrderBookDepthV2 {
+  asks: [string, string][];
+  bids: [string, string][];
+  ts: string;
+}
+⋮----
+export type SpotCandlestickV2 = [
+  string, // timestamp
+  string, // open
+  string, // high
+  string, // low
+  string, // close
+  string, // baseVolume
+  string, // usdtVolume
+  string, // quoteVolume
+];
+⋮----
+string, // timestamp
+string, // open
+string, // high
+string, // low
+string, // close
+string, // baseVolume
+string, // usdtVolume
+string, // quoteVolume
+⋮----
+export interface SpotTradeV2 {
+  symbol: string;
+  tradeId: string;
+  side: string;
+  price: string;
+  size: string;
+  ts: string;
+}
+⋮----
+/**
+ *
+ * * Spot | Trade
+ *
+ */
+⋮----
+export interface CancelAndSubmitSpotOrderResponseV2 {
+  orderId: string;
+  clientOid: string | null;
+  success: string;
+  msg: string | null;
+}
+⋮----
+export interface SubmitSpotBatchOrdersResponseV2 {
+  successList: {
+    orderId: string;
+    clientOid: string;
+  }[];
+  failureList: {
+    orderId: string;
+    clientOid: string;
+    errorMsg: string;
+    errorCode?: string;
+  }[];
+}
+⋮----
+export interface SpotOrderInfoV2 {
+  userId: string;
+  symbol: string;
+  orderId: string;
+  clientOid: string;
+  price: string;
+  size: string;
+  orderType: string;
+  side: string;
+  status: string;
+  priceAvg: string;
+  baseVolume: string;
+  quoteVolume: string;
+  enterPointSource: string;
+  feeDetail: {
+    BGB?: {
+      deduction: boolean;
+      feeCoinCode: string;
+      totalDeductionFee: string;
+      totalFee: string;
+    };
+    newFees?: {
+      c: number;
+      d: number;
+      deduction: boolean;
+      r: string;
+      t: string;
+      totalDeductionFee: number;
+    };
+  };
+  orderSource: string;
+  cancelReason: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+export interface SpotOpenOrderV2 {
+  userId: string;
+  symbol: string;
+  orderId: string;
+  clientOid: string;
+  priceAvg: string;
+  size: string;
+  orderType: string;
+  side: string;
+  status: string;
+  basePrice: string;
+  baseVolume: string;
+  quoteVolume: string;
+  enterPointSource: string;
+  orderSource?: string;
+  presetTakeProfitPrice: string;
+  executeTakeProfitPrice: string;
+  presetStopLossPrice: string;
+  executeStopLossPrice: string;
+  cTime: string;
+  uTime?: string;
+  tpslType: string;
+  triggerPrice: string | null;
+}
+⋮----
+export interface SpotFillV2 {
+  userId: string;
+  symbol: string;
+  orderId: string;
+  tradeId: string;
+  orderType: string;
+  side: string;
+  priceAvg: string;
+  size: string;
+  amount: string;
+  feeDetail: {
+    deduction: string;
+    feeCoin: string;
+    totalDeductionFee: string;
+    totalFee: string;
+  };
+  tradeScope: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+/**
+ *
+ * * Spot | Trigger Orders
+ *
+ */
+⋮----
+export interface SpotCurrentPlanOrderV2 {
+  orderId: string;
+  clientOid: string;
+  symbol: string;
+  size: string;
+  executePrice: string;
+  triggerPrice: string;
+  status: string;
+  orderType: string;
+  side: string;
+  planType: string;
+  triggerType: string;
+  enterPointSource: string;
+  uTime: string;
+  cTime: string;
+}
+⋮----
+export interface SpotHistoryPlanOrderV2 {
+  orderId: string;
+  clientOid: string;
+  symbol: string;
+  size: string;
+  executePrice: string;
+  triggerPrice: string;
+  status: string;
+  orderType: string;
+  side: string;
+  planType: string;
+  triggerType: string;
+  enterPointSource: string;
+  uTime: string;
+  cTime: string;
+}
+⋮----
+export interface SpotPlanSubOrderV2 {
+  orderId: string;
+  price: string;
+  type: string;
+  status: string;
+}
+⋮----
+export interface SpotCancelPlanOrdersV2 {
+  successList: {
+    orderId: string;
+    clientOid: string;
+  }[];
+  failureList: {
+    orderId: string;
+    clientOid: string;
+    errorMsg: string;
+  }[];
+}
+⋮----
+/**
+ *
+ * * Spot | Account
+ *
+ */
+⋮----
+export interface SpotAccountInfoV2 {
+  userId: string;
+  inviterId: string;
+  ips: string;
+  authorities: string[];
+  parentId: number;
+  traderType: string;
+  channelCode: string;
+  channel: string;
+  regisTime: string;
+}
+⋮----
+export interface SpotAccountAssetV2 {
+  coin: string;
+  available: string;
+  frozen: string;
+  locked: string;
+  limitAvailable: string;
+  uTime: string;
+}
+⋮----
+export interface SpotSubAccountAssetV2 {
+  coin: string;
+  available: string;
+  limitAvailable: string;
+  frozen: string;
+  locked: string;
+  uTime: string;
+}
+export interface SpotSubAccountAssetsV2 {
+  userId: number;
+  assetsList: SpotSubAccountAssetV2[];
+}
+⋮----
+export interface SpotAccountBillV2 {
+  cTime: string;
+  coin: string;
+  groupType: string;
+  businessType: string;
+  size: string;
+  balance: string;
+  fees: string;
+  billId: string;
+}
+⋮----
+export interface SpotMainSubTransferRecordV2 {
+  coin: string;
+  status: string;
+  toType: string;
+  fromType: string;
+  size: string;
+  ts: string;
+  clientOid: string;
+  transferId: string;
+  fromUserId: string;
+  toUserId: string;
+}
+⋮----
+export interface SpotTransferRecordV2 {
+  coin: string;
+  status: string;
+  toType: string;
+  toSymbol: string;
+  fromType: string;
+  fromSymbol: string;
+  size: string;
+  ts: string;
+  clientOid: string;
+  transferId: string;
+}
+⋮----
+export interface SpotDepositAddressV2 {
+  address: string;
+  chain: string;
+  coin: string;
+  tag: string;
+  url: string;
+}
+⋮----
+export interface SpotSubAccountDepositRecordV2 {
+  orderId: string;
+  tradeId: string;
+  coin: string;
+  size: string;
+  status: string;
+  toAddress: string;
+  dest: string;
+  chain: string;
+  fromAddress: string;
+  clientOid?: string;
+  confirm?: string;
+  tag?: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+export interface SpotWithdrawalRecordV2 {
+  orderId: string;
+  tradeId: string;
+  coin: string;
+  dest: string;
+  clientOid: string;
+  type: string;
+  tag: string;
+  size: string;
+  fee: string;
+  status: string;
+  toAddress: string;
+  fromAddress: string;
+  confirm: string;
+  chain: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+export interface SpotDepositRecordV2 {
+  orderId: string;
+  tradeId: string;
+  coin: string;
+  type: string;
+  size: string;
+  status: string;
+  toAddress: string;
+  dest: string;
+  chain: string;
+  fromAddress: string;
+  cTime: string;
+  uTime: string;
+}
+
+================
+File: src/types/response/v3/earn.ts
+================
+/**
+ *
+ *
+ * Earn | On-Chain Elite (UTA)
+ *
+ *
+ */
+⋮----
+export interface EarnEliteSubscriptionCoinV3 {
+  subscriptionCoin: string;
+  precision: string;
+  feeRate: string;
+  exchangeRate: string;
+  remainQuota?: string;
+  minAmount?: string;
+}
+⋮----
+export interface EarnEliteProductV3 {
+  productId: string;
+  coin: string;
+  minApr: string;
+  maxApr: string;
+  subscriptionCoinList: EarnEliteSubscriptionCoinV3[];
+  sellOut: 'YES' | 'NO' | string;
+}
+⋮----
+export interface EarnEliteAssetProjectV3 {
+  projectName: string;
+}
+⋮----
+export interface EarnEliteAssetV3 {
+  productId: string;
+  productCoin: string;
+  holdingAmount: string;
+  usdtHoldingAmount: string;
+  exchangeRate: string;
+  apr: string;
+  minApy?: string;
+  maxApy?: string;
+  subscriptionCoin: string;
+  exchangeAmount: string;
+  projectList?: EarnEliteAssetProjectV3[];
+  unsettledBGPoints: string;
+  interestCoin: string;
+  totalProfit: string;
+}
+⋮----
+export interface EarnEliteAssetsV3 {
+  resultList: EarnEliteAssetV3[];
+}
+⋮----
+export interface EarnEliteRecordV3 {
+  recordId: string;
+  productId: string;
+  coin: string;
+  status: string;
+  exchangeRate: string;
+  receivedCoin: string;
+  receivedAmount: string;
+  investAmount: string;
+  feeRate: string;
+  redeemType?: string | string[];
+  receivingAccount: string;
+  actualReceivingAccount: string;
+  paymentAccount?: string[];
+  settlePoints: string;
+  fee: string;
+}
+⋮----
+export interface EarnEliteRecordsV3 {
+  recordList: EarnEliteRecordV3[];
+  endId: string;
+}
+⋮----
+export interface EarnEliteSubscribeInfoV3 {
+  productSubId: string;
+  minAmount: string;
+  remainQuota: string;
+  exchangeRate: string;
+  productCoin: string;
+  interestTime: string;
+  settleTime: string;
+  precision: string;
+  feeRate: string;
+  subscriptionCoinList?: EarnEliteSubscriptionCoinV3[];
+}
+⋮----
+export interface EarnEliteSubscribeResultV3 {
+  orderId: string;
+}
+⋮----
+export interface EarnEliteSubscribeStatusV3 {
+  result: 'settled' | 'pending' | 'rejected' | string;
+}
+⋮----
+export interface EarnEliteRedeemInfoBgusdReceiveCoinV3 {
+  bgusdReceiveCoin: string;
+  bgusdExchangeRate: string;
+}
+⋮----
+export interface EarnEliteRedeemModeV3 {
+  redeemFeeRate: string;
+  remainQuota: string;
+  redeemType: 'fast' | 'standard' | string;
+  redeemScale: string;
+  redeemDelayDate: string;
+  minRedeemAmount: string;
+  redeemTime: string;
+}
+⋮----
+export interface EarnEliteRedeemInfoV3 {
+  productId: string;
+  productSubId: string;
+  productCoin: string;
+  subscriptionCoin: string;
+  profitCoin: string;
+  exchangeRate: string;
+  totalUnPayInterestAmount: string;
+  preSettleApr: string;
+  receivedCoin: string;
+  unsettledPoints: string;
+  bgusdReceiveCoinList: EarnEliteRedeemInfoBgusdReceiveCoinV3[];
+  redeemModeList: EarnEliteRedeemModeV3[];
+}
+⋮----
+export interface RedeemEarnEliteResultV3 {
+  orderId: string;
+}
+
+================
+File: src/types/response/v3/p2p.ts
+================
+import type {
+  P2pAdStatusV3,
+  P2pMarketTypeV3,
+  P2pOrderStatusV3,
+  P2pPriceTypeV3,
+  P2pSideV3,
+} from '../../request/v3/p2p.js';
+⋮----
+export interface P2pPayMethodInfoFieldV3 {
+  name: string;
+  type: 'file' | 'number' | 'txt';
+  value: string;
+}
+⋮----
+export interface P2pPayMethodV3 {
+  payMethodId: string;
+  payMethodName: string;
+  payMethodUserName: string;
+  userPayMethodId: string;
+  payMethodInfo: P2pPayMethodInfoFieldV3[];
+}
+⋮----
+export interface P2pTokenDetailV3 {
+  token: string;
+  precision: string;
+}
+⋮----
+export interface P2pFiatPayMethodV3 {
+  payMethodName: string;
+  iconUrl: string;
+  payMethodId: string;
+}
+⋮----
+export interface P2pWithdrawalLimitV3 {
+  withdrawLimitKey: string;
+  withdrawLimitValue: string;
+}
+⋮----
+export interface P2pFiatDetailV3 {
+  fiat: string;
+  precision: string;
+  floatRateMin: string;
+  floatRateMax: string;
+  fixedRateMin: string;
+  fixedRateMax: string;
+  adMinLimit: string;
+  adMaxLimit: string;
+  payMethods: P2pFiatPayMethodV3;
+  withdrawalLimit: P2pWithdrawalLimitV3;
+  payTimeLimit: number[];
+}
+⋮----
+export interface P2pCurrenciesV3 {
+  tokenDetailList: P2pTokenDetailV3[];
+  fiatDetailList: P2pFiatDetailV3[];
+}
+⋮----
+export interface P2pUserEquityDetailV3 {
+  maxAdvSellNum: string;
+  maxAdvSellLimit: string;
+  maxAdvBuyNum: string;
+  maxAdvBuyLimit: string;
+  totalMaxPendingOrder: string;
+  advMaxPendingOrder: string;
+}
+⋮----
+export interface P2pUserInfoV3 {
+  uid: string;
+  nickName: string;
+  accountLevel: 'starter' | 'advanced' | 'master';
+  completedOrderNum: string;
+  positiveRate: string;
+  completedOrderNum30D: string;
+  completedRate30D: string;
+  avgPayTime30D: string;
+  avgReleaseTime30D: string;
+  equityDetail: P2pUserEquityDetailV3;
+  registerTime: string;
+}
+⋮----
+export interface P2pBalanceV3 {
+  token: string;
+  totalBalance: string;
+  frozenBalance: string;
+  availableBalance: string;
+}
+⋮----
+export interface P2pExchangeRateV3 {
+  rate: string;
+}
+⋮----
+export interface P2pFeeSimulateV3 {
+  feeToken: string;
+  feeAmount: string;
+  taxToken: string;
+  taxAmount: string;
+}
+⋮----
+export interface P2pAdLimitV3 {
+  buyMinTokenAmount: string;
+  buyMaxTokenAmount: string;
+  sellMinTokenAmount: string;
+  sellMaxTokenAmount: string;
+}
+⋮----
+export interface P2pCreateAdResponseV3 {
+  advId: string;
+}
+⋮----
+export interface P2pAdPayMethodRefV3 {
+  payMethodId: string;
+  userPayMethodId?: string;
+}
+⋮----
+export interface P2pAdInfoV3 {
+  advId: string;
+  side: P2pSideV3;
+  priceType: P2pPriceTypeV3;
+  token: string;
+  fiat: string;
+  price: string;
+  amount: string;
+  minAmount: string;
+  maxAmount: string;
+  payDuration: string;
+  soldAmount: string;
+  lastAmount: string;
+  premium: string;
+  turnover: string;
+  remark: string;
+  tradeTerm: string;
+  payMethodIds: P2pAdPayMethodRefV3[];
+  tokenPrecision: string;
+  fiatPrecision: string;
+  market: P2pMarketTypeV3;
+  avgTime: string;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+export interface P2pPublicAdListItemV3 {
+  advId: string;
+  merchantId: string;
+  merchantName: string;
+  token: string;
+  fiat: string;
+  side: P2pSideV3;
+  price: string;
+  minAmount: string;
+  maxAmount: string;
+  quantity: string;
+  payMethods: {
+    payMethodId: string;
+    payMethodName: string;
+  }[];
+  completedOrderNum: string;
+  completedRate: string;
+  avgReleaseTime: string;
+  createdTime: string;
+}
+⋮----
+export interface P2pMyAdListItemV3 {
+  advId: string;
+  side: P2pSideV3;
+  priceType: P2pPriceTypeV3;
+  token: string;
+  fiat: string;
+  price: string;
+  soldAmount: string;
+  lastAmount: string;
+  payMethods: { payMethodId: string }[];
+  status: P2pAdStatusV3;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+export interface P2pCursorListV3<T> {
+  items: T[];
+  nextId?: string;
+}
+⋮----
+export interface P2pOrderListItemV3 {
+  orderId: string;
+  side: P2pSideV3;
+  token: string;
+  fiat: string;
+  price: string;
+  amount: string;
+  quantity: string;
+  fee: string;
+  counterparty: string;
+  status: P2pOrderStatusV3;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+export interface P2pOrderPayMethodDetailV3 {
+  payMethodId: string;
+  payMethodName: string;
+  payMethodUserName: string;
+  postscript: string;
+  payMethodInfo: P2pPayMethodInfoFieldV3[];
+}
+⋮----
+export interface P2pOrderUserInfoV3 {
+  nickName: string;
+  realName: string;
+}
+⋮----
+export interface P2pOrderInfoV3 {
+  orderId: string;
+  side: P2pSideV3;
+  token: string;
+  fiat: string;
+  price: string;
+  quantity: string;
+  amount: string;
+  status: P2pOrderStatusV3;
+  advId: string;
+  remark: string;
+  orderCancelCountdown: string;
+  fee: string;
+  verifyCapital: 'yes' | 'no';
+  payMethodDetail?: P2pOrderPayMethodDetailV3;
+  sellUserInfo: P2pOrderUserInfoV3;
+  buyUserInfo: P2pOrderUserInfoV3;
+  createdTime: string;
+  updatedTime: string;
+}
+
+================
+File: src/types/response/v3/strategy.ts
+================
+import type {
+  StrategyOrderStatusV3,
+  StrategyTriggerByV3,
+  StrategyTriggerOrderTypeV3,
+} from '../../request/v3/strategy.js';
+⋮----
+export interface PlaceStrategyOrderResponseV3 {
+  orderId: string;
+  clientOid: string;
+}
+⋮----
+export interface ModifyStrategyOrderResponseV3 {
+  orderId: string;
+  clientOid: string;
+}
+⋮----
+export interface StrategyOrderV3 {
+  orderId: string;
+  clientOid: string;
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  qty: string;
+  posSide: 'long' | 'short';
+  status: StrategyOrderStatusV3;
+  triggerType?: 'takeProfit' | 'stopLoss';
+  tpTriggerBy?: StrategyTriggerByV3;
+  slTriggerBy?: StrategyTriggerByV3;
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: StrategyTriggerOrderTypeV3;
+  slOrderType?: StrategyTriggerOrderTypeV3;
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
+  triggerBy?: StrategyTriggerByV3;
+  triggerPrice?: string;
+  triggerOrderType?: StrategyTriggerOrderTypeV3;
+  triggerOrderPrice?: string;
+  createdTime: string;
+  updatedTime: string;
+}
+
+================
+File: src/types/websockets/ws-api-request.ts
+================
+import type { FuturesMarginModeV3 } from '../request/v3/trade.js';
+⋮----
+export interface WSAPIPlaceOrderRequestV3 {
+  symbol: string;
+  orderType: 'limit' | 'market';
+  qty: string;
+  price?: string;
+  side: 'buy' | 'sell';
+  posSide?: 'long' | 'short';
+  timeInForce?: 'gtc' | 'ioc' | 'fok' | 'post_only';
+  reduceOnly?: 'YES' | 'NO'; // Note: reduceOnly is not supported for batch place WS API. Might be supported starting late Q4 2025, but not supported yet.
+  /** Futures only. Defaults to crossed */
+  marginMode?: FuturesMarginModeV3;
+  clientOid?: string;
+  stpMode?: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
+  tpTriggerBy?: 'market' | 'mark';
+  slTriggerBy?: 'market' | 'mark';
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: 'limit' | 'market';
+  slOrderType?: 'limit' | 'market';
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
+}
+⋮----
+reduceOnly?: 'YES' | 'NO'; // Note: reduceOnly is not supported for batch place WS API. Might be supported starting late Q4 2025, but not supported yet.
+/** Futures only. Defaults to crossed */
+
+================
+File: src/types/websockets/ws-api.ts
+================
+import { WS_KEY_MAP } from '../../util/websocket-util.js';
+import { CancelOrderRequestV3 } from '../request/v3/trade.js';
+import { CancelOrderResponseV3 } from '../response/v3/trade.js';
+import { WSAPIPlaceOrderRequestV3 } from './ws-api-request.js';
+import { WSAPIPlaceOrderResponseV3 } from './ws-api-response.js';
+import { BitgetInstTypeV3, WsKey } from './ws-general.js';
+⋮----
+export type WSOperation = 'subscribe' | 'unsubscribe' | 'login';
+⋮----
+// When new WS API operations are added, make sure to also update WS_API_Operations[] below
+export type WSAPIOperation =
+  | 'place-order'
+  | 'batch-place'
+  | 'cancel-order'
+  | 'batch-cancel';
+⋮----
+export interface WSOperationLoginParams {
+  apiKey: string;
+  passphrase: string;
+  timestamp: number;
+  sign: string;
+}
+⋮----
+export interface WSAPIRequestBitgetV3<TWSParams> {
+  op: 'trade';
+  id: string;
+  category: BitgetInstTypeV3;
+  topic: WSAPIOperation;
+  args: TWSParams | TWSParams[];
+}
+⋮----
+export interface WSAPIRequestFlags {
+  /** If true, will skip auth requirement for WS API connection */
+  authIsOptional?: boolean | undefined;
+}
+⋮----
+/** If true, will skip auth requirement for WS API connection */
+⋮----
+export type Exact<T> = {
+  // This part says: if there's any key that's not in T, it's an error
+  [K: string]: never;
+} & {
+  [K in keyof T]: T[K];
+};
+⋮----
+// This part says: if there's any key that's not in T, it's an error
+⋮----
+/**
+
+/**
+ * V2 request looks like this:
+{
+  "op":"subscribe",
+  "args":[
+      {
+          "instType":"SPOT",
+          "channel":"ticker",
+          "instId":"BTCUSDT"
+      },
+      {
+          "instType":"SPOT",
+          "channel":"candle5m",
+          "instId":"BTCUSDT"
+      }
+  ]
+}
+ */
+export interface WsRequestOperationBitget<TWSRequestArg> {
+  op: WSOperation;
+  args?: (TWSRequestArg | string | number)[];
+}
+export interface WSAPIResponse<
+  TResponseData extends object = object,
+  TOperation extends WSAPIOperation = WSAPIOperation,
+> {
+  wsKey: WsKey;
+  /** Auto-generated */
+  id: string;
+  event: 'trade';
+  category: BitgetInstTypeV3;
+  topic: TOperation;
+  args: TResponseData;
+  code: '0' | string;
+  msg: 'success' | string;
+  ts: string;
+  /** Connection ID (trade operation responses, May 2026+) */
+  connId?: string;
+}
+⋮----
+/** Auto-generated */
+⋮----
+/** Connection ID (trade operation responses, May 2026+) */
+⋮----
+/**
+ * List of operations supported for this WsKey (connection)
+ */
+export interface WsAPIWsKeyTopicMap {
+  [WS_KEY_MAP.v3Private]: WSAPIOperation;
+}
+⋮----
+/**
+ * Request parameters expected per operation
+ */
+export interface WsAPITopicRequestParamMap {
+  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+  'place-order': WSAPIPlaceOrderRequestV3;
+  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+  'batch-place': WSAPIPlaceOrderRequestV3[];
+  // https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+  'cancel-order': CancelOrderRequestV3;
+  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
+  'batch-cancel': CancelOrderRequestV3[];
+}
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
+⋮----
+/**
+ * Response structure expected for each operation
+ */
+export interface WsAPIOperationResponseMap {
+  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+  'place-order': WSAPIResponse<[WSAPIPlaceOrderResponseV3], 'place-order'>;
+  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+  'batch-place': WSAPIResponse<WSAPIPlaceOrderResponseV3[], 'batch-place'>;
+  // https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+  'cancel-order': WSAPIResponse<[CancelOrderResponseV3], 'cancel-order'>;
+  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
+  'batch-cancel': WSAPIResponse<CancelOrderResponseV3[], 'batch-cancel'>;
+}
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
 
 ================
 File: src/types/shared.ts
@@ -6013,142 +6241,51 @@ import {
      */
 
 ================
-File: src/types/request/v2/broker.ts
+File: src/types/request/v3/broker.ts
 ================
-/**
- *
- * * Broker | Subaccount
- *
- */
+export interface CreateBrokerSubAccountRequestV3 {
+  subaccountName: string;
+  label: string;
+}
 ⋮----
-export interface GetSubAccountsRequestV2 {
+export interface GetBrokerSubAccountListRequestV3 {
   limit?: string;
-  idLessThan?: string;
-  status?: 'normal' | 'freeze' | 'del';
-  startTime?: string;
-  endTime?: string;
+  cursor?: string;
+  status?: 'normal' | 'freeze';
 }
 ⋮----
-export type SubAccountPermissionV2 =
-  | 'withdraw'
-  | 'transfer'
-  | 'spot_trade'
-  | 'contract_trade'
-  | 'read'
-  | 'deposit'
-  | 'margin_trade';
-⋮----
-export type SubAccountLanguageV2 =
-  | 'en_US'
-  | 'zh_CN'
-  | 'ja_JP'
-  | 'vi_VN'
-  | 'zh_TW'
-  | 'ru_RU'
-  | 'es_ES'
-  | 'tr_TR'
-  | 'fr_FR'
-  | 'de_DE'
-  | 'pt_PT'
-  | 'th_TH';
-⋮----
-export type SubAccountStatusV2 = 'normal' | 'freeze';
-⋮----
-export interface ModifySubRequestV2 {
+export interface ModifyBrokerSubAccountRequestV3 {
   subUid: string;
-  permList: SubAccountPermissionV2[];
-  status: SubAccountStatusV2;
-  language?: SubAccountLanguageV2;
+  status?: 'normal' | 'freeze';
+  permList?: string[];
 }
 ⋮----
-export interface SubWithdrawalRequestV2 {
+export interface BrokerSubWithdrawalRequestV3 {
   subUid: string;
   coin: string;
   dest: 'on_chain' | 'internal_transfer';
-  chain?: string;
   address: string;
   amount: string;
+  chain?: string;
   tag?: string;
   clientOid?: string;
 }
 ⋮----
-export interface SubDepositRecordsRequestV2 {
-  orderId?: string;
-  userId?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-export interface SubWithdrawalRecordsRequestV2 {
-  orderId?: string;
-  userId?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  idLessThan?: string;
-}
-⋮----
-/**
- *
- * * Broker | Subaccount
- *
- */
-⋮----
-export interface CreateSubAccountApiKeyRequestV2 {
+export interface GetBrokerSubDepositAddressRequestV3 {
   subUid: string;
-  passphrase: string;
-  label?: string;
-  ipList: string[];
-  permType: string;
-  permList: string[];
+  coin: string;
+  chain?: string;
 }
 ⋮----
-export interface ModifySubAccountApiKeyRequestV2 {
-  subUid: string;
-  apiKey: string;
-  label?: string;
-  passphrase: string;
-  ipList?: string[];
-  permType?: string;
-  permList: string[];
-}
-⋮----
-/**
- *
- * * Broker | All Sub-accounts Deposit and Withdrawal Records
- *
- */
-⋮----
-export interface GetAllSubDepositWithdrawalRequestV2 {
+export interface GetBrokerAllSubDepositWithdrawalRequestV3 {
   startTime?: string;
   endTime?: string;
   limit?: string;
-  idLessThan?: string;
-  type?: 'all' | 'deposit' | 'withdrawal';
+  cursor?: string;
+  status?: 'pending' | 'fail' | 'success';
 }
 ⋮----
-/**
- *
- * * Broker | Subaccounts
- *
- */
-⋮----
-export interface GetBrokerSubaccountsRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  pageSize?: string;
-  pageNo?: string;
-}
-⋮----
-/**
- *
- * * Broker | Commissions
- *
- */
-⋮----
-export interface GetBrokerCommissionsRequestV2 {
+export interface GetBrokerCommissionRequestV3 {
   startTime?: string;
   endTime?: string;
   pageSize?: string;
@@ -6162,420 +6299,89 @@ export interface GetBrokerCommissionsRequestV2 {
     | 'coin_futures';
 }
 ⋮----
-/**
- *
- * * Broker | Trade Volume
- *
- */
-⋮----
-export interface GetBrokerTradeVolumeRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  pageSize?: string;
-  pageNo?: string;
+export interface CreateBrokerSubApiKeyRequestV3 {
+  subUid: string;
+  passphrase: string;
+  label: string;
+  ipList?: string[];
+  permType: 'read_write' | 'read_only';
+  permList: string[];
 }
 ⋮----
-/**
- *
- * * Broker | Total Commission
- *
- */
-⋮----
-export interface GetBrokerTotalCommissionRequestV2 {
-  startTime?: string;
-  endTime?: string;
+export interface ModifyBrokerSubApiKeyRequestV3 {
+  subUid: string;
+  passphrase: string;
+  apiKey: string;
+  label?: string;
+  ipList?: string[];
+  permType?: 'read_write' | 'read_only';
+  permList?: string[];
 }
 ⋮----
-/**
- *
- * * Broker | Order Commission
- *
- */
-⋮----
-export interface GetBrokerOrderCommissionRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  uid?: string;
-  orderId?: string;
-  idLessThan?: string;
+export interface DeleteBrokerSubApiKeyRequestV3 {
+  subUid: string;
+  apiKey: string;
 }
 ⋮----
-/**
- *
- * * Broker | Rebate Info
- *
- */
-⋮----
-export interface GetBrokerRebateInfoRequestV2 {
-  uid: string;
-}
-⋮----
-/**
- *
- * * Broker | Agent (affiliate) customer APIs
- *
- */
-⋮----
-export interface GetAgentCustomerCommissionsRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  idLessThan?: string;
-  limit?: string;
-  uid?: string;
-  coin?: string;
-  symbol?: string;
-  showSub?: 'yes' | 'no';
-}
-⋮----
-export interface GetAgentSubCustomerListRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  idLessThan?: string;
-  limit?: string;
-  uid?: string;
-  showSub?: 'yes' | 'no';
-}
-⋮----
-export interface AgentCustomerTradeVolumeRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  pageNo?: string;
-  pageSize?: string;
-  uid?: string;
-  showSub?: 'yes' | 'no';
-}
-⋮----
-export interface AgentCustomerListRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  pageNo?: string;
-  pageSize?: string;
-  uid?: string;
-  referralCode?: string;
-  showSub?: 'yes' | 'no';
-}
-⋮----
-export interface GetAgentCustomerKycResultRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  idLessThan?: string;
-  limit?: string;
-  uid?: string;
-  showSub?: 'yes' | 'no';
-}
-⋮----
-export interface AgentCustomerDepositRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  pageNo?: string;
-  pageSize?: string;
-  uid?: string;
-  showSub?: 'yes' | 'no';
-}
-⋮----
-export interface AgentCustomerAssetRequestV2 {
-  pageNo?: string;
-  pageSize?: string;
-  uid?: string;
-  showSub?: 'yes' | 'no';
-}
-⋮----
-export interface GetAgentCommissionDetailRequestV2 {
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  idLessThan?: string;
+export interface GetBrokerSubApiKeyRequestV3 {
+  subUid: string;
 }
 
 ================
-File: src/types/request/v3/public.ts
+File: src/types/response/v3/broker.ts
 ================
-export interface GetPublicFillsRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol?: string;
-  limit?: string;
-}
-⋮----
-export interface GetCandlesRequestV3 {
-  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol: string;
-  interval:
-    | '1m'
-    | '3m'
-    | '5m'
-    | '15m'
-    | '30m'
-    | '1H'
-    | '4H'
-    | '6H'
-    | '12H'
-    | '1D';
-  startTime?: string;
-  endTime?: string;
-  type?: 'MARKET' | 'MARK' | 'INDEX';
-  limit?: string;
-}
-⋮----
-export interface GetHistoryCandlesRequestV3 {
-  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol: string;
-  interval:
-    | '1m'
-    | '3m'
-    | '5m'
-    | '15m'
-    | '30m'
-    | '1H'
-    | '4H'
-    | '6H'
-    | '12H'
-    | '1D';
-  startTime?: string;
-  endTime?: string;
-  type?: 'MARKET' | 'MARK' | 'INDEX';
-  limit?: string;
-}
-⋮----
-export interface GetContractsOiRequestV3 {
-  symbol?: string;
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-}
-⋮----
-export interface GetCurrentFundingRateRequestV3 {
-  symbol: string;
-}
-⋮----
-export interface GetHistoryFundingRateRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol: string;
-  cursor?: string;
-  limit?: string;
-}
-⋮----
-export interface GetMarginLoansRequestV3 {
-  coin: string;
-}
-⋮----
-export interface GetOpenInterestRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-}
-⋮----
-export interface GetPositionTierRequestV3 {
-  category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-  coin?: string;
-}
-⋮----
-export interface GetRiskReserveRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol: string;
-  marginCoin?: string;
-}
-⋮----
-export interface GetRiskReserveAllRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-}
-⋮----
-export interface GetInstrumentsRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol?: string;
-}
-⋮----
-export interface GetMarketFeeGroupRequestV3 {
-  category: 'SPOT' | 'FUTURES';
-  group?: 'GROUP_A' | 'GROUP_B' | 'GROUP_C';
-}
-⋮----
-export interface GetMarketScoreWeightsRequestV3 {
-  category?: 'SPOT' | 'FUTURES';
-}
-⋮----
-export interface GetOrderBookRequestV3 {
-  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol: string;
-  limit?: string;
-}
-⋮----
-export interface GetTickersRequestV3 {
-  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-}
-⋮----
-export interface GetIndexComponentsRequestV3 {
-  symbol: string;
-}
-
-================
-File: src/types/response/v2/broker.ts
-================
-/**
- *
- * * Broker | Subaccount
- *
- */
-⋮----
-export interface CreateSubaccountResponseV2 {
-  subUid: string;
-  subaccountName: string;
-  status: string;
-  permList: string[];
-  label: string;
-  cTime: string;
-}
-⋮----
-export interface BrokerSubaccountV2 {
-  subUid: string;
-  subaccountName: string;
-  status: string;
-  permList: string[];
-  label: string;
-  language: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-export interface ModifySubaccountResponseV2 {
-  subUid: string;
-  subaccountName: string;
-  status: string;
-  permList: string[];
-  label: string;
-  language: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-export interface SubaccountEmailV2 {
+export interface CreateBrokerSubAccountResponseV3 {
   subUid: string;
   subaccountName: string;
   subaccountEmail: string;
+  status: 'normal' | 'freeze';
+  permList: string[];
+  label: string;
+  cTime: string;
+}
+⋮----
+export interface BrokerSubAccountV3 {
+  subUid: string;
+  subaccountName: string;
+  subaccountEmail: string | null;
+  status: 'normal' | 'freeze';
+  permList: string[];
+  label: string;
+  language: string;
   cTime: string;
   uTime: string;
 }
 ⋮----
-export interface BrokerSubaccountSpotAssetV2 {
-  coin: string;
-  available: string;
-  frozen: string;
-  locked: string;
+export interface GetBrokerSubAccountListResponseV3 {
+  subList: BrokerSubAccountV3[];
+}
+⋮----
+export interface ModifyBrokerSubAccountResponseV3 {
+  subUid: string;
+  subaccountName: string;
+  status: 'normal' | 'freeze';
+  permList: string[];
+  label: string;
+  cTime: string;
   uTime: string;
 }
 ⋮----
-export interface BrokerSubaccountFutureAssetV2 {
-  marginCoin: string;
-  available: string;
-  frozen: string;
-  locked: string;
-  crossedMaxAvailable: string;
-  isolatedMaxAvailable: string;
-  maxTransferOut: string;
-  accountEquity: string;
-  usdtEquity: string;
-  btcEquity: string;
-  uTime: string;
+export interface BrokerSubWithdrawalResponseV3 {
+  orderId: string;
+  clientOid: string;
 }
 ⋮----
-export interface CreateSubaccountDepositAddressV2 {
+export interface BrokerSubDepositAddressV3 {
   subUid: string;
   coin: string;
   address: string;
   chain: string;
-  tag: string;
+  tag: string | null;
   url: string;
   cTime: string;
 }
 ⋮----
-export interface SubaccountDepositV2 {
-  orderId: string;
-  txId: string;
-  coin: string;
-  type: string;
-  dest: string;
-  amount: string;
-  status: string;
-  fromAddress: string;
-  toAddress: string;
-  fee: string;
-  chain: string;
-  confirm: string;
-  tag: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-export interface BrokerSubaccountWithdrawalV2 {
-  orderId: string;
-  txId: string;
-  coin: string;
-  type: string;
-  dest: string;
-  amount: string;
-  status: string;
-  fromAddress: string;
-  toAddress: string;
-  fee: string;
-  chain: string;
-  confirm: string;
-  tag: string;
-  userId: string;
-  cTime: string;
-  uTime: string;
-}
-⋮----
-/**
- *
- *  Broker | Api Key
- *
- */
-⋮----
-export interface CreateSubaccountApiKeyResponseV2 {
-  subUid: string;
-  apiKey: string;
-  secretKey: string;
-  label: string;
-  ipList: string[];
-  permType: string;
-  permList: string[];
-}
-⋮----
-export interface SubaccountApiKeyV2 {
-  subUid: string;
-  label: string;
-  apiKey: string;
-  secretKey: string;
-  permType: string;
-  permList: string[];
-  ipList: string[];
-}
-⋮----
-export interface ModifySubaccountApiKeyResponseV2 {
-  subUid: string;
-  apiKey: string;
-  label: string;
-  ipList: string[];
-  permType: string;
-  permList: string[];
-}
-⋮----
-/**
- *
- * * Broker | All Sub-accounts Deposit and Withdrawal Records
- *
- */
-⋮----
-export interface AllSubDepositWithdrawalRecordV2 {
+export interface BrokerSubDepositWithdrawalRecordV3 {
   uid: string;
   txId: string;
   type: 'deposit' | 'withdrawal';
@@ -6586,27 +6392,12 @@ export interface AllSubDepositWithdrawalRecordV2 {
   ts: string;
 }
 ⋮----
-/**
- *
- * * Broker | Subaccounts
- *
- */
-⋮----
-export interface BrokerSubaccountInfoV2 {
-  uid: string;
-  asset: string;
-  firstTimeDeposit: string;
-  firstTimeTrade: string;
-  registerTime: string;
+export interface GetBrokerAllSubDepositWithdrawalResponseV3 {
+  list: BrokerSubDepositWithdrawalRecordV3[];
+  endId: string;
 }
 ⋮----
-/**
- *
- * * Broker | Commissions
- *
- */
-⋮----
-export interface BrokerCommissionV2 {
+export interface BrokerCommissionRecordV3 {
   uid: string;
   coin: string;
   symbol: string;
@@ -6618,204 +6409,99 @@ export interface BrokerCommissionV2 {
   totalCommission: string;
 }
 ⋮----
-/**
- *
- * * Broker | Trade Volume
- *
- */
-⋮----
-export interface BrokerTradeVolumeV2 {
-  uid: string;
-  volume: string;
-  spotVolume: string;
-  futureVolume: string;
+export interface CreateBrokerSubApiKeyResponseV3 {
+  subUid: string;
+  label: string;
+  apiKey: string;
+  secretKey: string;
+  permType: 'read_write' | 'read_only';
+  permList: string[];
+  ipList: string[] | null;
 }
 ⋮----
-/**
- *
- * * Broker | Total Commission
- *
- */
-⋮----
-export interface BrokerTotalCommissionV2 {
-  date: string;
-  totalTradingVolume: string;
-  totalActiveTraders: string;
-  totalCommission: string;
-  spot: {
-    spotTradingVolume: string;
-    spotTradingFee: string;
-    spotPureTradingFee: string;
-    spotCommission: string;
-  };
-  futures: {
-    futuresTradingVolume: string;
-    futuresTradingFee: string;
-    futuresPureTradingFee: string;
-    futuresCommission: string;
-  };
+export interface ModifyBrokerSubApiKeyResponseV3 {
+  subUid: string;
+  label: string;
+  apiKey: string;
+  permType: 'read_write' | 'read_only';
+  permList: string[];
+  ipList: string[];
 }
 ⋮----
+export interface GetBrokerSubApiKeyResponseV3 {
+  subUid: string;
+  label: string;
+  apiKey: string;
+  secretKey: string;
+  permType: 'read_write' | 'read_only';
+  permList: string[];
+  ipList: string[] | null;
+}
+
+================
+File: src/types/response/v3/copytrading.ts
+================
 /**
  *
- * * Broker | Order Commission
+ *
+ * Copy Trading | Futures (UTA)
+ *
  *
  */
 ⋮----
-export interface BrokerOrderCommissionItemV2 {
-  fillId: string;
-  orderId: string;
-  ts: string;
-  clientOid: string;
-  bizType: 'spot' | 'futures';
-  subBizType:
-    | 'spot_trade'
-    | 'spot_margin'
-    | 'usdt_futures'
-    | 'coin_futures'
-    | 'usdc_futures';
+export interface CopyFuturesMarginDetailV3 {
+  marginCoin: string;
+  maxLongCount: string;
+  remainingLongCount: string;
+  maxShortCount: string;
+  remainingShortCount: string;
+}
+⋮----
+export interface CopyFuturesTradingPairV3 {
   symbol: string;
-  volume: string;
-  fee: string;
-  pureFee: string;
-  rebateAmount: string;
+  leverage: string;
+  marginDetails: CopyFuturesMarginDetailV3[];
 }
 ⋮----
-export interface BrokerOrderCommissionV2 {
-  commissionlist: BrokerOrderCommissionItemV2[];
-  endId: string;
+export interface CopyFuturesPositionSummaryV3 {
+  unrealizedPnl: string;
+  realizedPnl: string;
+  holdSize: string;
+  avgPrice: string;
+  symbol: string;
+  leverage: string;
+  marginMode: string;
+  liqPrice: string;
+  margin: string;
+  holdSide: string;
+  roi: string;
+  markPrice: string;
+  positionValue: string;
 }
 ⋮----
-/**
- *
- * * Broker | Rebate Info
- *
- */
-⋮----
-export interface BrokerRebateInfoV2 {
-  affiliationType: 'affiliate' | 'official';
-  userLevel: string;
-  clientSpotRebateRatio: string;
-  clientFuturesRebateRatio: string;
+export interface CopyFuturesMaxTransferableV3 {
+  maxTransferable: string;
+  available: string;
 }
 ⋮----
-/**
- *
- * * Broker | Agent (affiliate) customer APIs
- *
- */
+export interface CopyFuturesTransferResponseV3 {
+  transferId: string;
+}
 ⋮----
-export interface AgentCustomerCommissionItemV2 {
-  uid: string;
-  date: string;
+export type CopyFuturesTransferAccountTypeV3 = 'spot' | 'uta' | 'lead';
+⋮----
+export interface CopyFuturesTransferRecordV3 {
+  transferId: string;
+  fromType: CopyFuturesTransferAccountTypeV3;
+  toType: CopyFuturesTransferAccountTypeV3;
+  amount: string;
   coin: string;
-  symbol: string;
-  productType:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES'
-    | string;
-  dealAmount: string;
-  fee: string;
-  feeDeduction: string;
-  activityBonusDeduct: string;
-  spotCouponDeduct: string;
-  futuresCouponDeduct: string;
-  spotFeeDiscountDeduct: string;
-  negativeMakerFeeDeduct: string;
-  feePaid: string;
-  rebateAmount: string;
-  userTotalRebateAmount: string;
-  dayTotalRebateAmount: string;
-  totalRebateAmount: string;
+  status: 'Successful' | 'Failed' | 'Processing';
+  createdTime: string;
 }
 ⋮----
-export interface AgentCustomerCommissionsV2 {
-  endId: string;
-  commissionList: AgentCustomerCommissionItemV2[];
-}
-⋮----
-export interface AgentSubCustomerItemV2 {
-  uid: string;
-  registerTime: string;
-}
-⋮----
-export interface AgentSubCustomerListV2 {
-  list: AgentSubCustomerItemV2[];
-  minId: string;
-}
-⋮----
-export interface AgentCustomerTradeVolumeItemV2 {
-  uid: string;
-  /** API field name (Bitget spelling). */
-  volumn: string;
-  spotVolume: string;
-  futuresVolume: string;
-  time: string;
-}
-⋮----
-/** API field name (Bitget spelling). */
-⋮----
-export interface AgentCustomerListItemV2 {
-  uid: string;
-  registerTime: string;
-}
-⋮----
-export interface AgentCustomerKycItemV2 {
-  uid: string;
-  kycResult: 'passed' | 'not_passed' | string;
-}
-⋮----
-export interface AgentCustomerKycResultV2 {
-  userList: AgentCustomerKycItemV2[];
-  endId: string;
-}
-⋮----
-export interface AgentCustomerDepositItemV2 {
-  orderId: string;
-  uid: string;
-  depositTime: string;
-  depositCoin: string;
-  depositAmount: string;
-}
-⋮----
-export interface AgentCustomerAssetItemV2 {
-  balance: string;
-  uid: string;
-  uTime: string;
-  remark: string;
-}
-⋮----
-export interface AgentCommissionDetailItemV2 {
-  uid: string;
-  bizType: 'spot' | 'futures' | string;
-  subBizType: string;
-  symbol: string;
-  coin: string;
-  fee: string;
-  volume: string;
-  activityBonusDeduct: string;
-  spotCouponDeduct: string;
-  futuresCouponDeduct: string;
-  spotFeeDiscountDeduct: string;
-  negativeMakerFeeDeduct: string;
-  feePaid: string;
-  directCommission: string;
-  subCommission: string;
-  partnerCommission: string;
-  partnerActualCommission: string;
-  traderType: string;
-  apiType: string;
-  status: 'settled' | 'unsettled' | 'notIssued' | string;
-  startCalculationTime: string;
-  endCalculationTime: string;
-}
-⋮----
-export interface AgentCommissionDetailV2 {
-  endId: string;
-  commissionList: AgentCommissionDetailItemV2[];
+export interface CopyFuturesTransferRecordListV3 {
+  list: CopyFuturesTransferRecordV3[];
 }
 
 ================
@@ -7135,10 +6821,22 @@ export interface OrderInfoV3 {
   updatedTime: string;
 }
 ⋮----
+export type FillCategoryV3 =
+  | 'spot'
+  | 'margin'
+  | 'usdt-futures'
+  | 'coin-futures'
+  | 'usdc-futures'
+  | 'SPOT'
+  | 'MARGIN'
+  | 'USDT-FUTURES'
+  | 'COIN-FUTURES'
+  | 'USDC-FUTURES';
+⋮----
 export interface FillV3 {
   execId: string;
   orderId: string;
-  category: string;
+  category: FillCategoryV3;
   symbol: string;
   orderType: string;
   side: string;
@@ -7277,11 +6975,6 @@ export interface PositionAdlRankV3 {
   adlRank: string;
   holdSide: 'long' | 'short';
 }
-
-================
-File: src/index.ts
-================
-
 
 ================
 File: src/websocket-api-client.ts
@@ -7854,6 +7547,282 @@ logger, // Optional: inject a custom logger
      */
 
 ================
+File: src/types/request/v2/broker.ts
+================
+/**
+ *
+ * * Broker | Subaccount
+ *
+ */
+⋮----
+export interface GetSubAccountsRequestV2 {
+  limit?: string;
+  idLessThan?: string;
+  status?: 'normal' | 'freeze' | 'del';
+  startTime?: string;
+  endTime?: string;
+}
+⋮----
+export type SubAccountPermissionV2 =
+  | 'withdraw'
+  | 'transfer'
+  | 'spot_trade'
+  | 'contract_trade'
+  | 'read'
+  | 'deposit'
+  | 'margin_trade';
+⋮----
+export type SubAccountLanguageV2 =
+  | 'en_US'
+  | 'zh_CN'
+  | 'ja_JP'
+  | 'vi_VN'
+  | 'zh_TW'
+  | 'ru_RU'
+  | 'es_ES'
+  | 'tr_TR'
+  | 'fr_FR'
+  | 'de_DE'
+  | 'pt_PT'
+  | 'th_TH';
+⋮----
+export type SubAccountStatusV2 = 'normal' | 'freeze';
+⋮----
+export interface ModifySubRequestV2 {
+  subUid: string;
+  permList: SubAccountPermissionV2[];
+  status: SubAccountStatusV2;
+  language?: SubAccountLanguageV2;
+}
+⋮----
+export interface SubWithdrawalRequestV2 {
+  subUid: string;
+  coin: string;
+  dest: 'on_chain' | 'internal_transfer';
+  chain?: string;
+  address: string;
+  amount: string;
+  tag?: string;
+  clientOid?: string;
+}
+⋮----
+export interface SubDepositRecordsRequestV2 {
+  orderId?: string;
+  userId?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+export interface SubWithdrawalRecordsRequestV2 {
+  orderId?: string;
+  userId?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Subaccount
+ *
+ */
+⋮----
+export interface CreateSubAccountApiKeyRequestV2 {
+  subUid: string;
+  passphrase: string;
+  label?: string;
+  ipList: string[];
+  permType: string;
+  permList: string[];
+}
+⋮----
+export interface ModifySubAccountApiKeyRequestV2 {
+  subUid: string;
+  apiKey: string;
+  label?: string;
+  passphrase: string;
+  ipList?: string[];
+  permType?: string;
+  permList: string[];
+}
+⋮----
+/**
+ *
+ * * Broker | All Sub-accounts Deposit and Withdrawal Records
+ *
+ */
+⋮----
+export interface GetAllSubDepositWithdrawalRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+  type?: 'all' | 'deposit' | 'withdrawal';
+}
+⋮----
+/**
+ *
+ * * Broker | Subaccounts
+ *
+ */
+⋮----
+export interface GetBrokerSubaccountsRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageSize?: string;
+  pageNo?: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Commissions
+ *
+ */
+⋮----
+export interface GetBrokerCommissionsRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageSize?: string;
+  pageNo?: string;
+  bizType?: 'spot' | 'futures';
+  subBizType?:
+    | 'spot_trade'
+    | 'spot_margin'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'coin_futures';
+}
+⋮----
+/**
+ *
+ * * Broker | Trade Volume
+ *
+ */
+⋮----
+export interface GetBrokerTradeVolumeRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageSize?: string;
+  pageNo?: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Total Commission
+ *
+ */
+⋮----
+export interface GetBrokerTotalCommissionRequestV2 {
+  startTime?: string;
+  endTime?: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Order Commission
+ *
+ */
+⋮----
+export interface GetBrokerOrderCommissionRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  uid?: string;
+  orderId?: string;
+  idLessThan?: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Rebate Info
+ *
+ */
+⋮----
+export interface GetBrokerRebateInfoRequestV2 {
+  uid: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Agent (affiliate) customer APIs
+ *
+ */
+⋮----
+export interface GetAgentCustomerCommissionsRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  uid?: string;
+  coin?: string;
+  symbol?: string;
+  showSub?: 'yes' | 'no';
+}
+⋮----
+export interface GetAgentSubCustomerListRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+⋮----
+export interface AgentCustomerTradeVolumeRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageNo?: string;
+  pageSize?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+⋮----
+export interface AgentCustomerListRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageNo?: string;
+  pageSize?: string;
+  uid?: string;
+  referralCode?: string;
+  showSub?: 'yes' | 'no';
+}
+⋮----
+export interface GetAgentCustomerKycResultRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+⋮----
+export interface AgentCustomerDepositRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  pageNo?: string;
+  pageSize?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+⋮----
+export interface AgentCustomerAssetRequestV2 {
+  pageNo?: string;
+  pageSize?: string;
+  uid?: string;
+  showSub?: 'yes' | 'no';
+}
+⋮----
+export interface GetAgentCommissionDetailRequestV2 {
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  idLessThan?: string;
+}
+
+================
 File: src/types/request/v2/futures.ts
 ================
 import { FuturesPlanTypeV2, FuturesProductTypeV2 } from '../shared.js';
@@ -8373,6 +8342,536 @@ export interface FuturesLiquidationPriceRequestV2 {
 ⋮----
 export interface FuturesIsolatedSymbolsRequestV2 {
   productType: FuturesProductTypeV2;
+}
+
+================
+File: src/types/request/v3/public.ts
+================
+export interface GetPublicFillsRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol?: string;
+  limit?: string;
+}
+⋮----
+export interface GetCandlesRequestV3 {
+  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  interval:
+    | '1m'
+    | '3m'
+    | '5m'
+    | '15m'
+    | '30m'
+    | '1H'
+    | '4H'
+    | '6H'
+    | '12H'
+    | '1D';
+  startTime?: string;
+  endTime?: string;
+  type?: 'MARKET' | 'MARK' | 'INDEX';
+  limit?: string;
+}
+⋮----
+export interface GetHistoryCandlesRequestV3 {
+  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  interval:
+    | '1m'
+    | '3m'
+    | '5m'
+    | '15m'
+    | '30m'
+    | '1H'
+    | '4H'
+    | '6H'
+    | '12H'
+    | '1D';
+  startTime?: string;
+  endTime?: string;
+  type?: 'MARKET' | 'MARK' | 'INDEX';
+  limit?: string;
+}
+⋮----
+export interface GetContractsOiRequestV3 {
+  symbol?: string;
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+}
+⋮----
+export interface GetCurrentFundingRateRequestV3 {
+  symbol: string;
+}
+⋮----
+export interface GetHistoryFundingRateRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  cursor?: string;
+  limit?: string;
+}
+⋮----
+export interface GetMarginLoansRequestV3 {
+  coin: string;
+}
+⋮----
+export interface GetOpenInterestRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+}
+⋮----
+export interface GetPositionTierRequestV3 {
+  category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  coin?: string;
+}
+⋮----
+export interface GetRiskReserveRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  marginCoin?: string;
+}
+⋮----
+export interface GetRiskReserveAllRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+}
+⋮----
+export interface GetInstrumentsRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol?: string;
+}
+⋮----
+export interface GetMarketFeeGroupRequestV3 {
+  category: 'SPOT' | 'FUTURES';
+  group?: 'GROUP_A' | 'GROUP_B' | 'GROUP_C';
+}
+⋮----
+export interface GetMarketScoreWeightsRequestV3 {
+  category?: 'SPOT' | 'FUTURES';
+}
+⋮----
+export interface GetOrderBookRequestV3 {
+  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  limit?: string;
+}
+⋮----
+export interface GetTickersRequestV3 {
+  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+}
+⋮----
+export interface GetIndexComponentsRequestV3 {
+  symbol: string;
+}
+
+================
+File: src/types/response/v2/broker.ts
+================
+/**
+ *
+ * * Broker | Subaccount
+ *
+ */
+⋮----
+export interface CreateSubaccountResponseV2 {
+  subUid: string;
+  subaccountName: string;
+  status: string;
+  permList: string[];
+  label: string;
+  cTime: string;
+}
+⋮----
+export interface BrokerSubaccountV2 {
+  subUid: string;
+  subaccountName: string;
+  status: string;
+  permList: string[];
+  label: string;
+  language: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+export interface ModifySubaccountResponseV2 {
+  subUid: string;
+  subaccountName: string;
+  status: string;
+  permList: string[];
+  label: string;
+  language: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+export interface SubaccountEmailV2 {
+  subUid: string;
+  subaccountName: string;
+  subaccountEmail: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+export interface BrokerSubaccountSpotAssetV2 {
+  coin: string;
+  available: string;
+  frozen: string;
+  locked: string;
+  uTime: string;
+}
+⋮----
+export interface BrokerSubaccountFutureAssetV2 {
+  marginCoin: string;
+  available: string;
+  frozen: string;
+  locked: string;
+  crossedMaxAvailable: string;
+  isolatedMaxAvailable: string;
+  maxTransferOut: string;
+  accountEquity: string;
+  usdtEquity: string;
+  btcEquity: string;
+  uTime: string;
+}
+⋮----
+export interface CreateSubaccountDepositAddressV2 {
+  subUid: string;
+  coin: string;
+  address: string;
+  chain: string;
+  tag: string;
+  url: string;
+  cTime: string;
+}
+⋮----
+export interface SubaccountDepositV2 {
+  orderId: string;
+  txId: string;
+  coin: string;
+  type: string;
+  dest: string;
+  amount: string;
+  status: string;
+  fromAddress: string;
+  toAddress: string;
+  fee: string;
+  chain: string;
+  confirm: string;
+  tag: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+export interface BrokerSubaccountWithdrawalV2 {
+  orderId: string;
+  txId: string;
+  coin: string;
+  type: string;
+  dest: string;
+  amount: string;
+  status: string;
+  fromAddress: string;
+  toAddress: string;
+  fee: string;
+  chain: string;
+  confirm: string;
+  tag: string;
+  userId: string;
+  cTime: string;
+  uTime: string;
+}
+⋮----
+/**
+ *
+ *  Broker | Api Key
+ *
+ */
+⋮----
+export interface CreateSubaccountApiKeyResponseV2 {
+  subUid: string;
+  apiKey: string;
+  secretKey: string;
+  label: string;
+  ipList: string[];
+  permType: string;
+  permList: string[];
+}
+⋮----
+export interface SubaccountApiKeyV2 {
+  subUid: string;
+  label: string;
+  apiKey: string;
+  secretKey: string;
+  permType: string;
+  permList: string[];
+  ipList: string[];
+}
+⋮----
+export interface ModifySubaccountApiKeyResponseV2 {
+  subUid: string;
+  apiKey: string;
+  label: string;
+  ipList: string[];
+  permType: string;
+  permList: string[];
+}
+⋮----
+/**
+ *
+ * * Broker | All Sub-accounts Deposit and Withdrawal Records
+ *
+ */
+⋮----
+export interface AllSubDepositWithdrawalRecordV2 {
+  uid: string;
+  txId: string;
+  type: 'deposit' | 'withdrawal';
+  subType: 'onchain' | 'internal' | 'fast';
+  coin: string;
+  amount: string;
+  status: 'pending' | 'fail' | 'success';
+  ts: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Subaccounts
+ *
+ */
+⋮----
+export interface BrokerSubaccountInfoV2 {
+  uid: string;
+  asset: string;
+  firstTimeDeposit: string;
+  firstTimeTrade: string;
+  registerTime: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Commissions
+ *
+ */
+⋮----
+export interface BrokerCommissionV2 {
+  uid: string;
+  coin: string;
+  symbol: string;
+  dealtAmount: string;
+  totalFee: string;
+  deductedFee: string;
+  paidFee: string;
+  markUpFee: string;
+  totalCommission: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Trade Volume
+ *
+ */
+⋮----
+export interface BrokerTradeVolumeV2 {
+  uid: string;
+  volume: string;
+  spotVolume: string;
+  futureVolume: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Total Commission
+ *
+ */
+⋮----
+export interface BrokerTotalCommissionV2 {
+  date: string;
+  totalTradingVolume: string;
+  totalActiveTraders: string;
+  totalCommission: string;
+  spot: {
+    spotTradingVolume: string;
+    spotTradingFee: string;
+    spotPureTradingFee: string;
+    spotCommission: string;
+  };
+  futures: {
+    futuresTradingVolume: string;
+    futuresTradingFee: string;
+    futuresPureTradingFee: string;
+    futuresCommission: string;
+  };
+}
+⋮----
+/**
+ *
+ * * Broker | Order Commission
+ *
+ */
+⋮----
+export interface BrokerOrderCommissionItemV2 {
+  fillId: string;
+  orderId: string;
+  ts: string;
+  clientOid: string;
+  bizType: 'spot' | 'futures';
+  subBizType:
+    | 'spot_trade'
+    | 'spot_margin'
+    | 'usdt_futures'
+    | 'coin_futures'
+    | 'usdc_futures';
+  symbol: string;
+  volume: string;
+  fee: string;
+  pureFee: string;
+  rebateAmount: string;
+}
+⋮----
+export interface BrokerOrderCommissionV2 {
+  commissionlist: BrokerOrderCommissionItemV2[];
+  endId: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Rebate Info
+ *
+ */
+⋮----
+export interface BrokerRebateInfoV2 {
+  affiliationType: 'affiliate' | 'official';
+  userLevel: string;
+  clientSpotRebateRatio: string;
+  clientFuturesRebateRatio: string;
+}
+⋮----
+/**
+ *
+ * * Broker | Agent (affiliate) customer APIs
+ *
+ */
+⋮----
+export interface AgentCustomerCommissionItemV2 {
+  uid: string;
+  date: string;
+  coin: string;
+  symbol: string;
+  productType:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES'
+    | string;
+  dealAmount: string;
+  fee: string;
+  feeDeduction: string;
+  activityBonusDeduct: string;
+  spotCouponDeduct: string;
+  futuresCouponDeduct: string;
+  spotFeeDiscountDeduct: string;
+  negativeMakerFeeDeduct: string;
+  feePaid: string;
+  rebateAmount: string;
+  userTotalRebateAmount: string;
+  dayTotalRebateAmount: string;
+  totalRebateAmount: string;
+}
+⋮----
+export interface AgentCustomerCommissionsV2 {
+  endId: string;
+  commissionList: AgentCustomerCommissionItemV2[];
+}
+⋮----
+export interface AgentSubCustomerItemV2 {
+  uid: string;
+  registerTime: string;
+}
+⋮----
+export interface AgentSubCustomerListV2 {
+  list: AgentSubCustomerItemV2[];
+  minId: string;
+}
+⋮----
+export interface AgentCustomerTradeVolumeItemV2 {
+  uid: string;
+  /** API field name (Bitget spelling). */
+  volumn: string;
+  spotVolume: string;
+  futuresVolume: string;
+  time: string;
+}
+⋮----
+/** API field name (Bitget spelling). */
+⋮----
+export interface AgentCustomerListItemV2 {
+  uid: string;
+  registerTime: string;
+}
+⋮----
+export interface AgentCustomerKycItemV2 {
+  uid: string;
+  kycResult: 'passed' | 'not_passed' | string;
+}
+⋮----
+export interface AgentCustomerKycResultV2 {
+  userList: AgentCustomerKycItemV2[];
+  endId: string;
+}
+⋮----
+export interface AgentCustomerDepositItemV2 {
+  orderId: string;
+  uid: string;
+  depositTime: string;
+  depositCoin: string;
+  depositAmount: string;
+}
+⋮----
+export interface AgentCustomerAssetItemV2 {
+  balance: string;
+  uid: string;
+  uTime: string;
+  remark: string;
+}
+⋮----
+export interface AgentCommissionDetailItemV2 {
+  uid: string;
+  bizType: 'spot' | 'futures' | string;
+  subBizType: string;
+  symbol: string;
+  coin: string;
+  fee: string;
+  volume: string;
+  activityBonusDeduct: string;
+  spotCouponDeduct: string;
+  futuresCouponDeduct: string;
+  spotFeeDiscountDeduct: string;
+  negativeMakerFeeDeduct: string;
+  feePaid: string;
+  directCommission: string;
+  subCommission: string;
+  partnerCommission: string;
+  partnerActualCommission: string;
+  traderType: string;
+  apiType: string;
+  status: 'settled' | 'unsettled' | 'notIssued' | string;
+  startCalculationTime: string;
+  endCalculationTime: string;
+}
+⋮----
+export interface AgentCommissionDetailV2 {
+  endId: string;
+  commissionList: AgentCommissionDetailItemV2[];
 }
 
 ================
@@ -9033,278 +9532,333 @@ export interface FuturesIsolatedSymbolV2 {
 }
 
 ================
-File: src/types/websockets/ws-general.ts
+File: src/types/response/v3/account.ts
 ================
-import type { ClientRequestArgs } from 'http';
-import WebSocket from 'isomorphic-ws';
-⋮----
-import { RestClientOptions } from '../../util/requestUtils.js';
-import { WS_KEY_MAP } from '../../util/websocket-util.js';
-import { FuturesProductTypeV2 } from '../request/shared.js';
-⋮----
-export type BitgetInstType = 'SP' | 'SPBL' | 'MC' | 'UMCBL' | 'DMCBL';
-export type BitgetInstTypeV2 = 'SPOT' | FuturesProductTypeV2;
-export type BitgetInstTypeV3 =
-  | 'UTA' // for account-level topics
-  | 'spot'
-  | 'usdt-futures'
-  | 'coin-futures'
-  | 'usdc-futures';
-⋮----
-| 'UTA' // for account-level topics
-⋮----
-/**
- *
- * V1  list of topics for WebSocket consumers
- *
- */
-⋮----
-export type WsPublicSpotTopic =
-  | 'ticker'
-  | 'candle1W'
-  | 'candle1D'
-  | 'candle12H'
-  | 'candle4H'
-  | 'candle1H'
-  | 'candle30m'
-  | 'candle15m'
-  | 'candle5m'
-  | 'candle1m'
-  | 'books'
-  | 'books5'
-  | 'trade';
-⋮----
-// Futures currently has the same public topics as spot
-export type WsPublicFuturesTopic = WsPublicSpotTopic;
-export type WsPrivateSpotTopic = 'account' | 'orders';
-⋮----
-export type WsPrivateFuturesTopic =
-  | 'account'
-  | 'positions'
-  | 'orders'
-  | 'ordersAlgo';
-⋮----
-export type WsPublicTopic = WsPublicSpotTopic | WsPublicFuturesTopic;
-⋮----
-export type WsPrivateTopic = WsPrivateSpotTopic | WsPrivateFuturesTopic;
-export type WsTopic = WsPublicTopic | WsPrivateTopic;
-⋮----
-/**
- *
- * V2 list of topics for WebSocket consumers
- *
- */
-⋮----
-export type WsPublicTopicV2 =
-  | 'index-price' // margin only
-  | 'ticker'
-  | 'candle1m'
-  | 'candle5m'
-  | 'candle15m'
-  | 'candle30m'
-  | 'candle1H'
-  | 'candle4H'
-  | 'candle6H'
-  | 'candle12H'
-  | 'candle1D'
-  | 'candle3D'
-  | 'candle1W'
-  | 'candle1M'
-  | 'candle6Hutc'
-  | 'candle12Hutc'
-  | 'candle1Dutc'
-  | 'candle3Dutc'
-  | 'candle1Wutc'
-  | 'candle1Mutc'
-  | 'trade'
-  | 'books'
-  | 'books1'
-  | 'books5'
-  | 'books15';
-⋮----
-| 'index-price' // margin only
-⋮----
-// Also update PRIVATE_TOPICS_V2 if this is updated
-export type WSPrivateTopicFuturesV2 =
-  | 'positions'
-  | 'orders-algo'
-  | 'positions-history';
-⋮----
-// Also update PRIVATE_TOPICS_V2 if this is updated
-export type WSPrivateTopicMarginV2 =
-  | 'orders-crossed'
-  | 'account-crossed'
-  | 'account-isolated'
-  | 'orders-isolated';
-⋮----
-// Also update PRIVATE_TOPICS_V2 if this is updated
-export type WsPrivateTopicV2 =
-  | 'account'
-  | 'orders'
-  | WSPrivateTopicFuturesV2
-  | WSPrivateTopicMarginV2;
-⋮----
-export type WsTopicV2 = WsPublicTopicV2 | WsPrivateTopicV2;
-⋮----
-/**
- *
- * V3 / UTA list of topics for WebSocket consumers
- *
- */
-export type WsPublicTopicV3 = 'ticker' | 'kline' | 'books' | 'publicTrade';
-// Also update PRIVATE_TOPICS_V3 if this is updated
-export type WsPrivateTopicV3 = 'account' | 'position' | 'fill' | 'order';
-export type WsTopicV3 = WsPublicTopicV3 | WsPrivateTopicV3;
-⋮----
-/** This is used to differentiate between each of the available websocket streams */
-export type WsKey = (typeof WS_KEY_MAP)[keyof typeof WS_KEY_MAP];
-⋮----
-/**
- * Event args for subscribing/unsubscribing
- */
-⋮----
-export interface WsTopicSubscribeEventArgs {
-  instType: BitgetInstType;
-  channel: WsTopic;
-  instId?: string;
+// Account Management Response Types
+export interface AccountSymbolConfigV3 {
+  category: string;
+  symbol: string;
+  marginMode: string;
+  leverage: string;
 }
 ⋮----
-export type WsTopicSubscribePublicArgsV2 = {
-  instType: BitgetInstTypeV2;
-  channel: WsPublicTopicV2;
-  /** The symbol, e.g. "BTCUSDT" */
-  instId: string;
-};
-⋮----
-/** The symbol, e.g. "BTCUSDT" */
-⋮----
-export type WsInstIdChannelsV2 =
-  | 'orders'
-  | WSPrivateTopicFuturesV2
-  | 'orders-crossed'
-  | 'orders-isolated';
-⋮----
-export type WsTopicSubscribePrivateInstIdArgsV2 = {
-  instType: BitgetInstTypeV2;
-  channel: WsInstIdChannelsV2;
-  /** The symbol, e.g. "BTCUSDT" */
-  instId?: string;
-};
-⋮----
-/** The symbol, e.g. "BTCUSDT" */
-⋮----
-export type WsCoinChannelsV2 =
-  | 'account'
-  | 'account-crossed'
-  | 'account-isolated';
-⋮----
-export type WsTopicSubscribePrivateCoinArgsV2 = {
-  instType: BitgetInstTypeV2;
-  channel: WsCoinChannelsV2;
-  coin: 'default' | string;
-};
-⋮----
-export type WsTopicSubscribePrivateArgsV2 =
-  | WsTopicSubscribePrivateInstIdArgsV2
-  | WsTopicSubscribePrivateCoinArgsV2;
-⋮----
-export type WsTopicSubscribeEventArgsV2 =
-  | WsTopicSubscribePublicArgsV2
-  | WsTopicSubscribePrivateArgsV2;
-⋮----
-/** General configuration for the WebsocketClient */
-export interface WSClientConfigurableOptions {
-  /** Your API key */
-  apiKey?: string;
-
-  /** Your API secret */
-  apiSecret?: string;
-
-  /** The passphrase you set when creating the API Key (NOT your account password) */
-  apiPass?: string;
-
-  /**
-   * Set to `true` to connect to Bitget's demo trading WebSockets:
-   *
-   * - V2: https://www.bitget.com/api-doc/common/demotrading/websocket
-   * - V3/UTA: https://www.bitget.com/api-doc/uta/guide#demo-trading
-   */
-  demoTrading?: boolean;
-
-  /** Define a recv window when preparing a private websocket signature. This is in milliseconds, so 5000 == 5 seconds */
-  recvWindow?: number;
-
-  // Disable ping/pong ws heartbeat mechanism (not recommended)
-  disableHeartbeat?: boolean;
-
-  /** How often to check if the connection is alive */
-  pingInterval?: number;
-
-  /** How long to wait for a pong (heartbeat reply) before assuming the connection is dead */
-  pongTimeout?: number;
-
-  /** Delay in milliseconds before respawning the connection */
-  reconnectTimeout?: number;
-
-  requestOptions?: RestClientOptions;
-
-  wsOptions?: {
-    protocols?: string[];
-    agent?: any;
-  } & Partial<WebSocket.ClientOptions | ClientRequestArgs>;
-
-  wsUrl?: string;
-
-  /**
-   * Allows you to provide a custom "signMessage" function, e.g. to use node's much faster createHmac method
-   *
-   * Look in the examples folder for a demonstration on using node's createHmac instead.
-   */
-  customSignMessageFn?: (message: string, secret: string) => Promise<string>;
+export interface AccountCoinConfigV3 {
+  coin: string;
+  leverage: string;
 }
 ⋮----
-/** Your API key */
+export type AccountPermissionV3 =
+  | 'uta_mgt'
+  | 'uta_trade'
+  | 'withdraw'
+  | 'copy_futures_position'
+  | 'copy_futures_order';
 ⋮----
-/** Your API secret */
+export interface AccountInfoV3 {
+  userId: string;
+  inviterId: string;
+  /** Only set when the calling account is a sub-account */
+  parentId: string;
+  channelCode: string;
+  channel: string;
+  ips: string;
+  permType: 'read-only' | 'read-and-write';
+  permissions: AccountPermissionV3[];
+  regisTime: string;
+}
 ⋮----
-/** The passphrase you set when creating the API Key (NOT your account password) */
+/** Only set when the calling account is a sub-account */
 ⋮----
-/**
-   * Set to `true` to connect to Bitget's demo trading WebSockets:
-   *
-   * - V2: https://www.bitget.com/api-doc/common/demotrading/websocket
-   * - V3/UTA: https://www.bitget.com/api-doc/uta/guide#demo-trading
-   */
+export type AccountLevelV3 = 'basic' | 'advanced' | 'isolated' | 'delta';
 ⋮----
-/** Define a recv window when preparing a private websocket signature. This is in milliseconds, so 5000 == 5 seconds */
+export interface AccountSettingsV3 {
+  uid: string;
+  accountMode: 'unified' | 'hybrid' | 'upgrading' | 'switching';
+  assetMode: string;
+  accountLevel: AccountLevelV3;
+  holdMode: string;
+  stpMode: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
+  symbolConfigList: AccountSymbolConfigV3[];
+  coinConfigList: AccountCoinConfigV3[];
+}
 ⋮----
-// Disable ping/pong ws heartbeat mechanism (not recommended)
+export interface AccountDeltaCoinPositionV3 {
+  coin: string;
+  positionRatio: string;
+}
 ⋮----
-/** How often to check if the connection is alive */
+/** Delta-neutral mode metrics. Only available when accountLevel is delta. */
+export interface AccountDeltaInfoV3 {
+  deltaEquityRatio: string;
+  deltaThreshold: string;
+  positionThreshold: string;
+  list: AccountDeltaCoinPositionV3[];
+}
 ⋮----
-/** How long to wait for a pong (heartbeat reply) before assuming the connection is dead */
+export interface AccountAssetV3 {
+  coin: string;
+  equity: string;
+  usdValue: string;
+  balance: string;
+  available: string;
+  debt: string;
+  locked: string;
+}
 ⋮----
-/** Delay in milliseconds before respawning the connection */
+export interface AccountAssetsV3 {
+  accountEquity: string;
+  usdtEquity: string;
+  btcEquity: string;
+  unrealisedPnl: string;
+  usdtUnrealisedPnl: string;
+  btcUnrealizedPnl: string;
+  effEquity: string;
+  mmr: string;
+  imr: string;
+  mgnRatio: string;
+  positionMgnRatio: string;
+  assets: AccountAssetV3[];
+}
 ⋮----
-/**
-   * Allows you to provide a custom "signMessage" function, e.g. to use node's much faster createHmac method
-   *
-   * Look in the examples folder for a demonstration on using node's createHmac instead.
-   */
+export interface ConvertRecordV3 {
+  fromCoin: string;
+  fromCoinSize: string;
+  toCoin: string;
+  toCoinSize: string;
+  price: string;
+  ts: string;
+}
 ⋮----
-export interface WebsocketClientOptions extends WSClientConfigurableOptions {
-  pingInterval: number;
-  pongTimeout: number;
-  reconnectTimeout: number;
-  recvWindow: number;
-  authPrivateConnectionsOnConnect: boolean;
-  authPrivateRequests: boolean;
+export interface FinancialRecordV3 {
+  category: string;
+  id: string;
+  symbol: string;
+  coin: string;
+  type: string;
+  amount: string;
+  fee: string;
+  balance: string;
+  ts: string;
+}
+⋮----
+export interface PaymentCoinV3 {
+  coin: string;
+  size: string;
+  amount: string;
+}
+⋮----
+export interface RepayableCoinV3 {
+  coin: string;
+  size: string;
+  amount: string;
+}
+⋮----
+export interface RepayResponseV3 {
+  result: string;
+  repayAmount: string;
+}
+⋮----
+// Sub-account Management Response Types
+⋮----
+export interface CreateSubAccountApiKeyResponseV3 {
+  note: string;
+  apiKey: string;
+  secret: string;
+  type: string;
+  permissions: string[];
+  ips: string[];
+}
+export interface SubAccountApiKeyV3 {
+  apiKey: string;
+  note: string;
+  type: string;
+  permissions: string[];
+  ips: string[];
+  ts?: string;
+}
+⋮----
+export interface UpdateSubAccountApiKeyResponseV3 {
+  note: string;
+  apiKey: string;
+  type: string;
+  permissions: string[];
+  ips: string[];
+}
+⋮----
+export interface CreateSubAccountResponseV3 {
+  username: string;
+  subUid: string;
+  status: string;
+  note: string;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+export interface SubAccountV3 {
+  subUid: string;
+  username: string;
+  status: string;
+  accountMode: string;
+  type: 'normal' | 'virtual' | 'custodian';
+  note: string;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+export interface WithdrawAddressBookEntryV3 {
+  coin: string;
+  chain: string;
+  address: string;
+  countryCode: string;
+  label: string;
+  memo: string;
+  type: 'regular' | 'EVM' | 'universal' | 'internal';
+  internalType: '' | 'uid' | 'mobile' | 'email';
+  createdTime: string;
+}
+⋮----
+export interface WithdrawAddressBookV3 {
+  addressList: WithdrawAddressBookEntryV3[];
+  cursor?: string;
+}
+⋮----
+// Transfer Response Types
+⋮----
+export interface TransferResponseV3 {
+  transferId: string;
+}
+⋮----
+export interface SubTransferRecordV3 {
+  transferId: string;
+  oldTransferId?: string;
+  fromType: string;
+  toType: string;
+  amount: string;
+  coin: string;
+  fromUserId: string;
+  toUserId: string;
+  status: string;
+  clientOid: string;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+export interface SubUnifiedAssetV3 {
+  coin: string;
+  equity: string;
+  usdValue: string;
+  balance: string;
+  available: string;
+  debt: string;
+  locked: string;
+}
+⋮----
+export interface SubUnifiedAssetV3 {
+  subUid: string;
+  cursor: string;
+  assets: SubUnifiedAssetV3[];
+}
+⋮----
+export interface GetFeeRateResponseV3 {
+  makerFeeRate: string;
+  takerFeeRate: string;
+}
+⋮----
+export interface FundingAssetV3 {
+  coin: string;
+  available: string;
+  frozen: string;
+  balance: string;
+}
+⋮----
+// Deposit Response Types
+⋮----
+export interface DepositAddressV3 {
+  address: string;
+  chain: string;
+  coin: string;
+  tag: string;
+  url: string;
+}
+⋮----
+export interface DepositRecordV3 {
+  orderId: string;
+  recordId: string;
+  coin: string;
+  type: 'deposit';
+  dest: 'on_chain' | 'internal_transfer';
+  size: string;
+  status: 'pending' | 'success' | 'fail';
+  fromAddress: string;
+  toAddress: string;
+  chain: string;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+// Withdraw Response Types
+⋮----
+export interface WithdrawResponseV3 {
+  orderId: string;
+  clientOid: string;
+}
+⋮----
+export interface WithdrawRecordV3 {
+  orderId: string;
+  clientOid: string;
+  recordId: string;
+  coin: string;
+  type: 'withdraw';
+  dest: 'on_chain' | 'internal_transfer';
+  size: string;
+  status: 'pending' | 'success' | 'fail';
+  fromAddress: string;
+  toAddress: string;
+  chain: string;
+  fee: string;
+  confirm: string;
+  tag: string;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+export interface MaxTransferableV3 {
+  coin: string;
+  maxTransfer: string;
+  borrowMaxTransfer: string;
+}
+⋮----
+export interface OpenInterestLimitV3 {
+  symbol: string;
+  singleUserLimit: string;
+  masterSubLimit: string;
+  marketMakerLimit: string;
+}
+⋮----
+export interface TaxRecordV3 {
+  id: string;
+  coin: string;
+  type: string;
+  amount: string;
+  fee: string;
+  balance: string;
+  ts: string;
 }
 
 ================
 File: src/types/request/v3/account.ts
 ================
 // Account Management Request Types
+⋮----
+export type AccountAdjustModeV3 = 'basic' | 'advanced' | 'delta' | 'isolated';
+⋮----
+export interface AdjustAccountModeRequestV3 {
+  mode: AccountAdjustModeV3;
+  /** Sub-account UID when the master account switches mode for a sub-account */
+  targetUid?: string;
+}
+⋮----
+/** Sub-account UID when the master account switches mode for a sub-account */
 ⋮----
 export interface SetLeverageRequestV3 {
   category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
@@ -9565,6 +10119,18 @@ export interface GetWithdrawRecordsRequestV3 {
   cursor?: string;
 }
 ⋮----
+export interface GetWithdrawAddressBookRequestV3 {
+  coin?: string;
+  type?: 'EVM' | 'regular' | 'universal' | 'internal';
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface CancelWithdrawalRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+}
+⋮----
 export interface SetDepositAccountRequestV3 {
   coin: string;
   accountType: 'funding' | 'unified' | 'otc';
@@ -9593,262 +10159,6 @@ export interface GetTaxRecordsRequestV3 {
   endTime: string;
   limit?: string;
   cursor?: string;
-}
-
-================
-File: src/types/response/v3/account.ts
-================
-// Account Management Response Types
-export interface AccountSymbolConfigV3 {
-  category: string;
-  symbol: string;
-  marginMode: string;
-  leverage: string;
-}
-⋮----
-export interface AccountCoinConfigV3 {
-  coin: string;
-  leverage: string;
-}
-⋮----
-export interface AccountSettingsV3 {
-  assetMode: string;
-  holdMode: string;
-  symbolConfigList: AccountSymbolConfigV3[];
-  coinConfigList: AccountCoinConfigV3[];
-}
-⋮----
-export interface AccountAssetV3 {
-  coin: string;
-  equity: string;
-  usdValue: string;
-  balance: string;
-  available: string;
-  debt: string;
-  locked: string;
-}
-⋮----
-export interface AccountAssetsV3 {
-  accountEquity: string;
-  usdtEquity: string;
-  btcEquity: string;
-  unrealisedPnl: string;
-  usdtUnrealisedPnl: string;
-  btcUnrealizedPnl: string;
-  effEquity: string;
-  mmr: string;
-  imr: string;
-  mgnRatio: string;
-  positionMgnRatio: string;
-  assets: AccountAssetV3[];
-}
-⋮----
-export interface ConvertRecordV3 {
-  fromCoin: string;
-  fromCoinSize: string;
-  toCoin: string;
-  toCoinSize: string;
-  price: string;
-  ts: string;
-}
-⋮----
-export interface FinancialRecordV3 {
-  category: string;
-  id: string;
-  symbol: string;
-  coin: string;
-  type: string;
-  amount: string;
-  fee: string;
-  balance: string;
-  ts: string;
-}
-⋮----
-export interface PaymentCoinV3 {
-  coin: string;
-  size: string;
-  amount: string;
-}
-⋮----
-export interface RepayableCoinV3 {
-  coin: string;
-  size: string;
-  amount: string;
-}
-⋮----
-export interface RepayResponseV3 {
-  result: string;
-  repayAmount: string;
-}
-⋮----
-// Sub-account Management Response Types
-⋮----
-export interface CreateSubAccountApiKeyResponseV3 {
-  note: string;
-  apiKey: string;
-  secret: string;
-  type: string;
-  permissions: string[];
-  ips: string[];
-}
-export interface SubAccountApiKeyV3 {
-  apiKey: string;
-  note: string;
-  type: string;
-  permissions: string[];
-  ips: string[];
-  ts?: string;
-}
-⋮----
-export interface UpdateSubAccountApiKeyResponseV3 {
-  note: string;
-  apiKey: string;
-  type: string;
-  permissions: string[];
-  ips: string[];
-}
-⋮----
-export interface CreateSubAccountResponseV3 {
-  username: string;
-  subUid: string;
-  status: string;
-  note: string;
-  createdTime: string;
-  updatedTime: string;
-}
-⋮----
-export interface SubAccountV3 {
-  subUid: string;
-  username: string;
-  status: string;
-  accountMode: string;
-  type: string;
-  note: string;
-  createdTime: string;
-  updatedTime: string;
-}
-⋮----
-// Transfer Response Types
-⋮----
-export interface TransferResponseV3 {
-  transferId: string;
-}
-⋮----
-export interface SubTransferRecordV3 {
-  transferId: string;
-  oldTransferId?: string;
-  fromType: string;
-  toType: string;
-  amount: string;
-  coin: string;
-  fromUserId: string;
-  toUserId: string;
-  status: string;
-  clientOid: string;
-  createdTime: string;
-  updatedTime: string;
-}
-⋮----
-export interface SubUnifiedAssetV3 {
-  coin: string;
-  equity: string;
-  usdValue: string;
-  balance: string;
-  available: string;
-  debt: string;
-  locked: string;
-}
-⋮----
-export interface SubUnifiedAssetV3 {
-  subUid: string;
-  cursor: string;
-  assets: SubUnifiedAssetV3[];
-}
-⋮----
-export interface GetFeeRateResponseV3 {
-  makerFeeRate: string;
-  takerFeeRate: string;
-}
-⋮----
-export interface FundingAssetV3 {
-  coin: string;
-  available: string;
-  frozen: string;
-  balance: string;
-}
-⋮----
-// Deposit Response Types
-⋮----
-export interface DepositAddressV3 {
-  address: string;
-  chain: string;
-  coin: string;
-  tag: string;
-  url: string;
-}
-⋮----
-export interface DepositRecordV3 {
-  orderId: string;
-  recordId: string;
-  coin: string;
-  type: 'deposit';
-  dest: 'on_chain' | 'internal_transfer';
-  size: string;
-  status: 'pending' | 'success' | 'fail';
-  fromAddress: string;
-  toAddress: string;
-  chain: string;
-  createdTime: string;
-  updatedTime: string;
-}
-⋮----
-// Withdraw Response Types
-⋮----
-export interface WithdrawResponseV3 {
-  orderId: string;
-  clientOid: string;
-}
-⋮----
-export interface WithdrawRecordV3 {
-  orderId: string;
-  clientOid: string;
-  recordId: string;
-  coin: string;
-  type: 'withdraw';
-  dest: 'on_chain' | 'internal_transfer';
-  size: string;
-  status: 'pending' | 'success' | 'fail';
-  fromAddress: string;
-  toAddress: string;
-  chain: string;
-  fee: string;
-  confirm: string;
-  tag: string;
-  createdTime: string;
-  updatedTime: string;
-}
-⋮----
-export interface MaxTransferableV3 {
-  coin: string;
-  maxTransfer: string;
-  borrowMaxTransfer: string;
-}
-⋮----
-export interface OpenInterestLimitV3 {
-  symbol: string;
-  singleUserLimit: string;
-  masterSubLimit: string;
-  marketMakerLimit: string;
-}
-⋮----
-export interface TaxRecordV3 {
-  id: string;
-  coin: string;
-  type: string;
-  amount: string;
-  fee: string;
-  balance: string;
-  ts: string;
 }
 
 ================
@@ -10121,6 +10431,285 @@ export interface IndexPriceComponentsV3 {
   symbol: string;
   componentList: IndexComponentV3[];
 }
+
+================
+File: src/types/websockets/ws-general.ts
+================
+import type { ClientRequestArgs } from 'http';
+import WebSocket from 'isomorphic-ws';
+⋮----
+import { RestClientOptions } from '../../util/requestUtils.js';
+import { WS_KEY_MAP } from '../../util/websocket-util.js';
+import { FuturesProductTypeV2 } from '../request/shared.js';
+⋮----
+export type BitgetInstType = 'SP' | 'SPBL' | 'MC' | 'UMCBL' | 'DMCBL';
+export type BitgetInstTypeV2 = 'SPOT' | FuturesProductTypeV2;
+export type BitgetInstTypeV3 =
+  | 'UTA' // for account-level topics
+  | 'spot'
+  | 'usdt-futures'
+  | 'coin-futures'
+  | 'usdc-futures';
+⋮----
+| 'UTA' // for account-level topics
+⋮----
+/**
+ *
+ * V1  list of topics for WebSocket consumers
+ *
+ */
+⋮----
+export type WsPublicSpotTopic =
+  | 'ticker'
+  | 'candle1W'
+  | 'candle1D'
+  | 'candle12H'
+  | 'candle4H'
+  | 'candle1H'
+  | 'candle30m'
+  | 'candle15m'
+  | 'candle5m'
+  | 'candle1m'
+  | 'books'
+  | 'books5'
+  | 'trade';
+⋮----
+// Futures currently has the same public topics as spot
+export type WsPublicFuturesTopic = WsPublicSpotTopic;
+export type WsPrivateSpotTopic = 'account' | 'orders';
+⋮----
+export type WsPrivateFuturesTopic =
+  | 'account'
+  | 'positions'
+  | 'orders'
+  | 'ordersAlgo';
+⋮----
+export type WsPublicTopic = WsPublicSpotTopic | WsPublicFuturesTopic;
+⋮----
+export type WsPrivateTopic = WsPrivateSpotTopic | WsPrivateFuturesTopic;
+export type WsTopic = WsPublicTopic | WsPrivateTopic;
+⋮----
+/**
+ *
+ * V2 list of topics for WebSocket consumers
+ *
+ */
+⋮----
+export type WsPublicTopicV2 =
+  | 'index-price' // margin only
+  | 'ticker'
+  | 'candle1m'
+  | 'candle5m'
+  | 'candle15m'
+  | 'candle30m'
+  | 'candle1H'
+  | 'candle4H'
+  | 'candle6H'
+  | 'candle12H'
+  | 'candle1D'
+  | 'candle3D'
+  | 'candle1W'
+  | 'candle1M'
+  | 'candle6Hutc'
+  | 'candle12Hutc'
+  | 'candle1Dutc'
+  | 'candle3Dutc'
+  | 'candle1Wutc'
+  | 'candle1Mutc'
+  | 'trade'
+  | 'books'
+  | 'books1'
+  | 'books5'
+  | 'books15';
+⋮----
+| 'index-price' // margin only
+⋮----
+// Also update PRIVATE_TOPICS_V2 if this is updated
+export type WSPrivateTopicFuturesV2 =
+  | 'positions'
+  | 'orders-algo'
+  | 'positions-history';
+⋮----
+// Also update PRIVATE_TOPICS_V2 if this is updated
+export type WSPrivateTopicMarginV2 =
+  | 'orders-crossed'
+  | 'account-crossed'
+  | 'account-isolated'
+  | 'orders-isolated';
+⋮----
+// Also update PRIVATE_TOPICS_V2 if this is updated
+export type WsPrivateTopicV2 =
+  | 'account'
+  | 'orders'
+  | WSPrivateTopicFuturesV2
+  | WSPrivateTopicMarginV2;
+⋮----
+export type WsTopicV2 = WsPublicTopicV2 | WsPrivateTopicV2;
+⋮----
+/**
+ *
+ * V3 / UTA list of topics for WebSocket consumers
+ *
+ */
+export type WsPublicTopicV3 = 'ticker' | 'kline' | 'books' | 'publicTrade';
+// Also update PRIVATE_TOPICS_V3 if this is updated
+export type WsPrivateTopicV3 =
+  | 'account'
+  | 'position'
+  | 'fill'
+  | 'order'
+  | 'strategy-order';
+export type WsTopicV3 = WsPublicTopicV3 | WsPrivateTopicV3;
+⋮----
+/** This is used to differentiate between each of the available websocket streams */
+export type WsKey = (typeof WS_KEY_MAP)[keyof typeof WS_KEY_MAP];
+⋮----
+/**
+ * Event args for subscribing/unsubscribing
+ */
+⋮----
+export interface WsTopicSubscribeEventArgs {
+  instType: BitgetInstType;
+  channel: WsTopic;
+  instId?: string;
+}
+⋮----
+export type WsTopicSubscribePublicArgsV2 = {
+  instType: BitgetInstTypeV2;
+  channel: WsPublicTopicV2;
+  /** The symbol, e.g. "BTCUSDT" */
+  instId: string;
+};
+⋮----
+/** The symbol, e.g. "BTCUSDT" */
+⋮----
+export type WsInstIdChannelsV2 =
+  | 'orders'
+  | WSPrivateTopicFuturesV2
+  | 'orders-crossed'
+  | 'orders-isolated';
+⋮----
+export type WsTopicSubscribePrivateInstIdArgsV2 = {
+  instType: BitgetInstTypeV2;
+  channel: WsInstIdChannelsV2;
+  /** The symbol, e.g. "BTCUSDT" */
+  instId?: string;
+};
+⋮----
+/** The symbol, e.g. "BTCUSDT" */
+⋮----
+export type WsCoinChannelsV2 =
+  | 'account'
+  | 'account-crossed'
+  | 'account-isolated';
+⋮----
+export type WsTopicSubscribePrivateCoinArgsV2 = {
+  instType: BitgetInstTypeV2;
+  channel: WsCoinChannelsV2;
+  coin: 'default' | string;
+};
+⋮----
+export type WsTopicSubscribePrivateArgsV2 =
+  | WsTopicSubscribePrivateInstIdArgsV2
+  | WsTopicSubscribePrivateCoinArgsV2;
+⋮----
+export type WsTopicSubscribeEventArgsV2 =
+  | WsTopicSubscribePublicArgsV2
+  | WsTopicSubscribePrivateArgsV2;
+⋮----
+/** General configuration for the WebsocketClient */
+export interface WSClientConfigurableOptions {
+  /** Your API key */
+  apiKey?: string;
+
+  /** Your API secret */
+  apiSecret?: string;
+
+  /** The passphrase you set when creating the API Key (NOT your account password) */
+  apiPass?: string;
+
+  /**
+   * Set to `true` to connect to Bitget's demo trading WebSockets:
+   *
+   * - V2: https://www.bitget.com/api-doc/common/demotrading/websocket
+   * - V3/UTA: https://www.bitget.com/api-doc/uta/guide#demo-trading
+   */
+  demoTrading?: boolean;
+
+  /** Define a recv window when preparing a private websocket signature. This is in milliseconds, so 5000 == 5 seconds */
+  recvWindow?: number;
+
+  // Disable ping/pong ws heartbeat mechanism (not recommended)
+  disableHeartbeat?: boolean;
+
+  /** How often to check if the connection is alive */
+  pingInterval?: number;
+
+  /** How long to wait for a pong (heartbeat reply) before assuming the connection is dead */
+  pongTimeout?: number;
+
+  /** Delay in milliseconds before respawning the connection */
+  reconnectTimeout?: number;
+
+  requestOptions?: RestClientOptions;
+
+  wsOptions?: {
+    protocols?: string[];
+    agent?: any;
+  } & Partial<WebSocket.ClientOptions | ClientRequestArgs>;
+
+  wsUrl?: string;
+
+  /**
+   * Allows you to provide a custom "signMessage" function, e.g. to use node's much faster createHmac method
+   *
+   * Look in the examples folder for a demonstration on using node's createHmac instead.
+   */
+  customSignMessageFn?: (message: string, secret: string) => Promise<string>;
+}
+⋮----
+/** Your API key */
+⋮----
+/** Your API secret */
+⋮----
+/** The passphrase you set when creating the API Key (NOT your account password) */
+⋮----
+/**
+   * Set to `true` to connect to Bitget's demo trading WebSockets:
+   *
+   * - V2: https://www.bitget.com/api-doc/common/demotrading/websocket
+   * - V3/UTA: https://www.bitget.com/api-doc/uta/guide#demo-trading
+   */
+⋮----
+/** Define a recv window when preparing a private websocket signature. This is in milliseconds, so 5000 == 5 seconds */
+⋮----
+// Disable ping/pong ws heartbeat mechanism (not recommended)
+⋮----
+/** How often to check if the connection is alive */
+⋮----
+/** How long to wait for a pong (heartbeat reply) before assuming the connection is dead */
+⋮----
+/** Delay in milliseconds before respawning the connection */
+⋮----
+/**
+   * Allows you to provide a custom "signMessage" function, e.g. to use node's much faster createHmac method
+   *
+   * Look in the examples folder for a demonstration on using node's createHmac instead.
+   */
+⋮----
+export interface WebsocketClientOptions extends WSClientConfigurableOptions {
+  pingInterval: number;
+  pongTimeout: number;
+  reconnectTimeout: number;
+  recvWindow: number;
+  authPrivateConnectionsOnConnect: boolean;
+  authPrivateRequests: boolean;
+}
+
+================
+File: src/index.ts
+================
+
 
 ================
 File: README.md
@@ -10802,6 +11391,7 @@ import {
 import {
   ConvertQuoteRequestV2,
   ConvertRequestV2,
+  CreateAgentSubaccountRequestV2,
   CreateVirtualSubApiKeyRequestV2,
   CreateVirtualSubRequestV2,
   GetAnnouncementsRequestV2,
@@ -10842,7 +11432,6 @@ import {
 } from './types/request/v2/copytrading.js';
 import {
   BorrowLoanRequestV2,
-  RedeemEarnEliteRequestV2,
   EarnEliteSubscribeRequestV2,
   GetEarnEliteRecordsRequestV2,
   GetEarnEliteRedeemInfoRequestV2,
@@ -10858,6 +11447,7 @@ import {
   GetSharkfinAssetsRequestV2,
   GetSharkfinRecordsRequestV2,
   ModifyLoanPledgeRateRequestV2,
+  RedeemEarnEliteRequestV2,
   RedeemSavingsRequestV2,
   RepayLoanRequestV2,
 } from './types/request/v2/earn.js';
@@ -10981,6 +11571,7 @@ import {
   ConvertQuotedPriceV2,
   ConvertRecordV2,
   ConvertTradeResponseV2,
+  CreateAgentSubaccountV2,
   CreateVirtualSubAccountAndApiKeyV2,
   CreateVirtualSubAccountApiKeyV2,
   CreateVirtualSubAccountV2,
@@ -11035,7 +11626,6 @@ import {
   EarnEliteProductV2,
   EarnEliteRecordsV2,
   EarnEliteRedeemInfoV2,
-  RedeemEarnEliteResultV2,
   EarnEliteSubscribeInfoV2,
   EarnEliteSubscribeResultV2,
   EarnEliteSubscribeStatusV2,
@@ -11057,6 +11647,7 @@ import {
   EarnSharkfinProductsV2,
   EarnSharkfinRecordsV2,
   EarnSharkfinSubscriptionDetailV2,
+  RedeemEarnEliteResultV2,
 } from './types/response/v2/earn.js';
 import {
   FuturesAccountBillV2,
@@ -11400,6 +11991,14 @@ modifyVirtualSubaccountAPIKey(
 getVirtualSubaccountAPIKeys(params: {
     subAccountUid: string;
 }): Promise<APIResponse<SubAccountApiKeyItemV2[]>>
+⋮----
+/**
+   * Create a dedicated sub-account for an AI Agent instance.
+   * Frequency limit: 1/s per UID. Agent sub-accounts cannot be edited after creation.
+   */
+createAgentSubaccount(
+    params: CreateAgentSubaccountRequestV2,
+): Promise<APIResponse<CreateAgentSubaccountV2>>
 ⋮----
 /**
    *
@@ -12476,6 +13075,9 @@ getAgentCustomerCommissions(
     params?: GetAgentCustomerCommissionsRequestV2,
 ): Promise<APIResponse<AgentCustomerCommissionsV2>>
 ⋮----
+/**
+   * Without startTime/endTime, returns all registered sub-customers (no time restriction).
+   */
 getAgentSubCustomerList(
     params?: GetAgentSubCustomerListRequestV2,
 ): Promise<APIResponse<AgentSubCustomerListV2>>
@@ -12484,6 +13086,9 @@ getAgentCustomerTradeVolume(
     params?: AgentCustomerTradeVolumeRequestV2,
 ): Promise<APIResponse<AgentCustomerTradeVolumeItemV2[]>>
 ⋮----
+/**
+   * Without startTime/endTime, returns all registered customers (no time restriction).
+   */
 getAgentCustomerList(
     params?: AgentCustomerListRequestV2,
 ): Promise<APIResponse<AgentCustomerListItemV2[]>>
@@ -13352,6 +13957,8 @@ getLoanLiquidationRecords(
 File: src/rest-client-v3.ts
 ================
 import {
+  AdjustAccountModeRequestV3,
+  CancelWithdrawalRequestV3,
   CreateSubAccountApiKeyRequestV3,
   CreateSubAccountRequestV3,
   DeleteSubAccountApiKeyRequestV3,
@@ -13372,6 +13979,7 @@ import {
   GetSubUnifiedAssetsRequestV3,
   GetTaxRecordsRequestV3,
   GetTransferableCoinsRequestV3,
+  GetWithdrawAddressBookRequestV3,
   GetWithdrawRecordsRequestV3,
   RepayRequestV3,
   SetDepositAccountRequestV3,
@@ -13396,12 +14004,17 @@ import {
   ModifyBrokerSubApiKeyRequestV3,
 } from './types/request/v3/broker.js';
 import {
-  RedeemEarnEliteRequestV3,
+  CopyFuturesTransferRequestV3,
+  GetCopyFuturesMaxTransferableRequestV3,
+  GetCopyFuturesTransferRecordRequestV3,
+} from './types/request/v3/copytrading.js';
+import {
   EarnEliteSubscribeRequestV3,
   GetEarnEliteRecordsRequestV3,
   GetEarnEliteRedeemInfoRequestV3,
   GetEarnEliteSubscribeInfoRequestV3,
   GetEarnEliteSubscribeResultRequestV3,
+  RedeemEarnEliteRequestV3,
 } from './types/request/v3/earn.js';
 import {
   BindUidRequestV3,
@@ -13423,6 +14036,22 @@ import {
   LoanRepayRequestV3,
   LoanRevisePledgeRequestV3,
 } from './types/request/v3/loan.js';
+import {
+  CreateP2pAdRequestV3,
+  GetP2pAdInfoRequestV3,
+  GetP2pAdLimitRequestV3,
+  GetP2pAdListRequestV3,
+  GetP2pAllOrdersRequestV3,
+  GetP2pBalanceRequestV3,
+  GetP2pExchangeRateRequestV3,
+  GetP2pMyAdsRequestV3,
+  GetP2pOrderInfoRequestV3,
+  GetP2pPendingOrdersRequestV3,
+  OperateP2pAdRequestV3,
+  P2pFeeSimulateRequestV3,
+  P2pOrderActionRequestV3,
+  UpdateP2pAdRequestV3,
+} from './types/request/v3/p2p.js';
 import {
   GetCandlesRequestV3,
   GetContractsOiRequestV3,
@@ -13469,6 +14098,8 @@ import {
 } from './types/request/v3/trade.js';
 import {
   AccountAssetsV3,
+  AccountDeltaInfoV3,
+  AccountInfoV3,
   AccountSettingsV3,
   ConvertRecordV3,
   CreateSubAccountApiKeyResponseV3,
@@ -13489,6 +14120,7 @@ import {
   TaxRecordV3,
   TransferResponseV3,
   UpdateSubAccountApiKeyResponseV3,
+  WithdrawAddressBookV3,
   WithdrawRecordV3,
   WithdrawResponseV3,
 } from './types/response/v3/account.js';
@@ -13505,18 +14137,21 @@ import {
   ModifyBrokerSubApiKeyResponseV3,
 } from './types/response/v3/broker.js';
 import {
+  CopyFuturesMaxTransferableV3,
   CopyFuturesPositionSummaryV3,
   CopyFuturesTradingPairV3,
+  CopyFuturesTransferRecordListV3,
+  CopyFuturesTransferResponseV3,
 } from './types/response/v3/copytrading.js';
 import {
   EarnEliteAssetsV3,
   EarnEliteProductV3,
   EarnEliteRecordsV3,
   EarnEliteRedeemInfoV3,
-  RedeemEarnEliteResultV3,
   EarnEliteSubscribeInfoV3,
   EarnEliteSubscribeResultV3,
   EarnEliteSubscribeStatusV3,
+  RedeemEarnEliteResultV3,
 } from './types/response/v3/earn.js';
 import {
   BindUidResponseV3,
@@ -13539,6 +14174,22 @@ import {
   LTVConvertResponseV3,
   RepaidHistoryItemV3,
 } from './types/response/v3/loan.js';
+import {
+  P2pAdInfoV3,
+  P2pAdLimitV3,
+  P2pBalanceV3,
+  P2pCreateAdResponseV3,
+  P2pCurrenciesV3,
+  P2pCursorListV3,
+  P2pExchangeRateV3,
+  P2pFeeSimulateV3,
+  P2pMyAdListItemV3,
+  P2pOrderInfoV3,
+  P2pOrderListItemV3,
+  P2pPayMethodV3,
+  P2pPublicAdListItemV3,
+  P2pUserInfoV3,
+} from './types/response/v3/p2p.js';
 import {
   CandlestickV3,
   ContractOiV3,
@@ -13796,6 +14447,30 @@ getCopyFuturesPositionSummary(): Promise<
     return this.getPrivate('/api/v3/copy/futures/position-summary');
 ⋮----
 /**
+   * Get max transferable amount and available balance for the copy-trading lead account.
+   * Rate limit: 1/sec/UID.
+   */
+getCopyFuturesMaxTransferable(
+    params: GetCopyFuturesMaxTransferableRequestV3,
+): Promise<APIResponse<CopyFuturesMaxTransferableV3>>
+⋮----
+/**
+   * Transfer funds between spot/funding and the copy-trading lead account.
+   * Rate limit: 1/sec/UID.
+   */
+copyFuturesTransfer(
+    params: CopyFuturesTransferRequestV3,
+): Promise<APIResponse<CopyFuturesTransferResponseV3>>
+⋮----
+/**
+   * Query copy-trading lead account transfer history.
+   * Rate limit: 1/sec/UID.
+   */
+getCopyFuturesTransferRecords(
+    params?: GetCopyFuturesTransferRecordRequestV3,
+): Promise<APIResponse<CopyFuturesTransferRecordListV3>>
+⋮----
+/**
    *
    * =====Account======= endpoints
    *
@@ -13814,9 +14489,29 @@ getFundingAssets(
 ): Promise<APIResponse<FundingAssetV3[]>>
 ⋮----
 /**
-   * Get Account Info
+   * Query account metadata (UID, inviter, parent account, channel, IP whitelist, permissions).
+   * Rate limit: 5/sec/UID
+   */
+getAccountInfo(): Promise<APIResponse<AccountInfoV3>>
+⋮----
+/**
+   * Get account settings (hold mode, margin mode, leverage, symbol/coin config).
+   * Rate limit: 20/sec/UID
    */
 getAccountSettings(): Promise<APIResponse<AccountSettingsV3>>
+⋮----
+/**
+   * Switch account level (basic / advanced / delta-neutral). Rate limit: 1/sec/UID.
+   */
+adjustAccountMode(
+    params: AdjustAccountModeRequestV3,
+): Promise<APIResponse<null>>
+⋮----
+/**
+   * Delta-neutral metrics (equity ratio, thresholds, per-coin position ratios).
+   * Only available when the account is in delta-neutral mode. Rate limit: 20/sec/UID.
+   */
+getDeltaInfo(): Promise<APIResponse<AccountDeltaInfoV3>>
 ⋮----
 /**
    * Set Leverage
@@ -14137,6 +14832,20 @@ submitWithdraw(
 getWithdrawRecords(
     params: GetWithdrawRecordsRequestV3,
 ): Promise<APIResponse<WithdrawRecordV3[]>>
+⋮----
+/**
+   * Query the withdrawal address book. Rate limit: 1/sec/UID.
+   */
+getWithdrawAddressBook(
+    params?: GetWithdrawAddressBookRequestV3,
+): Promise<APIResponse<WithdrawAddressBookV3>>
+⋮----
+/**
+   * Cancel a withdrawal still in the cooling-off period. Rate limit: 1/sec/UID.
+   */
+cancelWithdrawal(
+    params: CancelWithdrawalRequestV3,
+): Promise<APIResponse<string>>
 ⋮----
 /**
    *
@@ -14607,6 +15316,74 @@ getBrokerSubApiKey(
 ⋮----
 /**
    *
+   * =====P2P Merchant (UTA)=====
+   *
+   */
+⋮----
+getP2pAdList(
+    params: GetP2pAdListRequestV3,
+): Promise<APIResponse<P2pPublicAdListItemV3[]>>
+⋮----
+getP2pExchangeRate(
+    params: GetP2pExchangeRateRequestV3,
+): Promise<APIResponse<P2pExchangeRateV3>>
+⋮----
+simulateP2pFee(
+    params: P2pFeeSimulateRequestV3,
+): Promise<APIResponse<P2pFeeSimulateV3>>
+⋮----
+getP2pAdLimit(
+    params: GetP2pAdLimitRequestV3,
+): Promise<APIResponse<P2pAdLimitV3>>
+⋮----
+createP2pAd(
+    params: CreateP2pAdRequestV3,
+): Promise<APIResponse<P2pCreateAdResponseV3>>
+⋮----
+updateP2pAd(params: UpdateP2pAdRequestV3): Promise<APIResponse<string>>
+⋮----
+operateP2pAd(params: OperateP2pAdRequestV3): Promise<APIResponse<string>>
+⋮----
+getP2pAdInfo(
+    params: GetP2pAdInfoRequestV3,
+): Promise<APIResponse<P2pAdInfoV3>>
+⋮----
+getP2pMyAds(
+    params?: GetP2pMyAdsRequestV3,
+): Promise<APIResponse<P2pCursorListV3<P2pMyAdListItemV3>>>
+⋮----
+getP2pPendingOrders(
+    params?: GetP2pPendingOrdersRequestV3,
+): Promise<APIResponse<P2pCursorListV3<P2pOrderListItemV3>>>
+⋮----
+getP2pAllOrders(
+    params?: GetP2pAllOrdersRequestV3,
+): Promise<APIResponse<P2pCursorListV3<P2pOrderListItemV3>>>
+⋮----
+getP2pOrderInfo(
+    params: GetP2pOrderInfoRequestV3,
+): Promise<APIResponse<P2pOrderInfoV3>>
+⋮----
+confirmP2pOrderPayment(
+    params: P2pOrderActionRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+releaseP2pOrderAsset(
+    params: P2pOrderActionRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+getP2pUserInfo(): Promise<APIResponse<P2pUserInfoV3>>
+⋮----
+getP2pCurrencies(): Promise<APIResponse<P2pCurrenciesV3>>
+⋮----
+getP2pPayMethods(): Promise<APIResponse<P2pPayMethodV3[]>>
+⋮----
+getP2pBalance(
+    params: GetP2pBalanceRequestV3,
+): Promise<APIResponse<P2pBalanceV3>>
+⋮----
+/**
+   *
    * =====Earn | On-Chain Elite (UTA)=====
    *
    */
@@ -14644,7 +15421,7 @@ File: package.json
 ================
 {
   "name": "bitget-api",
-  "version": "3.1.7",
+  "version": "3.1.8",
   "description": "Complete Node.js & JavaScript SDK for Bitget V1-V3 REST APIs & WebSockets, with TypeScript & end-to-end tests.",
   "scripts": {
     "test": "jest",

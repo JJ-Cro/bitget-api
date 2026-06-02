@@ -113,6 +113,7 @@ export const PRIVATE_TOPICS_V3: WsPrivateTopicV3[] = [
   'position',
   'fill',
   'order',
+  'strategy-order',
 ];
 
 export async function getWsUrl(

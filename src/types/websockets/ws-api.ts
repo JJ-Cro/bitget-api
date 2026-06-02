@@ -86,6 +86,8 @@ export interface WSAPIResponse<
   code: '0' | string;
   msg: 'success' | string;
   ts: string;
+  /** Connection ID (trade operation responses, May 2026+) */
+  connId?: string;
 }
 
 /**

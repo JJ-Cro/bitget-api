@@ -1,5 +1,13 @@
 // Account Management Request Types
 
+export type AccountAdjustModeV3 = 'basic' | 'advanced' | 'delta' | 'isolated';
+
+export interface AdjustAccountModeRequestV3 {
+  mode: AccountAdjustModeV3;
+  /** Sub-account UID when the master account switches mode for a sub-account */
+  targetUid?: string;
+}
+
 export interface SetLeverageRequestV3 {
   category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
   symbol?: string;
@@ -253,6 +261,18 @@ export interface GetWithdrawRecordsRequestV3 {
   endTime: string;
   limit?: string;
   cursor?: string;
+}
+
+export interface GetWithdrawAddressBookRequestV3 {
+  coin?: string;
+  type?: 'EVM' | 'regular' | 'universal' | 'internal';
+  limit?: string;
+  cursor?: string;
+}
+
+export interface CancelWithdrawalRequestV3 {
+  orderId?: string;
+  clientOid?: string;
 }
 
 export interface SetDepositAccountRequestV3 {

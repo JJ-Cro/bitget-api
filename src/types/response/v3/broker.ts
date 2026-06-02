@@ -82,7 +82,7 @@ export interface CreateBrokerSubApiKeyResponseV3 {
   label: string;
   apiKey: string;
   secretKey: string;
-  permType: 'read_and_write' | 'readonly';
+  permType: 'read_write' | 'read_only';
   permList: string[];
   ipList: string[] | null;
 }
@@ -91,7 +91,7 @@ export interface ModifyBrokerSubApiKeyResponseV3 {
   subUid: string;
   label: string;
   apiKey: string;
-  permType: 'read_and_write' | 'readonly';
+  permType: 'read_write' | 'read_only';
   permList: string[];
   ipList: string[];
 }
@@ -101,7 +101,7 @@ export interface GetBrokerSubApiKeyResponseV3 {
   label: string;
   apiKey: string;
   secretKey: string;
-  permType: 'read_and_write' | 'readonly';
+  permType: 'read_write' | 'read_only';
   permList: string[];
   ipList: string[] | null;
 }

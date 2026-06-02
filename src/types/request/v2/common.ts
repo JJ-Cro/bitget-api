@@ -143,6 +143,14 @@ export interface ModifyVirtualSubApiKeyRequestV2 {
   permList?: string[];
 }
 
+export interface CreateAgentSubaccountRequestV2 {
+  /** Lowercase letters only; max 20 characters */
+  username: string;
+  /** 8–32 characters, letters and numbers */
+  passphrase: string;
+  note?: string;
+}
+
 /**
  *
  * * Common | Convert
