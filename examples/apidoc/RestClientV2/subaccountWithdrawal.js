@@ -1,7 +1,6 @@
 import { RestClientV2 } from 'bitget-api';
-// or if you want to use the require syntax
+// or, if require is preferred:
 // const { RestClientV2 } = require('bitget-api');
-
 
 // This example shows how to call this Bitget API endpoint with either node.js, javascript (js) or typescript (ts) with the npm module "bitget-api" for Bitget exchange
 // This Bitget API SDK is available on npm via "npm install bitget-api"
