@@ -111,7 +111,9 @@ describe('Bitget Private REST API Write Endpoints', () => {
         expect(res).toMatchObject(sucessEmptyResponseObject());
       } catch (e) {
         expect(e).toMatchObject(
-          errorResponseObjectV3(API_ERROR_CODE.EXCEEDS_MAX_AMOUNT_TRANSFERRED),
+          errorResponseObjectV3(
+            API_ERROR_CODE.EXCEEDS_MAX_AMOUNT_TRANSFERRED_V2,
+          ),
         ); // Exceeds the maximum amount that can be transferred
       }
     });
