@@ -1,6 +1,6 @@
 {
   "name": "bitget-api",
-  "version": "3.1.8",
+  "version": "3.1.9",
   "description": "Complete Node.js & JavaScript SDK for Bitget V1-V3 REST APIs & WebSockets, with TypeScript & end-to-end tests.",
   "scripts": {
     "test": "jest",
@@ -52,9 +52,7 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
-  },
-  "optionalDependencies": {
+    "typescript": "^5.7.3",
     "source-map-loader": "^4.0.0",
     "ts-loader": "^9.5.4",
     "webpack": "^5.74.0",
