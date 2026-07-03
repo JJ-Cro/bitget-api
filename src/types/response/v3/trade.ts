@@ -64,6 +64,7 @@ export interface OrderInfoV3 {
   orderStatus: string;
   posSide: string;
   holdMode: string;
+  delegateType?: string;
   reduceOnly: string;
   feeDetail: FeeDetailV3[];
   cancelReason: string;
@@ -202,6 +203,19 @@ export interface CurrentPositionV3 {
   closeFeeTotal: string;
   createdTime: string;
   updatedTime: string;
+}
+
+export interface LoanDataDebtCoinV3 {
+  coin: string;
+  debt: string;
+  interestFreeAmount: string;
+  interestRateNextHour: string;
+}
+
+export interface LoanDataV3 {
+  currentLoans: string;
+  interestPaymentTime: string;
+  debtCoinList: LoanDataDebtCoinV3[];
 }
 
 export interface ModifyOrderResponseV3 {

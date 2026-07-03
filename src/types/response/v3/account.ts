@@ -1,4 +1,6 @@
 // Account Management Response Types
+import type { CollateralTypeV3 } from '../../request/v3/account.js';
+
 export interface AccountSymbolConfigV3 {
   category: string;
   symbol: string;
@@ -65,6 +67,10 @@ export interface AccountAssetV3 {
   available: string;
   debt: string;
   locked: string;
+  /** Position value in USD */
+  positionValue?: string;
+  /** Account leverage (non-negative) */
+  leverage?: string;
 }
 
 export interface AccountAssetsV3 {
@@ -101,6 +107,10 @@ export interface FinancialRecordV3 {
   fee: string;
   balance: string;
   ts: string;
+  /** crossed | isolated */
+  positionType?: string;
+  positionAmount?: string;
+  positionBalance?: string;
 }
 
 export interface PaymentCoinV3 {
@@ -186,8 +196,15 @@ export interface WithdrawAddressBookV3 {
 
 // Transfer Response Types
 
+export interface AllSymbolFeeRateV3 {
+  symbol: string;
+  makerFeeRate: string;
+  takerFeeRate: string;
+}
+
 export interface TransferResponseV3 {
   transferId: string;
+  clientOid?: string;
 }
 
 export interface SubTransferRecordV3 {
@@ -305,4 +322,29 @@ export interface TaxRecordV3 {
   fee: string;
   balance: string;
   ts: string;
+}
+
+export interface CollateralTypeConfigV3 {
+  collateralType: CollateralTypeV3;
+  /** Returned when collateralType=custom */
+  collateralCoins?: string;
+}
+
+export interface CustomCollateralCoinV3 {
+  collateralCoin: string;
+}
+
+export interface PreSetLeverageV3 {
+  estMaxOpen?: string;
+  estMaxBorrowable?: string;
+  requiredMargin: string;
+  marginChange: string;
+}
+
+export interface MaxWithdrawalV3 {
+  coin: string;
+  otcMaxWithdrawal: string;
+  spotMaxWithdrawal: string;
+  utaMaxWithdrawal: string;
+  totalMaxWithdrawal: string;
 }

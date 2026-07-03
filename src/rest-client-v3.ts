@@ -5,6 +5,7 @@ import {
   CreateSubAccountRequestV3,
   DeleteSubAccountApiKeyRequestV3,
   FreezeSubAccountRequestV3,
+  GetAllFeeRatesRequestV3,
   GetConvertRecordsRequestV3,
   GetDepositAddressRequestV3,
   GetDepositRecordsRequestV3,
@@ -12,6 +13,7 @@ import {
   GetFinancialRecordsRequestV3,
   GetFundingAssetsRequestV3,
   GetMaxTransferableRequestV3,
+  GetMaxWithdrawalRequestV3,
   GetOpenInterestLimitRequestV3,
   GetSubAccountApiKeysRequestV3,
   GetSubAccountListRequestV3,
@@ -23,9 +25,12 @@ import {
   GetTransferableCoinsRequestV3,
   GetWithdrawAddressBookRequestV3,
   GetWithdrawRecordsRequestV3,
+  PreSetLeverageRequestV3,
   RepayRequestV3,
+  SetCollateralTypeRequestV3,
   SetDepositAccountRequestV3,
   SetLeverageRequestV3,
+  SetMarginRequestV3,
   SubAccountTransferRequestV3,
   SwitchDeductRequestV3,
   TransferRequestV3,
@@ -96,13 +101,19 @@ import {
 } from './types/request/v3/p2p.js';
 import {
   GetCandlesRequestV3,
+  GetCashDividendRecordsRequestV3,
   GetContractsOiRequestV3,
   GetCurrentFundingRateRequestV3,
+  GetFuturesTradingDataRequestV3,
   GetHistoryCandlesRequestV3,
   GetHistoryFundingRateRequestV3,
   GetIndexComponentsRequestV3,
   GetInstrumentsRequestV3,
+  GetLiquidationsRequestV3,
+  GetMarginIsolatedBorrowRequestV3,
+  GetMarginLoanGrowthRequestV3,
   GetMarginLoansRequestV3,
+  GetMarginLongShortRequestV3,
   GetMarketFeeGroupRequestV3,
   GetMarketScoreWeightsRequestV3,
   GetOpenInterestRequestV3,
@@ -111,6 +122,10 @@ import {
   GetPublicFillsRequestV3,
   GetRiskReserveAllRequestV3,
   GetRiskReserveRequestV3,
+  GetRpiOrderBookRequestV3,
+  GetSpotFundFlowRequestV3,
+  GetSpotNetFlowRequestV3,
+  GetSpotWhaleFlowRequestV3,
   GetTickersRequestV3,
 } from './types/request/v3/public.js';
 import {
@@ -125,6 +140,7 @@ import {
   CancelAllOrdersRequestV3,
   CancelBatchOrdersRequestV3,
   CancelOrderRequestV3,
+  CancelRealityOrderRequestV3,
   CloseAllPositionsRequestV3,
   CountdownCancelAllRequestV3,
   GetCurrentPositionRequestV3,
@@ -137,22 +153,28 @@ import {
   ModifyOrderRequestV3,
   PlaceBatchOrdersRequestV3,
   PlaceOrderRequestV3,
+  PlaceRealityOrderRequestV3,
 } from './types/request/v3/trade.js';
 import {
   AccountAssetsV3,
   AccountDeltaInfoV3,
   AccountInfoV3,
   AccountSettingsV3,
+  AllSymbolFeeRateV3,
+  CollateralTypeConfigV3,
   ConvertRecordV3,
   CreateSubAccountApiKeyResponseV3,
   CreateSubAccountResponseV3,
+  CustomCollateralCoinV3,
   DepositAddressV3,
   DepositRecordV3,
   FinancialRecordV3,
   FundingAssetV3,
   MaxTransferableV3,
+  MaxWithdrawalV3,
   OpenInterestLimitV3,
   PaymentCoinV3,
+  PreSetLeverageV3,
   RepayableCoinV3,
   RepayResponseV3,
   SubAccountApiKeyV3,
@@ -234,13 +256,22 @@ import {
 } from './types/response/v3/p2p.js';
 import {
   CandlestickV3,
+  CashDividendRecordV3,
   ContractOiV3,
   CurrentFundingRateV3,
   DiscountRateV3,
+  FuturesAccountLongShortV3,
+  FuturesActiveBuySellV3,
+  FuturesLongShortV3,
+  FuturesPositionLongShortV3,
   HistoryFundingRateV3,
   IndexPriceComponentsV3,
   InstrumentV3,
+  LiquidationsV3,
+  MarginIsolatedBorrowV3,
+  MarginLoanGrowthV3,
   MarginLoanV3,
+  MarginLongShortV3,
   MarketFeeGroupV3,
   MarketScoreWeightV3,
   OpenInterestV3,
@@ -251,6 +282,11 @@ import {
   RiskReserveAllV3,
   RiskReserveHourV3,
   RiskReserveV3,
+  RpiOrderBookV3,
+  RpiSymbolV3,
+  SpotFundFlowV3,
+  SpotNetFlowV3,
+  SpotWhaleFlowV3,
   TickerV3,
 } from './types/response/v3/public.js';
 import {
@@ -268,6 +304,7 @@ import {
   FillV3,
   GetMaxOpenAvailableResponseV3,
   HistoryOrderV3,
+  LoanDataV3,
   ModifyOrderResponseV3,
   OrderInfoV3,
   PlaceBatchOrdersResponseV3,
@@ -392,6 +429,130 @@ export class RestClientV3 extends BaseRestClient {
     params: GetMarketFeeGroupRequestV3,
   ): Promise<APIResponse<MarketFeeGroupV3[]>> {
     return this.get('/api/v3/market/fee-group', params);
+  }
+
+  /**
+   * Get Liquidations History - Query historical liquidation order data (last 3 days)
+   */
+  getLiquidations(
+    params: GetLiquidationsRequestV3,
+  ): Promise<APIResponse<LiquidationsV3>> {
+    return this.get('/api/v3/market/liquidations', params);
+  }
+
+  /**
+   * Get RPI Symbols - Trading pairs supporting Retail Price Improvement
+   */
+  getRpiSymbols(): Promise<APIResponse<RpiSymbolV3[]>> {
+    return this.get('/api/v3/market/rpi-symbols');
+  }
+
+  /**
+   * Get RPI OrderBook - Depth with RPI and non-RPI quantities per price level
+   */
+  getRpiOrderBook(
+    params: GetRpiOrderBookRequestV3,
+  ): Promise<APIResponse<RpiOrderBookV3>> {
+    return this.get('/api/v3/market/rpi-orderbook', params);
+  }
+
+  /**
+   * Get Cash Dividend Records - RWA stock futures cash dividend records
+   */
+  getCashDividendRecords(
+    params: GetCashDividendRecordsRequestV3,
+  ): Promise<APIResponse<CashDividendRecordV3[]>> {
+    return this.get('/api/v3/market/cash-dividend-records', params);
+  }
+
+  /**
+   * Get Spot Whale Net Flow Data
+   */
+  getSpotWhaleFlow(
+    params: GetSpotWhaleFlowRequestV3,
+  ): Promise<APIResponse<SpotWhaleFlowV3[]>> {
+    return this.get('/api/v3/market/spot-whale-flow', params);
+  }
+
+  /**
+   * Get Spot Fund Flow Data
+   */
+  getSpotFundFlow(
+    params: GetSpotFundFlowRequestV3,
+  ): Promise<APIResponse<SpotFundFlowV3>> {
+    return this.get('/api/v3/market/spot-fund-flow', params);
+  }
+
+  /**
+   * Get Spot 24H Net Capital Inflow Data
+   */
+  getSpotNetFlow(
+    params: GetSpotNetFlowRequestV3,
+  ): Promise<APIResponse<SpotNetFlowV3[]>> {
+    return this.get('/api/v3/market/spot-net-flow', params);
+  }
+
+  /**
+   * Get Margin Long Short Ratio Data
+   */
+  getMarginLongShort(
+    params: GetMarginLongShortRequestV3,
+  ): Promise<APIResponse<MarginLongShortV3[]>> {
+    return this.get('/api/v3/market/margin-long-short', params);
+  }
+
+  /**
+   * Get Margin Loan Growth Rate Data
+   */
+  getMarginLoanGrowth(
+    params: GetMarginLoanGrowthRequestV3,
+  ): Promise<APIResponse<MarginLoanGrowthV3[]>> {
+    return this.get('/api/v3/market/margin-loan-growth', params);
+  }
+
+  /**
+   * Get Isolated Margin Borrowing Ratio Data
+   */
+  getMarginIsolatedBorrow(
+    params: GetMarginIsolatedBorrowRequestV3,
+  ): Promise<APIResponse<MarginIsolatedBorrowV3[]>> {
+    return this.get('/api/v3/market/margin-isolated-borrow', params);
+  }
+
+  /**
+   * Get Futures Active Buy Sell Volume Data
+   */
+  getFuturesActiveBuySell(
+    params: GetFuturesTradingDataRequestV3,
+  ): Promise<APIResponse<FuturesActiveBuySellV3[]>> {
+    return this.get('/api/v3/market/futures-active-buy-sell', params);
+  }
+
+  /**
+   * Get Futures Long Short Ratio Data
+   */
+  getFuturesLongShort(
+    params: GetFuturesTradingDataRequestV3,
+  ): Promise<APIResponse<FuturesLongShortV3[]>> {
+    return this.get('/api/v3/market/futures-long-short', params);
+  }
+
+  /**
+   * Get Futures Active Long Short Position Data
+   */
+  getFuturesPositionLongShort(
+    params: GetFuturesTradingDataRequestV3,
+  ): Promise<APIResponse<FuturesPositionLongShortV3[]>> {
+    return this.get('/api/v3/market/futures-position-long-short', params);
+  }
+
+  /**
+   * Get Futures Active Long Short Account Data
+   */
+  getFuturesAccountLongShort(
+    params: GetFuturesTradingDataRequestV3,
+  ): Promise<APIResponse<FuturesAccountLongShortV3[]>> {
+    return this.get('/api/v3/market/futures-account-long-short', params);
   }
 
   /**
@@ -681,6 +842,54 @@ export class RestClientV3 extends BaseRestClient {
   }
 
   /**
+   * Get Collateral Type - Query unified account collateral configuration
+   */
+  getCollateralType(): Promise<APIResponse<CollateralTypeConfigV3>> {
+    return this.getPrivate('/api/v3/account/collateral-type');
+  }
+
+  /**
+   * Set Collateral Type - Configure unified account collateral type
+   */
+  setCollateralType(
+    params: SetCollateralTypeRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/account/set-collateral-type', params);
+  }
+
+  /**
+   * Get Custom Collateral Coins - Platform-supported custom collateral coins
+   */
+  getCustomCollateralCoins(): Promise<APIResponse<CustomCollateralCoinV3[]>> {
+    return this.get('/api/v3/account/custom-collateral-coins');
+  }
+
+  /**
+   * Pre Set Leverage - Preview leverage adjustment impact without applying
+   */
+  preSetLeverage(
+    params: PreSetLeverageRequestV3,
+  ): Promise<APIResponse<PreSetLeverageV3>> {
+    return this.getPrivate('/api/v3/account/pre-set-leverage', params);
+  }
+
+  /**
+   * Set Margin - Adjust isolated margin position margin amount
+   */
+  setMargin(params: SetMarginRequestV3): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/account/set-margin', params);
+  }
+
+  /**
+   * Get Max Withdrawal - Max withdrawable amount for a coin in unified account
+   */
+  getMaxWithdrawal(
+    params: GetMaxWithdrawalRequestV3,
+  ): Promise<APIResponse<MaxWithdrawalV3>> {
+    return this.getPrivate('/api/v3/account/max-withdrawal', params);
+  }
+
+  /**
    * Get Financial Records
    */
   getFinancialRecords(params: GetFinancialRecordsRequestV3): Promise<
@@ -775,6 +984,15 @@ export class RestClientV3 extends BaseRestClient {
     }>
   > {
     return this.getPrivate('/api/v3/account/fee-rate', params);
+  }
+
+  /**
+   * Get All Symbol Fee Rates - Query fee rates for all trading pairs under a product type
+   */
+  getAllFeeRates(
+    params: GetAllFeeRatesRequestV3,
+  ): Promise<APIResponse<AllSymbolFeeRateV3[]>> {
+    return this.getPrivate('/api/v3/account/all-fee-rate', params);
   }
 
   /**
@@ -1081,6 +1299,31 @@ export class RestClientV3 extends BaseRestClient {
     params: ModifyOrderRequestV3,
   ): Promise<APIResponse<ModifyOrderResponseV3>> {
     return this.postPrivate('/api/v3/trade/modify-order', params);
+  }
+
+  /**
+   * Place Reality Order - Limit or market order for Reality stock trading pairs
+   */
+  placeRealityOrder(
+    params: PlaceRealityOrderRequestV3,
+  ): Promise<APIResponse<PlaceOrderResponseV3>> {
+    return this.postPrivate('/api/v3/trade/place-reality-order', params);
+  }
+
+  /**
+   * Cancel Reality Order - Cancel an unfilled or partially filled Reality stock order
+   */
+  cancelRealityOrder(
+    params: CancelRealityOrderRequestV3,
+  ): Promise<APIResponse<CancelOrderResponseV3>> {
+    return this.postPrivate('/api/v3/trade/cancel-reality-order', params);
+  }
+
+  /**
+   * Get Loan Data - Query current loan data for the unified trading account
+   */
+  getLoanData(): Promise<APIResponse<LoanDataV3>> {
+    return this.getPrivate('/api/v3/trade/loan-data');
   }
 
   /**

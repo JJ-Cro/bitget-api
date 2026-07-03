@@ -14,11 +14,27 @@ export interface SetLeverageRequestV3 {
   leverage: string;
   coin?: string;
   posSide?: 'long' | 'short';
+  /** Futures only. Defaults to crossed */
+  marginMode?: 'crossed' | 'isolated';
+  /** Isolated two-way mode: long leverage. Takes priority over leverage when both set */
+  longLeverage?: string;
+  /** Isolated two-way mode: short leverage. Takes priority over leverage when both set */
+  shortLeverage?: string;
+}
+
+export interface GetAllFeeRatesRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol?: string;
 }
 
 export interface GetConvertRecordsRequestV3 {
-  fromCoin: string;
-  toCoin: string;
+  fromCoin?: string;
+  toCoin?: string;
   startTime?: string;
   endTime?: string;
   limit?: string;
@@ -93,6 +109,7 @@ export interface GetSubAccountListRequestV3 {
 // Transfer Request Types
 
 export interface TransferRequestV3 {
+  clientOid?: string;
   fromType:
     | 'spot'
     | 'p2p'
@@ -238,6 +255,8 @@ export interface GetSubDepositRecordsRequestV3 {
 export interface WithdrawRequestV3 {
   coin: string;
   chain?: string;
+  /** Deduct from funding, uta, and/or otc accounts (comma-separated). Order: funding -> otc -> uta */
+  accountType?: string;
   transferType: 'on_chain' | 'internal_transfer';
   address: string;
   innerToType?: 'uid' | 'email' | 'mobile';
@@ -303,4 +322,34 @@ export interface GetTaxRecordsRequestV3 {
   endTime: string;
   limit?: string;
   cursor?: string;
+}
+
+export type CollateralTypeV3 = 'mainstream' | 'all' | 'custom';
+
+export interface SetCollateralTypeRequestV3 {
+  collateralType: CollateralTypeV3;
+  /** Required when collateralType=custom. Comma-separated coin names */
+  collateralCoins?: string;
+}
+
+export interface PreSetLeverageRequestV3 {
+  category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  coin?: string;
+  marginMode: 'isolated' | 'cross';
+  leverage?: string;
+  longLeverage?: string;
+  shortLeverage?: string;
+}
+
+export interface SetMarginRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  posSide: 'long' | 'short';
+  operation: 'add' | 'remove';
+  amount: string;
+}
+
+export interface GetMaxWithdrawalRequestV3 {
+  coin: string;
 }
