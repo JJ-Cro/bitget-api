@@ -95,3 +95,13 @@ export interface WSPositionSnapshotUMCBL extends WsBaseEvent<'snapshot'> {
   };
   data: WsPositionSnapshotDataUMCBL[];
 }
+
+/** Classic V2 depth channel push data. checksum removed May 2026 - use seq instead */
+export interface WsDepthBookDataV2 {
+  asks: [string, string][];
+  bids: [string, string][];
+  ts: string;
+  seq: string;
+  /** Futures books channel only - previous push serial number */
+  pseq?: string;
+}

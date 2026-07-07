@@ -12,7 +12,12 @@ export type StrategyTriggerByV3 = 'market' | 'mark';
 export type StrategyTriggerOrderTypeV3 = 'limit' | 'market';
 
 export interface PlaceStrategyOrderRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
   symbol: string;
   clientOid?: string;
   type?: StrategyOrderTypeV3;
@@ -60,12 +65,22 @@ export interface CancelStrategyOrderRequestV3 {
 }
 
 export interface GetUnfilledStrategyOrdersRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
   type?: StrategyOrderTypeV3;
 }
 
 export interface GetHistoryStrategyOrdersRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
   type?: StrategyOrderTypeV3;
   startTime?: string;
   endTime?: string;

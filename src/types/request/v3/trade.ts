@@ -114,6 +114,36 @@ export interface ModifyOrderRequestV3 {
   qty?: string;
   price?: string;
   autoCancel?: 'yes' | 'no';
+  symbol?: string;
+  category?:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  tpTriggerBy?: 'market' | 'mark';
+  slTriggerBy?: 'market' | 'mark';
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: 'limit' | 'market';
+  slOrderType?: 'limit' | 'market';
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
+}
+
+export interface PlaceRealityOrderRequestV3 {
+  symbol: string;
+  side: 'buy' | 'sell';
+  orderType: 'limit' | 'market';
+  qty: string;
+  price?: string;
+  clientOid?: string;
+}
+
+export interface CancelRealityOrderRequestV3 {
+  symbol: string;
+  orderId?: string;
+  clientOid?: string;
 }
 
 export interface PlaceBatchOrdersRequestV3 {

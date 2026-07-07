@@ -55,7 +55,15 @@ export interface GetContractsOiRequestV3 {
 }
 
 export interface GetCurrentFundingRateRequestV3 {
-  symbol: string;
+  category?: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+}
+
+export interface GetLiquidationsRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  limit?: string;
+  cursor?: string;
 }
 
 export interface GetHistoryFundingRateRequestV3 {
@@ -102,7 +110,7 @@ export interface GetInstrumentsRequestV3 {
 
 export interface GetMarketFeeGroupRequestV3 {
   category: 'SPOT' | 'FUTURES';
-  group?: 'GROUP_A' | 'GROUP_B' | 'GROUP_C';
+  group?: 'DEFAULT' | 'GROUP_A' | 'GROUP_B' | 'GROUP_C';
 }
 
 export interface GetMarketScoreWeightsRequestV3 {
@@ -122,4 +130,52 @@ export interface GetTickersRequestV3 {
 
 export interface GetIndexComponentsRequestV3 {
   symbol: string;
+}
+
+export interface GetRpiOrderBookRequestV3 {
+  category: 'SPOT' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  limit?: string;
+}
+
+export interface GetCashDividendRecordsRequestV3 {
+  symbol: string;
+  type: 'pending' | 'paid';
+  cursor?: string;
+  limit?: string;
+}
+
+export interface GetSpotWhaleFlowRequestV3 {
+  symbol: string;
+}
+
+export interface GetSpotFundFlowRequestV3 {
+  symbol: string;
+  period?: string;
+}
+
+export interface GetSpotNetFlowRequestV3 {
+  symbol: string;
+}
+
+export interface GetMarginLongShortRequestV3 {
+  symbol: string;
+  period?: '24h' | '30d';
+  coin?: string;
+}
+
+export interface GetMarginLoanGrowthRequestV3 {
+  symbol: string;
+  period?: string;
+  coin?: string;
+}
+
+export interface GetMarginIsolatedBorrowRequestV3 {
+  symbol: string;
+  period?: string;
+}
+
+export interface GetFuturesTradingDataRequestV3 {
+  symbol: string;
+  period?: string;
 }

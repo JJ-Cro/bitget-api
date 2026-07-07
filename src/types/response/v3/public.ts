@@ -29,6 +29,8 @@ export interface CurrentFundingRateV3 {
   nextUpdate: string;
   minFundingRate: string;
   maxFundingRate: string;
+  cashDividend?: string;
+  cashDividendNextUpdate?: string;
 }
 
 export interface DiscountRateTierV3 {
@@ -139,6 +141,9 @@ export interface InstrumentV3 {
   maintainTime: string;
   areaSymbol?: string;
 
+  /** yes = Reality stock token, no = non-Reality stock token */
+  isReality?: 'yes' | 'no';
+
   // Futures specific fields
   makerFeeRate?: string;
   takerFeeRate?: string;
@@ -175,6 +180,8 @@ export interface MarketFeeGroupLabelV3 {
 export interface MarketFeeGroupTierV3 {
   level: string;
   makerFeeRate: string;
+  /** PRO1~PRO6 only. Taker fee rate in decimal form */
+  takerFeeRate?: string;
 }
 
 export interface MarketFeeGroupV3 {
@@ -191,6 +198,19 @@ export interface MarketScoreWeightV3 {
   requiredSpread: string;
   minMakerVolume: string;
   weight: string;
+}
+
+export interface LiquidationV3 {
+  symbol: string;
+  side: 'buy' | 'sell';
+  price: string;
+  amount: string;
+  ts: string;
+}
+
+export interface LiquidationsV3 {
+  list: LiquidationV3[];
+  cursor?: string;
 }
 
 export interface OrderBookV3 {
@@ -245,4 +265,90 @@ export interface IndexComponentV3 {
 export interface IndexPriceComponentsV3 {
   symbol: string;
   componentList: IndexComponentV3[];
+}
+
+export interface RpiSymbolV3 {
+  category: 'spot' | 'usdt-futures' | 'coin-futures' | 'usdc-futures';
+  symbol: string;
+}
+
+/** RPI order book depth: [price, nonRpiQty, rpiQty] */
+export interface RpiOrderBookV3 {
+  a: [string, string, string][];
+  b: [string, string, string][];
+  ts: string;
+}
+
+export interface CashDividendRecordV3 {
+  symbol: string;
+  exDividendDate: string;
+  cashDividendPerShare: string;
+  cashDividendTimestamp: string;
+}
+
+export interface SpotWhaleFlowV3 {
+  volume: string;
+  date: string;
+}
+
+export interface SpotNetFlowV3 {
+  netFlow: string;
+  ts: string;
+}
+
+export interface SpotFundFlowV3 {
+  whaleBuyVolume: string;
+  dolphinBuyVolume: string;
+  fishBuyVolume: string;
+  whaleSellVolume: string;
+  dolphinSellVolume: string;
+  fishSellVolume: string;
+  whaleBuyRatio: string;
+  dolphinBuyRatio: string;
+  fishBuyRatio: string;
+  whaleSellRatio: string;
+  dolphinSellRatio: string;
+  fishSellRatio: string;
+}
+
+export interface MarginLongShortV3 {
+  longShortRatio: string;
+  ts: string;
+}
+
+export interface MarginLoanGrowthV3 {
+  growthRate: string;
+  ts: string;
+}
+
+export interface MarginIsolatedBorrowV3 {
+  borrowRate: string;
+  ts: string;
+}
+
+export interface FuturesActiveBuySellV3 {
+  buyVolume: string;
+  sellVolume: string;
+  ts: string;
+}
+
+export interface FuturesLongShortV3 {
+  longRatio: string;
+  shortRatio: string;
+  longShortRatio: string;
+  ts: string;
+}
+
+export interface FuturesPositionLongShortV3 {
+  longPositionRatio: string;
+  shortPositionRatio: string;
+  longShortPositionRatio: string;
+  ts: string;
+}
+
+export interface FuturesAccountLongShortV3 {
+  longAccountRatio: string;
+  shortAccountRatio: string;
+  longShortAccountRatio: string;
+  ts: string;
 }
