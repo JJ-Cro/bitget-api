@@ -37,6 +37,12 @@ export interface CloseAllPositionsRequestV3 {
 export interface CancelOrderRequestV3 {
   orderId?: string;
   clientOid?: string;
+  category?:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
 }
 
 export interface GetMaxOpenAvailableRequestV3 {
@@ -59,6 +65,12 @@ export interface GetOrderInfoRequestV3 {
 }
 
 export interface GetFillsRequestV3 {
+  category?:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
   orderId?: string;
   startTime?: string;
   endTime?: string;
@@ -87,6 +99,7 @@ export interface GetHistoryOrdersRequestV3 {
     | 'USDT-FUTURES'
     | 'COIN-FUTURES'
     | 'USDC-FUTURES';
+  symbol?: string;
   startTime?: string;
   endTime?: string;
   limit?: string;
@@ -185,10 +198,14 @@ export interface PlaceOrderRequestV3 {
   /** Futures only. Defaults to crossed */
   marginMode?: FuturesMarginModeV3;
   stpMode?: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
-  takeProfitPrice?: string;
-  stopLossPrice?: string;
-  takeProfitTriggerType?: 'mark_price' | 'last_price';
-  stopLossTriggerType?: 'mark_price' | 'last_price';
+  tpTriggerBy?: 'market' | 'mark';
+  slTriggerBy?: 'market' | 'mark';
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: 'limit' | 'market';
+  slOrderType?: 'limit' | 'market';
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
 }
 
 export interface CountdownCancelAllRequestV3 {

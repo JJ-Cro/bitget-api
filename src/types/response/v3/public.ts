@@ -141,6 +141,7 @@ export interface InstrumentV3 {
   maintainTime: string;
   areaSymbol?: string;
 
+  isRwa?: 'YES' | 'NO';
   /** yes = Reality stock token, no = non-Reality stock token */
   isReality?: 'yes' | 'no';
 
@@ -150,7 +151,8 @@ export interface InstrumentV3 {
   openCostUpRatio?: string;
   priceMultiplier?: string;
   quantityMultiplier?: string;
-  symbolType?: 'perpetual' | 'delivery';
+  type?: 'perpetual' | 'delivery';
+  symbolType?: 'crypto' | 'metal' | 'stock' | 'commodity';
   maxPositionNum?: string;
   deliveryTime?: string;
   deliveryStartTime?: string;
@@ -216,6 +218,21 @@ export interface LiquidationsV3 {
 export interface OrderBookV3 {
   a: string[][]; // asks - [price, size]
   b: string[][]; // bids - [price, size]
+  ts: string;
+}
+
+export interface RealityOrderBookV3 {
+  symbol: string;
+  a: string[][];
+  b: string[][];
+  ts: string;
+}
+
+export interface RealityFillV3 {
+  execId: string;
+  price: string;
+  size: string;
+  side: 'buy' | 'sell';
   ts: string;
 }
 
