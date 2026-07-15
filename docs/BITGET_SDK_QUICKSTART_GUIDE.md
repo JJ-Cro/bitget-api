@@ -1,7 +1,217 @@
+<!-- siebly:metadata
+siebly:
+  version: 1
+  hero:
+    headline: Bitget API JavaScript Tutorial for Node.js and TypeScript
+    badges:
+      - Bitget API
+      - V3/UTA
+      - Spot
+      - Futures
+      - WebSocket API
+      - Classic
+    summary: Build Bitget integrations without writing your own request signing, UTA routing, WebSocket authentication, reconnect loops, resubscribe logic, or WebSocket API response matching.
+    codeFilename: first-bitget-api-call.ts
+    codeStatus: public REST API
+    startSectionId: start-building-first-rest-api-calls
+  software:
+    description: Node.js and JavaScript SDK for Bitget V3/UTA REST API, public and private WebSockets, demo trading, WebSocket API command workflows, and V2/Classic fallback flows.
+    topics:
+      - Bitget V3 REST API
+      - Bitget UTA workflows
+      - Public WebSockets
+      - Private WebSockets
+      - WebSocket API
+      - Demo trading
+      - V2 Classic REST API
+  machineCatalog:
+    label: Bitget API JavaScript Tutorial
+    topics:
+      - V3/UTA REST API
+      - UTA product routing values
+      - demo trading
+      - public WebSockets
+      - private WebSockets
+      - WebSocket API commands
+      - V2 Classic API fallbacks
+      - production reconnect handling
+  sdkPagePromo:
+    descriptionBeforePackage: 'A practical JavaScript guide to using '
+    descriptionAfterPackage: ' across Bitget V3/UTA REST, public and private streams, demo trading, WebSocket API commands, and V2/Classic fallback flows.'
+    highlights:
+      - V3/UTA REST API workflows
+      - Public and private WebSocket streams
+      - Demo trading and WebSocket API commands
+      - Clear V2/Classic boundaries
+    exampleHref: '/examples/Bitget/V3 - UTA/WS-API/ws-api-client-trade'
+    exampleLabel: WebSocket API example
+    architectureClientSummary: RestClientV3, WebsocketClientV3, WebsocketAPIClient
+    architectureApiTitle: Bitget APIs
+    architectureApiSummary: V3/UTA REST, streams, WebSocket API, Classic fallbacks
+  surfaceMap:
+    heading: One Bitget SDK, current and Classic API surfaces
+    summary: Bitget integrations often need both current UTA flows and a clear boundary for Classic endpoints. Use the SDK surface that matches the account, endpoint family, and stream topic shape.
+    appLabel: Bot, dashboard, worker, tool
+    appSummary: Any Node.js or JavaScript-compatible service that needs Bitget market data, account state, order management, or reconciliation.
+    apiLabel: Bitget APIs
+    apiItems:
+      - V3/UTA REST API calls
+      - Public market streams
+      - Private account streams
+      - WebSocket API order commands
+      - V2/Classic fallback workflows
+    packageNodes:
+      - label: RestClientV3
+        summary: Current V3/UTA REST API
+      - label: WebsocketClientV3
+        summary: V3 public and private streams
+      - label: WebsocketAPIClient
+        summary: Awaitable order commands
+      - label: RestClientV2
+        summary: Classic REST fallback
+      - label: WebsocketClientV2
+        summary: Classic stream fallback
+  routing:
+    id: product-values
+    eyebrow: Product values
+    heading: Bitget casing changes by surface
+    summary: Keep product routing values close to the client and method that use them. V3 REST, WebSocket streams, WebSocket API commands, and Classic APIs do not all use the same casing.
+    rows:
+      - eyebrow: V3 REST
+        code: "category: 'SPOT'"
+        summary: REST category values are upper-case and include SPOT, MARGIN, USDT-FUTURES, USDC-FUTURES, and COIN-FUTURES.
+      - eyebrow: V3 public WebSocket
+        code: "instType: 'spot'"
+        summary: Public stream instType values are lower-case, such as spot and usdt-futures.
+      - eyebrow: V3 private WebSocket
+        code: "instType: 'UTA'"
+        summary: Private account, position, fill, and order topics use UTA as the account stream instType.
+      - eyebrow: V3 WebSocket API
+        code: "category: 'spot'"
+        summary: WebSocket API command categories are lower-case and have their own order option casing.
+  coverage:
+    heading: What to get right in a Bitget integration
+    summary: Start with a working public request, then build through credentials, UTA product values, private streams, demo trading, WebSocket API commands, Classic boundaries, reconnect recovery, and production rollout checks.
+    cards:
+      - heading: V3/UTA REST API
+        summary: Install the package, create RestClientV3, make public reads, add private credentials, and test demo order flows.
+      - heading: Public and private streams
+        summary: Use WebsocketClientV3 with the right WS_KEY_MAP entry, then handle reconnect and resubscribe behavior.
+      - heading: WebSocket API commands
+        summary: Use WebsocketAPIClient for promise-wrapped place, batch place, cancel, and batch cancel commands.
+      - heading: V2/Classic boundaries
+        summary: Keep Classic REST and WebSocket usage separate from UTA assumptions, categories, and topic casing.
+  snippets:
+    heading: First REST API calls, streams, demo trading, and WebSocket API commands
+    summary: Run one focused example first, then add the surrounding account-state and recovery workflow once the client, credentials, and product values are correct.
+    labels:
+      public-rest: Public REST
+      private-rest: Private REST
+      public-websocket: Public stream
+      private-websocket: Private stream
+      demo-order: Demo order
+      ws-api: WebSocket API
+  workflows:
+    heading: REST API, WebSocket stream, and WebSocket API workflows
+    summary: A REST API response, stream update, and WebSocket API acknowledgement each carry different operational meaning. These flows show where routing, subscription state, reconnect recovery, and command acknowledgement fit.
+    diagrams:
+      - heading: V3 REST request path
+        summary: Keep category and symbol explicit, then let the SDK handle timestamp, signature, routing, and response parsing.
+        steps:
+          - label: choose(category)
+            owner: app
+          - label: build typed request
+            owner: app
+          - label: call RestClientV3
+            owner: sdk
+          - label: sign and route
+            owner: sdk
+          - label: receive Bitget response
+            owner: exchange
+          - label: check code and state
+            owner: app
+      - heading: Private stream recovery
+        summary: After reconnect, automatic resubscribe is only transport recovery. Reconcile account state before sensitive actions resume.
+        steps:
+          - label: on(reconnect)
+            owner: event
+          - label: pause private writes
+            owner: app
+          - label: automatic reconnect
+            owner: sdk
+          - label: automatic resubscribe
+            owner: sdk
+          - label: REST backfill
+            owner: app
+          - label: resume from known state
+            owner: app
+      - heading: WebSocket API order command
+        summary: Use the WebSocket API for awaitable commands, then confirm final state through streams or REST.
+        steps:
+          - label: connectWSAPI()
+            owner: app
+          - label: authenticate
+            owner: sdk
+          - label: submitNewOrder()
+            owner: app
+          - label: match response id
+            owner: sdk
+          - label: receive ack
+            owner: exchange
+          - label: confirm order state
+            owner: app
+  production:
+    heading: Before a Bitget integration trades unattended
+    summary: "The important work starts after the first request succeeds: credentials, account mode, product values, reconnect behavior, final order state, and Classic boundaries all need to be predictable and observable."
+    items:
+      - Use separate live and demo trading keys, and never put private keys in frontend code.
+      - Make category, instType, symbol, account mode, and product family explicit in request builders.
+      - Set clientOid on every order before sending so retries and restarts can reconcile state.
+      - After private WebSocket reconnects, backfill balances, positions, open orders, history, and recent fills through REST.
+      - Check Bitget code values, per-item batch codes, and final order status before treating a command as complete.
+      - Keep the host clock synced for private signed requests and avoid widening recvWindow unless needed.
+      - Use V2/Classic clients only in isolated workflows that still depend on Classic API semantics.
+  journeys:
+    eyebrow: Choose your path
+    heading: Jump to the Bitget workflow you are building
+    actionLabel: Open section
+    cards:
+      - heading: Start with V3 REST
+        summary: Use RestClientV3 for UTA market data, account reads, balances, positions, orders, and fills.
+        href: "#v3-rest-api"
+      - heading: Stream account state
+        summary: Subscribe to V3 private account, position, fill, and order topics with instType set to UTA.
+        href: "#v3-websocket-streams"
+      - heading: Test demo orders
+        summary: "Use separate demo keys and demoTrading: true before small live order tests."
+        href: "#start-building-first-rest-api-calls"
+      - heading: Keep Classic isolated
+        summary: Use V2 clients only for workflows that still depend on Classic endpoints and topic shapes.
+        href: "#v2classic-apis"
+  article:
+    heading: Build around Bitget UTA flows first
+    summary: "This tutorial focuses on the Bitget API pieces developers usually need first: V3 REST API calls, UTA public and private streams, WebSocket API commands, demo trading, V2/Classic boundaries, reconnects, and rollout checks."
+  related:
+    cards:
+      - heading: Bitget SDK page
+        summary: Return to install snippets, direct examples, endpoint maps, and package links.
+        href: /sdk/bitget/javascript
+      - heading: WebSocket API example
+        summary: Open the runnable Bitget WebSocket API client example referenced in the tutorial.
+        href: /examples/Bitget/V3%20-%20UTA/WS-API/ws-api-client-trade
+      - heading: Private stream example
+        summary: Review private account, position, fill, and order topic subscriptions.
+        href: /examples/Bitget/V3%20-%20UTA/Websocket/ws-private
+      - heading: Source repository
+        summary: Browse SDK source, releases, issues, and endpoint coverage from GitHub.
+        href: https://github.com/tiagosiebler/bitget-api
+-->
 # Bitget API JavaScript Tutorial for Node.js and TypeScript
 
+<!-- siebly:website-omit:start -->
 > [!TIP]
 > This tutorial is available in a more readable format on our website: [Bitget JavaScript Tutorial](https://siebly.io/sdk/bitget/javascript/tutorial)
+<!-- siebly:website-omit:end -->
 
 This guide shows how to connect to Bitget with our [`bitget-api`](https://www.npmjs.com/package/bitget-api) package - the Bitget Node.js, JavaScript, and TypeScript SDK by Siebly.io. You'll cover REST, WebSocket streams, and the WebSocket API.
 
@@ -21,6 +231,7 @@ The SDK handles signing, routing, reconnects, and resubscribes so you don't have
 
 ---
 
+<!-- siebly:section id="why-use-the-sdk" -->
 ## Why use the SDK
 
 Bitget has several API surfaces, and they don't all work the same way:
@@ -48,6 +259,7 @@ For new UTA work, start with `RestClientV3`, `WebsocketClientV3`, and `Websocket
 
 ---
 
+<!-- siebly:section id="installation-api-keys" -->
 ## Installation & API Keys
 
 Install the SDK with npm:
@@ -81,6 +293,7 @@ When creating API keys, grant the minimum permissions you need. Dashboards usual
 
 ---
 
+<!-- siebly:section id="bitget-concepts-in-this-guide" -->
 ## Bitget concepts in this guide
 
 Bitget has a few naming differences across their API:
@@ -106,6 +319,7 @@ Order option casing can differ by surface. V3 REST order requests use `reduceOnl
 
 ---
 
+<!-- siebly:section id="start-building-first-rest-api-calls" -->
 ## Start building: first REST API calls
 
 Want the quickest path to something working? Start here.
@@ -114,6 +328,7 @@ Want the quickest path to something working? Start here.
 
 Public REST calls work without credentials.
 
+<!-- siebly:snippet id="public-rest" -->
 ```typescript
 import { RestClientV3 } from 'bitget-api';
 
@@ -162,6 +377,7 @@ See also: [V3 public REST examples](../examples/V3%20-%20UTA/Rest)
 
 Private REST uses the same `RestClientV3` with credentials - the SDK signs requests for you.
 
+<!-- siebly:snippet id="private-rest" -->
 ```typescript
 import { RestClientV3 } from 'bitget-api';
 
@@ -204,6 +420,7 @@ See also: [V3 private REST examples](../examples/V3%20-%20UTA/Rest)
 
 `WebsocketClientV3` handles V3/UTA streams. Public ones don't need credentials.
 
+<!-- siebly:snippet id="public-websocket" -->
 ```typescript
 import { WebsocketClientV3, WS_KEY_MAP } from 'bitget-api';
 
@@ -260,6 +477,7 @@ See also: [V3 public WebSocket example](../examples/V3%20-%20UTA/Websocket/ws-pu
 
 Private streams are where trading systems usually watch account and order changes instead of polling constantly.
 
+<!-- siebly:snippet id="private-websocket" -->
 ```typescript
 import { WebsocketClientV3, WS_KEY_MAP } from 'bitget-api';
 
@@ -323,6 +541,7 @@ Test with demo keys before going live. Demo uses separate Bitget API keys.
 
 The snippet below sets `demoTrading: true` - leave it on while testing. A successful response means Bitget accepted the order, not that it filled.
 
+<!-- siebly:snippet id="demo-order" -->
 ```typescript
 import { RestClientV3 } from 'bitget-api';
 
@@ -390,6 +609,7 @@ The WebSocket API sends order commands over a persistent connection and waits fo
 
 This example uses `demoTrading: true` with demo API keys.
 
+<!-- siebly:snippet id="ws-api" -->
 ```typescript
 import { WebsocketAPIClient } from 'bitget-api';
 
@@ -455,6 +675,7 @@ See also: [V3 WebSocket API client example](../examples/V3%20-%20UTA/WS-API/ws-a
 
 ---
 
+<!-- siebly:section id="v3-rest-api" -->
 ## V3 REST API
 
 `RestClientV3` is the client for current Bitget UTA REST endpoints.
@@ -643,6 +864,7 @@ await client.submitNewOrder({
 
 ---
 
+<!-- siebly:section id="v3-websocket-streams" -->
 ## V3 WebSocket streams
 
 For live market or account updates, use `WebsocketClientV3`.
@@ -746,6 +968,7 @@ The SDK remembers subscriptions per connection and resubscribes after reconnects
 
 ---
 
+<!-- siebly:section id="v3-websocket-api" -->
 ## V3 WebSocket API
 
 `WebsocketAPIClient` sends V3 order commands over WebSocket and returns a promise for each response.
@@ -813,6 +1036,7 @@ await wsApi.submitNewOrder('usdt-futures', {
 
 ---
 
+<!-- siebly:section id="v2classic-apis" -->
 ## V2/Classic APIs
 
 Reach for V2/Classic clients only when the account or workflow still uses Classic APIs. Don't mix V2 and V3 assumptions - category names, topics, request fields, and account modes all differ.
@@ -875,6 +1099,7 @@ See also: [V2 WebSocket examples](../examples/V2%20-%20Classic/Websocket)
 
 ---
 
+<!-- siebly:section id="production-notes" -->
 ## Production notes
 
 ### 1. Roll out in layers
@@ -907,6 +1132,7 @@ Separate live and demo keys. Read-only keys for dashboards. Trading permissions 
 
 ---
 
+<!-- siebly:section id="faq" -->
 ## FAQ
 
 ### Do I need API keys for public market data?
@@ -951,11 +1177,12 @@ More in the repo:
 
 - [V3/UTA examples](../examples/V3%20-%20UTA)
 - [V2/Classic examples](../examples/V2%20-%20Classic)
-- [Auth examples](../examples/auth)
+- [Auth examples](../examples/Auth)
 - [Bitget JavaScript Endpoint Reference](./endpointFunctionList.md)
 
 ---
 
+<!-- siebly:section id="next-steps" -->
 ## Next steps
 
 - [Bitget JavaScript SDK page](https://siebly.io/sdk/bitget/javascript)
