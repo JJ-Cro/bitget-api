@@ -1,0 +1,21 @@
+import { RestClientV3 } from 'bitget-api';
+// or, if require is preferred:
+// const { RestClientV3 } = require('bitget-api');
+
+const client = new RestClientV3({
+  apiKey: 'insert_api_key_here',
+  apiSecret: 'insert_api_secret_here',
+  apiPass: 'insert_api_pass_here',
+});
+
+client
+  .getLoanRepayHistory({
+    startTime: '1713645576789',
+    endTime: '1713645576798',
+  })
+  .then((response) => {
+    console.log(response);
+  })
+  .catch((error) => {
+    console.error(error);
+  });

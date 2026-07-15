@@ -166,6 +166,15 @@ export interface CreateSubAccountResponseV3 {
   updatedTime: string;
 }
 
+export interface CreateAgentSubAccountResponseV3 {
+  username: string;
+  subUid: string;
+  apiKey: string;
+  secret: string;
+  note: string;
+  createdTime: string;
+}
+
 export interface SubAccountV3 {
   subUid: string;
   username: string;
@@ -347,4 +356,32 @@ export interface MaxWithdrawalV3 {
   spotMaxWithdrawal: string;
   utaMaxWithdrawal: string;
   totalMaxWithdrawal: string;
+}
+
+export interface MovePositionOrderResultV3 {
+  orderId: string;
+  clientOid: string;
+  code: string;
+  msg: string;
+}
+
+export interface MovePositionsResponseV3 {
+  closePosition: MovePositionOrderResultV3[];
+  openPosition: MovePositionOrderResultV3[];
+}
+
+export interface MovePositionHistoryV3 {
+  category: string;
+  fromUid: string;
+  toUid: string;
+  orderId: string;
+  openExecId: string;
+  closeExecId: string;
+  symbol: string;
+  posSide: 'long' | 'short';
+  qty: string;
+  price: string;
+  status: 'processing' | 'completed' | 'failed';
+  createdTime: string;
+  updatedTime: string;
 }

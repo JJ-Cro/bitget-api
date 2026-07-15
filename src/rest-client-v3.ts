@@ -1,6 +1,7 @@
 import {
   AdjustAccountModeRequestV3,
   CancelWithdrawalRequestV3,
+  CreateAgentSubAccountRequestV3,
   CreateSubAccountApiKeyRequestV3,
   CreateSubAccountRequestV3,
   DeleteSubAccountApiKeyRequestV3,
@@ -14,7 +15,10 @@ import {
   GetFundingAssetsRequestV3,
   GetMaxTransferableRequestV3,
   GetMaxWithdrawalRequestV3,
+  GetMovePositionHistoryRequestV3,
   GetOpenInterestLimitRequestV3,
+  GetRealityFillsRequestV3,
+  GetRealityOrderBookRequestV3,
   GetSubAccountApiKeysRequestV3,
   GetSubAccountListRequestV3,
   GetSubDepositAddressRequestV3,
@@ -25,6 +29,7 @@ import {
   GetTransferableCoinsRequestV3,
   GetWithdrawAddressBookRequestV3,
   GetWithdrawRecordsRequestV3,
+  MovePositionsRequestV3,
   PreSetLeverageRequestV3,
   RepayRequestV3,
   SetCollateralTypeRequestV3,
@@ -32,6 +37,7 @@ import {
   SetLeverageRequestV3,
   SetMarginRequestV3,
   SubAccountTransferRequestV3,
+  SubMasterTransferRequestV3,
   SwitchDeductRequestV3,
   TransferRequestV3,
   UpdateSubAccountApiKeyRequestV3,
@@ -163,6 +169,7 @@ import {
   AllSymbolFeeRateV3,
   CollateralTypeConfigV3,
   ConvertRecordV3,
+  CreateAgentSubAccountResponseV3,
   CreateSubAccountApiKeyResponseV3,
   CreateSubAccountResponseV3,
   CustomCollateralCoinV3,
@@ -172,6 +179,8 @@ import {
   FundingAssetV3,
   MaxTransferableV3,
   MaxWithdrawalV3,
+  MovePositionHistoryV3,
+  MovePositionsResponseV3,
   OpenInterestLimitV3,
   PaymentCoinV3,
   PreSetLeverageV3,
@@ -279,6 +288,8 @@ import {
   PositionTierV3,
   ProofOfReservesV3,
   PublicFillV3,
+  RealityFillV3,
+  RealityOrderBookV3,
   RiskReserveAllV3,
   RiskReserveHourV3,
   RiskReserveV3,
@@ -713,6 +724,24 @@ export class RestClientV3 extends BaseRestClient {
   }
 
   /**
+   * Get Reality OrderBook
+   */
+  getRealityOrderBook(
+    params: GetRealityOrderBookRequestV3,
+  ): Promise<APIResponse<RealityOrderBookV3>> {
+    return this.getPrivate('/api/v3/account/reality-orderbook', params);
+  }
+
+  /**
+   * Get Reality Fills
+   */
+  getRealityFills(
+    params: GetRealityFillsRequestV3,
+  ): Promise<APIResponse<RealityFillV3[]>> {
+    return this.getPrivate('/api/v3/account/reality-fills', params);
+  }
+
+  /**
    *
    * =====Copy Trading | Futures=====
    *
@@ -1075,6 +1104,15 @@ export class RestClientV3 extends BaseRestClient {
   }
 
   /**
+   * Create Agent Sub-account
+   */
+  createAgentSubAccount(
+    params: CreateAgentSubAccountRequestV3,
+  ): Promise<APIResponse<CreateAgentSubAccountResponseV3>> {
+    return this.postPrivate('/api/v3/user/sub-account/agent-create', params);
+  }
+
+  /**
    * Freeze/Unfreeze Sub-account
    */
   freezeSubAccount(
@@ -1191,6 +1229,18 @@ export class RestClientV3 extends BaseRestClient {
     }>
   > {
     return this.getPrivate('/api/v3/account/sub-transfer-record', params);
+  }
+
+  /**
+   * Sub-Main Account Transfer
+   */
+  subMasterTransfer(params: SubMasterTransferRequestV3): Promise<
+    APIResponse<{
+      transferId: string;
+      clientOid: string;
+    }>
+  > {
+    return this.postPrivate('/api/v3/account/sub-master-transfer', params);
   }
 
   /**
@@ -1411,6 +1461,27 @@ export class RestClientV3 extends BaseRestClient {
     }>
   > {
     return this.getPrivate('/api/v3/trade/history-orders', params);
+  }
+
+  /**
+   * Move Positions - Transfer positions between master and sub-accounts
+   */
+  movePositions(
+    params: MovePositionsRequestV3,
+  ): Promise<APIResponse<MovePositionsResponseV3>> {
+    return this.postPrivate('/api/v3/account/move-positions', params);
+  }
+
+  /**
+   * Get Move Position History
+   */
+  getMovePositionHistory(params: GetMovePositionHistoryRequestV3): Promise<
+    APIResponse<{
+      list: MovePositionHistoryV3[];
+      cursor: string;
+    }>
+  > {
+    return this.getPrivate('/api/v3/account/move-position-history', params);
   }
 
   /**

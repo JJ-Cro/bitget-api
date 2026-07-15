@@ -113,20 +113,20 @@ export interface TransferRequestV3 {
   fromType:
     | 'spot'
     | 'p2p'
-    | 'coin-futures'
-    | 'usdt-futures'
-    | 'usdc-futures'
-    | 'crossed-margin'
-    | 'isolated-margin'
+    | 'coin_futures'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'isolated_margin'
     | 'uta';
   toType:
     | 'spot'
     | 'p2p'
-    | 'coin-futures'
-    | 'usdt-futures'
-    | 'usdc-futures'
-    | 'crossed-margin'
-    | 'isolated-margin'
+    | 'coin_futures'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'isolated_margin'
     | 'uta';
   amount: string;
   coin: string;
@@ -139,20 +139,20 @@ export interface GetTransferableCoinsRequestV3 {
   fromType:
     | 'spot'
     | 'p2p'
-    | 'coin-futures'
-    | 'usdt-futures'
-    | 'usdc-futures'
-    | 'crossed-margin'
-    | 'isolated-margin'
+    | 'coin_futures'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'isolated_margin'
     | 'uta';
   toType:
     | 'spot'
     | 'p2p'
-    | 'coin-futures'
-    | 'usdt-futures'
-    | 'usdc-futures'
-    | 'crossed-margin'
-    | 'isolated-margin'
+    | 'coin_futures'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'isolated_margin'
     | 'uta';
 }
 
@@ -352,4 +352,49 @@ export interface SetMarginRequestV3 {
 
 export interface GetMaxWithdrawalRequestV3 {
   coin: string;
+}
+
+export interface GetRealityOrderBookRequestV3 {
+  symbol: string;
+}
+
+export interface GetRealityFillsRequestV3 {
+  symbol: string;
+  limit?: string;
+}
+
+export interface SubMasterTransferRequestV3 {
+  fromType: 'spot' | 'uta';
+  toType: 'spot' | 'p2p' | 'uta';
+  amount: string;
+  coin: string;
+  clientOid?: string;
+}
+
+export interface CreateAgentSubAccountRequestV3 {
+  username: string;
+  passphrase: string;
+  note?: string;
+}
+
+export interface MovePositionItemRequestV3 {
+  symbol: string;
+  side: 'buy' | 'sell';
+  qty: string;
+}
+
+export interface MovePositionsRequestV3 {
+  fromUid: string;
+  toUid: string;
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  positionList: MovePositionItemRequestV3[];
+}
+
+export interface GetMovePositionHistoryRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  startTime?: string;
+  endTime?: string;
+  cursor?: string;
+  limit?: string;
 }
