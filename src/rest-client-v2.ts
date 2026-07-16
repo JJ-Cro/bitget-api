@@ -5,6 +5,7 @@ import {
   AgentCustomerListRequestV2,
   AgentCustomerTradeVolumeRequestV2,
   CreateSubAccountApiKeyRequestV2,
+  DeleteSubAccountApiKeyRequestV2,
   GetAgentCommissionDetailRequestV2,
   GetAgentCustomerCommissionsRequestV2,
   GetAgentCustomerKycResultRequestV2,
@@ -29,6 +30,7 @@ import {
   CreateAgentSubaccountRequestV2,
   CreateVirtualSubApiKeyRequestV2,
   CreateVirtualSubRequestV2,
+  GetAllTradeRatesRequestV2,
   GetAnnouncementsRequestV2,
   GetConvertBGBHistoryRequestV2,
   GetConvertHistoryRequestV2,
@@ -112,9 +114,12 @@ import {
   FuturesModifyOrderRequestV2,
   FuturesModifyPlanOrderRequestV2,
   FuturesModifyTPSLOrderRequestV2,
+  FuturesOiLimitRequestV2,
   FuturesOpenCountRequestV2,
   FuturesPlaceOrderRequestV2,
   FuturesPlanOrderRequestV2,
+  FuturesPositionAdlRankRequestV2,
+  FuturesPositionTPSLOrderRequestV2,
   FuturesRecentTradesRequestV2,
   FuturesReversalOrderRequestV2,
   FuturesSetAutoMarginRequestV2,
@@ -126,6 +131,14 @@ import {
   GetUnionTransferLimitsRequestV2,
   UnionConvertRequestV2,
 } from './types/request/v2/futures.js';
+import {
+  GetInstLoanLTVConvertRequestV2,
+  GetInstLoanMarginCoinInfoRequestV2,
+  GetInstLoanOrderRequestV2,
+  GetInstLoanProductInfoRequestV2,
+  GetInstLoanRepaidHistoryRequestV2,
+  GetInstLoanSymbolsRequestV2,
+} from './types/request/v2/instloan.js';
 import {
   GetBorrowHistoryRequestV2,
   GetFinancialHistoryRequestV2,
@@ -154,6 +167,7 @@ import {
   SpotAccountTypeV2,
   SpotBatchCancelOrderRequestV2,
   SpotBatchOrderRequestV2,
+  SpotCallAuctionRequestV2,
   SpotCancelandSubmitOrderRequestV2,
   SpotCancelOrderRequestV2,
   SpotCandlesRequestV2,
@@ -313,6 +327,7 @@ import {
   FuturesOrderDetailV2,
   FuturesOrderFillV2,
   FuturesPendingPlanOrderV2,
+  FuturesPositionAdlRankV2,
   FuturesPositionTierV2,
   FuturesPositionV2,
   FuturesSubAccountAssetV2,
@@ -327,6 +342,14 @@ import {
   UnionSwitchUsdtV2,
   UnionTransferLimitsV2,
 } from './types/response/v2/futures.js';
+import {
+  InstLoanCoinInfoV2,
+  InstLoanLTVConvertV2,
+  InstLoanOrderV2,
+  InstLoanProductInfoV2,
+  InstLoanRepaidHistoryItemV2,
+  InstLoanSymbolsV2,
+} from './types/response/v2/instloan.js';
 import {
   CrossInterestRateAndLimitResponseV2,
   CrossMaxBorrowableResponseV2,
@@ -354,6 +377,7 @@ import {
   SpotAccountAssetV2,
   SpotAccountBillV2,
   SpotAccountInfoV2,
+  SpotCallAuctionV2,
   SpotCancelPlanOrdersV2,
   SpotCandlestickV2,
   SpotCoinInfoV2,
@@ -506,6 +530,18 @@ export class RestClientV2 extends BaseRestClient {
     }>
   > {
     return this.getPrivate('/api/v2/common/trade-rate', params);
+  }
+
+  getAllTradeRates(params: GetAllTradeRatesRequestV2): Promise<
+    APIResponse<
+      {
+        symbol: string;
+        makerFeeRate: string;
+        takerFeeRate: string;
+      }[]
+    >
+  > {
+    return this.getPrivate('/api/v2/common/all-trade-rate', params);
   }
 
   /**
@@ -907,6 +943,12 @@ export class RestClientV2 extends BaseRestClient {
     params: SpotHistoricTradesRequestV2,
   ): Promise<APIResponse<SpotTradeV2[]>> {
     return this.getPrivate('/api/v2/spot/market/fills-history', params);
+  }
+
+  getSpotCallAuction(
+    params: SpotCallAuctionRequestV2,
+  ): Promise<APIResponse<SpotCallAuctionV2>> {
+    return this.get('/api/v2/spot/market/auction', params);
   }
 
   /**
@@ -1393,6 +1435,18 @@ export class RestClientV2 extends BaseRestClient {
     return this.get('/api/v2/mix/market/contracts', params);
   }
 
+  getFuturesOiLimit(params: FuturesOiLimitRequestV2): Promise<
+    APIResponse<
+      {
+        symbol: string;
+        notionalValue: string;
+        totalNotionalValue: string;
+      }[]
+    >
+  > {
+    return this.get('/api/v2/mix/market/oi-limit', params);
+  }
+
   /**
    *
    * * Futures | Account
@@ -1608,6 +1662,12 @@ export class RestClientV2 extends BaseRestClient {
     return this.getPrivate('/api/v2/mix/position/history-position', params);
   }
 
+  getFuturesPositionAdlRank(
+    params: FuturesPositionAdlRankRequestV2,
+  ): Promise<APIResponse<FuturesPositionAdlRankV2[]>> {
+    return this.getPrivate('/api/v2/mix/position/adlRank', params);
+  }
+
   /**
    *
    * * Futures | Trade
@@ -1739,6 +1799,18 @@ export class RestClientV2 extends BaseRestClient {
     }>
   > {
     return this.postPrivate('/api/v2/mix/order/place-tpsl-order', params);
+  }
+
+  futuresSubmitPositionTPSL(params: FuturesPositionTPSLOrderRequestV2): Promise<
+    APIResponse<
+      {
+        orderId: string;
+        stopSurplusClientOid: string;
+        stopLossClientOid: string;
+      }[]
+    >
+  > {
+    return this.postPrivate('/api/v2/mix/order/place-pos-tpsl', params);
   }
 
   futuresSubmitPlanOrder(params: FuturesPlanOrderRequestV2): Promise<
@@ -1974,6 +2046,15 @@ export class RestClientV2 extends BaseRestClient {
   ): Promise<APIResponse<ModifySubaccountApiKeyResponseV2>> {
     return this.postPrivate(
       '/api/v2/broker/manage/modify-subaccount-apikey',
+      params,
+    );
+  }
+
+  deleteSubaccountApiKey(
+    params: DeleteSubAccountApiKeyRequestV2,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate(
+      '/api/v2/broker/manage/delete-subaccount-apikey',
       params,
     );
   }
@@ -3316,5 +3397,73 @@ export class RestClientV2 extends BaseRestClient {
     params: GetLiquidationRecordsRequestV2,
   ): Promise<APIResponse<EarnLoanLiquidationRecordsV2[]>> {
     return this.getPrivate('/api/v2/earn/loan/reduces', params);
+  }
+
+  /**
+   *
+   * * Inst Loan | Product Info
+   *
+   */
+
+  getLoanProductInfo(
+    params: GetInstLoanProductInfoRequestV2,
+  ): Promise<APIResponse<InstLoanProductInfoV2>> {
+    return this.getPrivate('/api/v2/spot/ins-loan/product-infos', params);
+  }
+
+  getLoanSymbols(
+    params: GetInstLoanSymbolsRequestV2,
+  ): Promise<APIResponse<InstLoanSymbolsV2>> {
+    return this.getPrivate('/api/v2/spot/ins-loan/symbols', params);
+  }
+
+  getLoanMarginCoinInfo(params: GetInstLoanMarginCoinInfoRequestV2): Promise<
+    APIResponse<{
+      productId: string;
+      coinInfo: InstLoanCoinInfoV2[];
+    }>
+  > {
+    return this.getPrivate(
+      '/api/v2/spot/ins-loan/ensure-coins-convert',
+      params,
+    );
+  }
+
+  /**
+   *
+   * * Inst Loan | Account
+   *
+   */
+
+  getLoanRiskUnit(): Promise<
+    APIResponse<{
+      riskUnitId: string[];
+    }>
+  > {
+    return this.getPrivate('/api/v2/spot/ins-loan/risk-unit');
+  }
+
+  getLoanLTVConvert(
+    params?: GetInstLoanLTVConvertRequestV2,
+  ): Promise<APIResponse<InstLoanLTVConvertV2>> {
+    return this.getPrivate('/api/v2/spot/ins-loan/ltv-convert', params);
+  }
+
+  /**
+   *
+   * * Inst Loan | Orders
+   *
+   */
+
+  getLoanRepaidHistory(
+    params?: GetInstLoanRepaidHistoryRequestV2,
+  ): Promise<APIResponse<InstLoanRepaidHistoryItemV2[]>> {
+    return this.getPrivate('/api/v2/spot/ins-loan/repaid-history', params);
+  }
+
+  getLoanOrder(
+    params?: GetInstLoanOrderRequestV2,
+  ): Promise<APIResponse<InstLoanOrderV2[]>> {
+    return this.getPrivate('/api/v2/spot/ins-loan/loan-order', params);
   }
 }

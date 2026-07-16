@@ -48,6 +48,15 @@ export interface FuturesMergeDepthRequestV2 {
   limit?: '1' | '5' | '15' | '50' | 'max';
 }
 
+export interface FuturesOiLimitRequestV2 {
+  productType: FuturesProductTypeV2;
+  symbol?: string;
+}
+
+export interface FuturesPositionAdlRankRequestV2 {
+  productType: FuturesProductTypeV2;
+}
+
 export interface FuturesRecentTradesRequestV2 {
   symbol: string;
   productType: FuturesProductTypeV2;
@@ -349,6 +358,24 @@ export interface FuturesTPSLOrderRequestV2 {
   rangeRate?: string;
   clientOid?: string;
   stpMode?: FuturesStpModeV2;
+}
+
+export interface FuturesPositionTPSLOrderRequestV2 {
+  marginCoin: string;
+  productType: FuturesProductTypeV2;
+  symbol: string;
+  stopSurplusTriggerPrice?: string;
+  stopSurplusSize?: string;
+  stopSurplusTriggerType?: FuturesTriggerTypeV2;
+  stopSurplusExecutePrice?: string;
+  stopLossTriggerPrice?: string;
+  stopLossSize?: string;
+  stopLossTriggerType?: FuturesTriggerTypeV2;
+  stopLossExecutePrice?: string;
+  holdSide: 'long' | 'short' | 'buy' | 'sell';
+  stpMode?: FuturesStpModeV2;
+  stopSurplusClientOid?: string;
+  stopLossClientOid?: string;
 }
 
 export type FuturesTriggerPriceTypeV2 =

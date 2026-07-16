@@ -41,6 +41,10 @@ export interface SpotHistoricTradesRequestV2 {
   endTime?: string;
 }
 
+export interface SpotCallAuctionRequestV2 {
+  symbol: string;
+}
+
 /**
  *
  * * Spot | Trade

@@ -12,7 +12,9 @@
     "build:clean": "npm run clean && npm run build",
     "build:watch": "npm run clean && tsc --watch",
     "pack": "webpack --config webpack/webpack.config.cjs",
-    "lint": "eslint src",
+    "lint": "eslint src && npm run lint:apidoc",
+    "lint:apidoc": "prettier --check \"examples/apidoc/**/*.js\"",
+    "format:apidoc": "prettier --write \"examples/apidoc/**/*.js\"",
     "prepublish": "npm run build:clean",
     "betapublish": "npm publish --tag beta"
   },

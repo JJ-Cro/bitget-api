@@ -98,6 +98,11 @@ export interface ModifySubAccountApiKeyRequestV2 {
   permList: string[];
 }
 
+export interface DeleteSubAccountApiKeyRequestV2 {
+  subUid: string;
+  apiKey: string;
+}
+
 /**
  *
  * * Broker | All Sub-accounts Deposit and Withdrawal Records

@@ -24,6 +24,10 @@ export interface GetTradeRateRequestV2 {
   businessType: string;
 }
 
+export interface GetAllTradeRatesRequestV2 {
+  businessType: string;
+}
+
 /**
  *
  * * Common | Tax
