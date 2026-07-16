@@ -315,6 +315,14 @@ export interface FuturesPositionV2 {
   cTime: string;
 }
 
+export interface FuturesPositionAdlRankV2 {
+  symbol: string;
+  marginCoin: string;
+  adlRank: string;
+  rank: string;
+  holdSide: string;
+}
+
 export interface FuturesHistoryPositionV2 {
   positionId: string;
   marginCoin: string;

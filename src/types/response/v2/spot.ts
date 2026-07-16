@@ -79,6 +79,14 @@ export interface SpotTickerV2 {
   change24h: string;
 }
 
+export interface SpotCallAuctionV2 {
+  stage: string;
+  stageEndTime: string;
+  estOpeningPrice: string | null;
+  matchedVolume: string | null;
+  auctionEndTime: string;
+}
+
 export interface SpotMergeDepthV2 {
   asks: [string, string][];
   bids: [string, string][];

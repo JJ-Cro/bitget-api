@@ -19,11 +19,11 @@ const client = new WebsocketAPIClient({
 // You can use the client to make requests immediately
 
 // Example use of the cancelOrder method
-client.cancelOrder(params)
+client
+  .cancelOrder(params)
   .then((response) => {
     console.log(response);
   })
   .catch((error) => {
     console.error(error);
   });
-
