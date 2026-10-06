@@ -9,18 +9,13 @@ const client = new RestClientV3({
 });
 
 client
-  .submitNewOrder({
-    category: 'SPOT',
-    symbol: 'BGBUSDT',
-    orderType: 'limit',
-    qty: '123',
-    price: '1.11',
-    side: 'buy',
-    posSide: 'long',
-    timeInForce: 'gtc',
-    reduceOnly: 'no',
-    autoBorrow: 'no',
-    pxAmendType: 'no',
+  .modifyCopyFuturesTpSl({
+    projectId: '1234567890',
+    strategyId: '1234567890',
+    tpTriggerBy: 'market',
+    slTriggerBy: 'market',
+    takeProfit: '60000',
+    stopLoss: '45000',
   })
   .then((response) => {
     console.log(response);

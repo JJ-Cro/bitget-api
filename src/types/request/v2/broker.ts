@@ -275,3 +275,12 @@ export interface GetAgentCommissionDetailRequestV2 {
   limit?: string;
   idLessThan?: string;
 }
+
+export interface GetSubAffiliateInfoRequestV2 {
+  uid?: string;
+  startTime?: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  includeDownLine?: 'yes' | 'no';
+}

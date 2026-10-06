@@ -113,3 +113,45 @@ export interface WsDepthBookDataV2 {
   /** Futures books channel only - previous push serial number */
   pseq?: string;
 }
+
+/** UTA account channel coin row */
+export interface WsAccountCoinV3 {
+  coin: string;
+  balance: string;
+  /** Coin balance before borrowing-related amounts are deducted */
+  balanceOriginal?: string;
+  available: string;
+  locked: string;
+  equity: string;
+  usdValue: string;
+  borrow: string;
+  debts: string;
+  bonus?: string;
+}
+
+/** UTA account channel push. action is snapshot or update */
+export interface WsAccountDataV3 {
+  totalEquity: string;
+  effEquity: string;
+  mmr: string;
+  imr: string;
+  mgnRatio: string;
+  positionMgnRatio: string;
+  unrealisedPnL: string;
+  coin: WsAccountCoinV3[];
+}
+
+/**
+ * UTA books / books50 push.
+ * books and books50: first message is a snapshot, later messages are incremental updates.
+ * pseq is set on those two topics.
+ */
+export interface WsOrderBookDataV3 {
+  a: [string, string][];
+  b: [string, string][];
+  seq: string | number;
+  pseq?: string | number;
+  /** Present on the books topic */
+  maxDepth?: string;
+  ts: string;
+}

@@ -25,4 +25,6 @@ export interface WSAPIPlaceOrderRequestV3 {
   receiveWindow?: string;
   /** Spot only. Default: no */
   autoBorrow?: 'yes' | 'no';
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }

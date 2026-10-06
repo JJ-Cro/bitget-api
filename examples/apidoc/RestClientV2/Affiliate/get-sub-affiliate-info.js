@@ -1,17 +1,17 @@
-import { RestClientV3 } from 'bitget-api';
+import { RestClientV2 } from 'bitget-api';
 // or, if require is preferred:
-// const { RestClientV3 } = require('bitget-api');
+// const { RestClientV2 } = require('bitget-api');
 
-const client = new RestClientV3({
+const client = new RestClientV2({
   apiKey: 'insert_api_key_here',
   apiSecret: 'insert_api_secret_here',
   apiPass: 'insert_api_pass_here',
 });
 
 client
-  .setCollateralType({
-    collateralType: 'mainstream',
-    allowCashPlus: 'no',
+  .getSubAffiliateInfo({
+    uid: '123456789',
+    limit: '100',
   })
   .then((response) => {
     console.log(response);

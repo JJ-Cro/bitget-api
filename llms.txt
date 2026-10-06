@@ -758,319 +758,6 @@ export interface GetMarginLiquidationOrdersRequestV2 {
 }
 
 ================
-File: src/types/request/v3/cfd.ts
-================
-export type CfdYesNoV3 = 'yes' | 'no';
-⋮----
-export type CfdOrderTypeV3 = 'limit' | 'market';
-⋮----
-export type CfdSideV3 = 'buy' | 'sell';
-⋮----
-export type CfdKlineIntervalV3 = '1m' | '15m' | '1h' | '4h' | '1d';
-⋮----
-export type CfdTransferAccountTypeV3 = 'funding' | 'uta';
-⋮----
-export type CfdTransferDirectionV3 = 'in' | 'out';
-⋮----
-export interface GetCfdTickersRequestV3 {
-  symbol?: string;
-}
-⋮----
-export interface GetCfdHistoryCandlestickRequestV3 {
-  symbol: string;
-  interval: CfdKlineIntervalV3;
-  side?: CfdSideV3;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-}
-⋮----
-export interface PlaceCfdOrderRequestV3 {
-  symbol: string;
-  orderType: CfdOrderTypeV3;
-  side: CfdSideV3;
-  qty: string;
-  price?: string;
-  takeProfit?: string;
-  stopLoss?: string;
-}
-⋮----
-export interface ModifyCfdOrderRequestV3 {
-  orderId: string;
-  price?: string;
-  takeProfit?: string;
-  stopLoss?: string;
-}
-⋮----
-export interface CancelCfdOrderRequestV3 {
-  orderId: string;
-}
-⋮----
-export interface CancelAllCfdOrdersRequestV3 {
-  symbol?: string;
-}
-⋮----
-export interface CloseCfdPositionsRequestV3 {
-  positionId: string;
-  qty: string;
-}
-⋮----
-export interface CloseAllCfdPositionsRequestV3 {
-  symbol?: string;
-}
-⋮----
-export interface GetCfdUnfilledOrdersRequestV3 {
-  symbol?: string;
-  subUid?: string;
-}
-⋮----
-export interface GetCfdOrderHistoryRequestV3 {
-  symbol: string;
-  subUid?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-}
-⋮----
-export interface GetCfdCurrentPositionsRequestV3 {
-  symbol?: string;
-  subUid?: string;
-}
-⋮----
-export interface CfdTransferRequestV3 {
-  coin: string;
-  amount: string;
-  accountType: CfdTransferAccountTypeV3;
-  direction: CfdTransferDirectionV3;
-}
-⋮----
-export interface GetCfdTransferRecordsRequestV3 {
-  transferId?: string;
-  subUid?: string;
-  startTime?: string;
-  endTime?: string;
-  direction?: CfdTransferDirectionV3;
-  limit?: string;
-}
-⋮----
-export interface GetCfdFinancialRecordsRequestV3 {
-  type?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-}
-⋮----
-export interface GetCfdInstrumentsRequestV3 {
-  symbol?: string;
-}
-
-================
-File: src/types/request/v3/grid.ts
-================
-export type GridCategoryV3 = 'SPOT' | 'USDT-FUTURES' | 'USDC-FUTURES';
-⋮----
-export type NeutralGridCategoryV3 = 'USDT-FUTURES' | 'USDC-FUTURES';
-⋮----
-export type GridFundsSourceV3 = 'funding' | 'uta' | 'otc';
-⋮----
-export type GridYesNoV3 = 'yes' | 'no';
-⋮----
-export type GridOrderModeV3 = 'arithmetic' | 'geometric';
-⋮----
-export type GridTypeV3 = 'long' | 'short' | 'neutral' | 'netural';
-⋮----
-export type GridTriggerConditionV3 = 'instant' | 'price' | 'rsi' | 'boll';
-⋮----
-export type GridTerminationConditionV3 = 'rsi' | 'boll';
-⋮----
-export type GridAdjustTypeV3 = 'increase' | 'decrease';
-⋮----
-export interface GridInvestmentAmountV3 {
-  coin: string;
-  amount: string;
-}
-⋮----
-export interface GridIndicatorParamsV3 {
-  indicatorLength?: string;
-  threshold?: string;
-  multiplier?: string;
-  interval?: string;
-}
-⋮----
-export interface GridBotIdRequestV3 {
-  botId: string;
-}
-⋮----
-export interface GetGridBotDetailRequestV3 {
-  botId: string;
-}
-⋮----
-export interface GetGridBotOrderDetailsRequestV3 {
-  category: GridCategoryV3;
-  botId: string;
-}
-⋮----
-export interface CloseGridBotRequestV3 {
-  botId: string;
-}
-⋮----
-export interface AddGridInvestmentRequestV3 {
-  category: GridCategoryV3;
-  botId: string;
-  coin?: string;
-  size?: string;
-  fundsSource: GridFundsSourceV3[];
-  adjustType?: GridAdjustTypeV3;
-  reinvestProfit?: GridYesNoV3;
-}
-⋮----
-export interface CreateGridBotRequestV3 {
-  category: GridCategoryV3;
-  symbol: string;
-  maxPrice: string;
-  minPrice: string;
-  gridNum: string;
-  gridOrderMode: GridOrderModeV3;
-  investmentAmount: GridInvestmentAmountV3[];
-  fundsSource?: GridFundsSourceV3[];
-  slippage?: string;
-  autoTransferProfits?: GridYesNoV3;
-  gridType?: GridTypeV3;
-  leverage?: string;
-  autoReserveMargin?: GridYesNoV3;
-  reservedMargin?: string;
-  triggerCondition?: GridTriggerConditionV3;
-  triggerParams?: GridIndicatorParamsV3[];
-  triggerPrice?: string;
-  terminationCondition?: GridTerminationConditionV3;
-  terminationParams?: GridIndicatorParamsV3[];
-  terminationSell?: GridYesNoV3;
-  stopLoss?: string;
-  takeProfit?: string;
-  trailingGrid?: GridYesNoV3;
-  movingAverageGains?: string;
-  stopUpwardPrice?: string;
-  hodlMode?: GridYesNoV3;
-  marketOpen?: GridYesNoV3;
-  lossReserve?: GridYesNoV3;
-}
-⋮----
-export type ValidateGridBotRequestV3 = CreateGridBotRequestV3;
-⋮----
-export interface ModifyGridBotRequestV3 {
-  botId: string;
-  category: GridCategoryV3;
-  takeProfit?: string;
-  stopLoss?: string;
-  terminationCondition?: GridTerminationConditionV3;
-  terminationParams?: GridIndicatorParamsV3[];
-  hodlMode?: GridYesNoV3;
-  autoTransferProfits?: GridYesNoV3;
-}
-⋮----
-export interface ModifyGridIntervalRequestV3 {
-  category: GridCategoryV3;
-  botId: string;
-  maxPrice: string;
-  minPrice: string;
-  gridNum: string;
-}
-⋮----
-export interface CreateNeutralGridBotRequestV3 {
-  category: NeutralGridCategoryV3;
-  symbol: string;
-  maxPrice: string;
-  minPrice: string;
-  gridNum: string;
-  gridOrderMode: GridOrderModeV3;
-  fundsSource?: GridFundsSourceV3[];
-  leverage?: string;
-  investmentAmount: GridInvestmentAmountV3[];
-  triggerPrice?: string;
-  stopLoss?: string;
-  takeProfit?: string;
-  autoTransferProfits?: GridYesNoV3;
-}
-⋮----
-export type ValidateNeutralGridBotRequestV3 = CreateNeutralGridBotRequestV3;
-⋮----
-export interface ModifyNeutralGridBotRequestV3 {
-  botId: string;
-  category: NeutralGridCategoryV3;
-  takeProfit?: string;
-  stopLoss?: string;
-  autoTransferProfits?: GridYesNoV3;
-}
-⋮----
-export interface ModifyNeutralGridIntervalRequestV3 {
-  category: NeutralGridCategoryV3;
-  botId: string;
-  maxPrice: string;
-  minPrice: string;
-  gridNum: string;
-}
-⋮----
-export interface GetNeutralGridBotDetailRequestV3 {
-  botId: string;
-}
-⋮----
-export interface GetNeutralGridBotOrderDetailsRequestV3 {
-  category: NeutralGridCategoryV3 | GridCategoryV3;
-  botId: string;
-}
-
-================
-File: src/types/request/v3/reality.ts
-================
-export interface GetRealityCompanyOverviewRequestV3 {
-  code: string;
-}
-⋮----
-export interface GetRealityValuationIndicatorsRequestV3 {
-  code: string;
-}
-⋮----
-export interface GetRealityEarningsForecastRequestV3 {
-  code: string;
-}
-⋮----
-export interface GetRealitySuspensionResumptionInfoRequestV3 {
-  code: string;
-}
-⋮----
-export interface GetRealityDividendsRequestV3 {
-  code: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetRealityShareCapitalChangeRequestV3 {
-  code: string;
-}
-⋮----
-export interface GetRealityInnerTradesRequestV3 {
-  code: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetRealityExecutiveShareholdingsRequestV3 {
-  code: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetRealityShareholdDetailRequestV3 {
-  code: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetRealityStockInfoRequestV3 {
-  symbol?: string;
-}
-
-================
 File: src/types/request/shared.ts
 ================
 /** Pagination */
@@ -1852,444 +1539,6 @@ export interface MarginLiquidationOrderV2 {
 }
 
 ================
-File: src/types/response/v3/cfd.ts
-================
-import type { CfdOrderTypeV3, CfdSideV3 } from '../../request/v3/cfd.js';
-⋮----
-export interface CfdTickerV3 {
-  symbol: string;
-  openPriceChange: string;
-  highPrice: string;
-  lowPrice: string;
-  quoteTime: string;
-}
-⋮----
-export interface CfdCandlestickV3 extends Array<string> {
-  0: string;
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-}
-⋮----
-export interface PlaceCfdOrderResponseV3 {
-  trxId: string;
-}
-⋮----
-export interface ModifyCfdOrderResponseV3 {
-  orderId: string;
-}
-⋮----
-export interface CfdUnfilledOrderV3 {
-  symbol: string;
-  orderType: CfdOrderTypeV3 | string;
-  side: CfdSideV3 | string;
-  price: string;
-  qty: string;
-  takeProfit?: string;
-  stopLoss?: string;
-  trxId: string;
-  orderId: string;
-}
-⋮----
-export interface CfdHistoryOrderV3 {
-  symbol: string;
-  orderType: CfdOrderTypeV3 | string;
-  side: CfdSideV3 | string;
-  price: string;
-  qty: string;
-  cumExecQty?: string;
-  takeProfit?: string;
-  stopLoss?: string;
-  status: string;
-  trxId: string;
-  orderId: string;
-}
-⋮----
-export interface CfdOrderHistoryV3 {
-  list: CfdHistoryOrderV3[];
-}
-⋮----
-export interface CfdCurrentPositionV3 {
-  positionId: string;
-  symbol: string;
-  orderType: CfdOrderTypeV3 | string;
-  side: CfdSideV3 | string;
-  qty: string;
-  openPrice: string;
-  takeProfit?: string;
-  stopLoss?: string;
-  interest: string;
-  unrealizedPnl: string;
-  totalProfit: string;
-}
-⋮----
-export interface CfdFundDetailV3 {
-  leverage: string;
-  balance: string;
-  credit: string;
-  marginStopOut: string;
-  marginUsed: string;
-  marginCall: string;
-  marginFree: string;
-  marginLevel: string;
-  equity: string;
-  pnl: string;
-  status: string;
-  swap: string;
-  frozen: string;
-  currency: string;
-}
-⋮----
-export interface CfdTransferResponseV3 {
-  transferId: string;
-}
-⋮----
-export interface CfdTransferRecordV3 {
-  transferId: string;
-  coin: string;
-  amount: string;
-  direction: string;
-  status: string;
-  accountType: string;
-  createdTime: string;
-  updatedTime: string;
-}
-⋮----
-export interface CfdTransferRecordsV3 {
-  list: CfdTransferRecordV3[];
-  cursor?: string;
-}
-⋮----
-export interface CfdFinancialRecordV3 {
-  id: string | number;
-  symbol: string;
-  side: string | number;
-  qty: string | number;
-  swap: string | number;
-  fee: string | number;
-  cashFlow: string | number;
-  balanceBefore: string | number;
-  balanceChange: string | number;
-  balanceAfter: string | number;
-  creditBefore: string | number;
-  creditChange: string | number;
-  creditAfter: string | number;
-  openPrice: string | number;
-  closePrice: string | number;
-  orderId: string | number;
-  ts: string | number;
-}
-⋮----
-export interface CfdInstrumentV3 {
-  symbol: string;
-  onlineTime: string;
-  currency: string;
-  digits: string;
-  spread: string;
-  contractSize: string;
-  marginCurrency: string;
-  profitCurrency: string;
-  stopLevel: string;
-  enable: string;
-  marginPercent: string;
-  initialMargin: string;
-  marginMode: string;
-  maintMargin: string;
-  maintMarginRateBuy: string;
-  maintMarginRateSell: string;
-  initialMarginRateBuy: string;
-  initialMarginRateSell: string;
-  maxVolume: string;
-  minVolume: string;
-  stepVolume: string;
-  priceCurrency: string;
-  tickSize: string;
-  tickValue: string;
-  leverage: string;
-  tradeTime: string;
-  commissionType: string;
-  commissionRate: string;
-  symbolCategory: string;
-  exchangeRate: string;
-  marginUsdRate: string;
-}
-
-================
-File: src/types/response/v3/grid.ts
-================
-import type { GridIndicatorParamsV3 } from '../../request/v3/grid.js';
-⋮----
-export interface GridBotIdResponseV3 {
-  botId: string;
-}
-⋮----
-export interface GridValidateResponseV3 {
-  valid: string;
-  reason?: string;
-  minInvestment?: string;
-}
-⋮----
-export interface GridBotOrderItemV3 {
-  orderId: string;
-  delegateCount: string;
-  delegatePrice: string;
-  changeRequired: number | string;
-}
-⋮----
-export interface GridBotOrderDetailsV3 {
-  botId: string;
-  symbol: string;
-  buyOrderList: GridBotOrderItemV3[];
-  sellOrderList: GridBotOrderItemV3[];
-}
-⋮----
-export interface GridBotDetailV3 {
-  botId: string;
-  symbol: string;
-  status: string;
-  totalProfit: string;
-  roi: string;
-  gridProfit: string;
-  gridProfitRate: string;
-  unpairedProfit: string;
-  unpairedProfitRate: string;
-  margin?: string;
-  arbitrageAPR: string;
-  totalAPR: string;
-  createdTime: string;
-  runningTime: string;
-  currentBaseBalance?: string;
-  currentQuoteBalance?: string;
-  initialBaseHoldings?: string;
-  initialQuoteHoldings?: string;
-  reservedBaseTradingFee?: string;
-  reservedQuoteTradingFee?: string;
-  gridStartPrice?: string;
-  gridType?: string;
-  maxPrice: string;
-  minPrice: string;
-  gridNum: string;
-  gridOrderMode: string;
-  baseInvestmentCoin?: string;
-  baseInvestmentAmount?: string;
-  quoteInvestmentCoin?: string;
-  quoteInvestmentAmount?: string;
-  slippage?: string;
-  triggerCondition?: string;
-  triggerParams?: GridIndicatorParamsV3[];
-  triggerPrice?: string;
-  terminationCondition?: string;
-  terminationParams?: GridIndicatorParamsV3[];
-  terminationSell?: string;
-  stopLoss?: string;
-  takeProfit?: string;
-  hodlMode?: string;
-  autoTransferProfits?: string;
-  arbitrageCount?: string;
-  terminationReason?: string;
-}
-⋮----
-export interface NeutralGridBotDetailV3 {
-  botId: string;
-  symbol: string;
-  status: string;
-  totalProfit: string;
-  roi: string;
-  gridProfit: string;
-  gridProfitRate: string;
-  unpairedProfit: string;
-  unpairedProfitRate: string;
-  margin?: string;
-  arbitrageAPR: string;
-  totalAPR: string;
-  createdTime: string;
-  runningTime: string;
-  gridStartPrice?: string;
-  maxPrice: string;
-  minPrice: string;
-  gridNum: string;
-  gridOrderMode: string;
-  triggerPrice?: string;
-  leverage?: string;
-  stopLoss?: string;
-  takeProfit?: string;
-  holdPosition?: string;
-  oneGridMinProfit?: string;
-  oneGridMaxProfit?: string;
-  autoTransferProfits?: string;
-}
-
-================
-File: src/types/response/v3/reality.ts
-================
-export interface RealityCompanyOverviewV3 {
-  peRatio: string;
-  pbRatio: string;
-  totalShares: string;
-  marketCap: string;
-  high52Week: string;
-  low52Week: string;
-  code: string;
-  name: string;
-  ListingDate: string;
-  employees: string;
-  companyAddress: string;
-}
-⋮----
-export interface RealityValuationIndicatorsV3 {
-  date: string;
-  pb: string;
-  pbEd: string;
-  pbPd: string;
-  pbMrq: string;
-  pe: string;
-  peLyr: string;
-  peTtmEd: string;
-  peTtmPd: string;
-  ps: string;
-  psLyr: string;
-  psTtmEd: string;
-  psTtmPd: string;
-  pcf: string;
-  pcfNet: string;
-  pcfNetTtmEd: string;
-  pcfNetTtmPd: string;
-  pcfTtmEd: string;
-  pcfTtmPd: string;
-  evEbitda: string;
-  equityValue: string;
-  grossEv: string;
-  netEv: string;
-  tmvUsd: string;
-  cirTmvUsd: string;
-  dividendYieldTtm: string;
-}
-⋮----
-export interface RealityEarningsForecastV3 {
-  fiscalYear: string;
-  publicationDeadline: string;
-  isActual: boolean;
-  revenue: string;
-  ebit: string;
-  netIncomeParent: string;
-  eps: string;
-  bps: string;
-  cfps: string;
-  roe: string;
-  roa: string;
-  currency: string;
-}
-⋮----
-export interface RealitySuspensionResumptionInfoV3 {
-  code: string;
-  name: string;
-  suspensionDate: string;
-  suspensionTime: string;
-  suspensionReason: string;
-  suspensionPrice: string;
-  resumptionDate: string;
-  resumptionQuoteTime: string;
-  resumptionTradingTime: string;
-}
-⋮----
-export interface RealityDividendItemV3 {
-  type: string;
-  announcementDate: string;
-  recordDate: string;
-  exrightDate: string;
-  dividendDate: string;
-  dividendPerShare: string;
-  stockDividendPerShare: string;
-  splitValidDate: string;
-  splitNumerator: string;
-  splitDenominator: string;
-}
-⋮----
-export interface RealityShareCapitalChangeV3 {
-  announcementDate: string;
-  changeDate: string;
-  totalShares: string;
-  commonShares: string;
-  preferredShares: string;
-  otherShares: string;
-  specialExplain: string;
-  changeReason: string;
-}
-⋮----
-export interface RealityInnerTradeItemV3 {
-  reporterName: string;
-  issueOrgName: string;
-  endDate: string;
-  announcementDate: string;
-  innerType: string;
-  position: string;
-  securityTitle: string;
-  tradeDate: string;
-  designatedExerciseDate: string;
-  innerTradeType: string;
-  actionType: string;
-  tradeVolume: string;
-  tradePrice: string;
-  holdingType: string;
-  indirectHoldingStatement: string;
-  postTradeQuantity: string;
-}
-⋮----
-export interface RealityExecutiveShareholdingItemV3 {
-  name: string;
-  holdingNum: string;
-  holdingRatio: string;
-  voteRatio: string;
-  period: string;
-  announcementDate: string;
-}
-⋮----
-export interface RealityShareholdDetailItemV3 {
-  name: string;
-  holdingNum: string;
-  holdingRatio: string;
-}
-⋮----
-export interface RealityCursorListV3<T> {
-  list: T[];
-  cursor?: string;
-}
-⋮----
-export interface RealityStockInfoV3 {
-  symbol: string;
-  code: string;
-  name: string;
-  tradingPeriod: string[];
-  weekendTradable: 'yes' | 'no' | string;
-}
-⋮----
-export interface RealityMarketSessionStateV3 {
-  state: string;
-  timeZone: string;
-  startTime: string;
-  endTime: string;
-}
-⋮----
-export interface RealityMarketStateV3 {
-  market: string;
-  daylightType: string;
-  stateList: RealityMarketSessionStateV3[];
-}
-⋮----
-export interface RealityMarketSpecificConfigV3 {
-  remark: string;
-  startTime: string;
-  endTime: string;
-}
-⋮----
-export interface RealityMarketCalendarV3 {
-  timeZone: string;
-  specificConfig: RealityMarketSpecificConfigV3[];
-  regularConfig: string[];
-}
-
-================
 File: src/types/websockets/ws-api-response.ts
 ================
 export interface WSAPIPlaceOrderResponseV3 {
@@ -2298,171 +1547,6 @@ export interface WSAPIPlaceOrderResponseV3 {
   clientOid: string;
   cTime: string;
 }
-
-================
-File: src/websocket-api-client.ts
-================
-import {
-  CancelOrderRequestV3,
-  ModifyOrderRequestV3,
-} from './types/request/v3/trade.js';
-import {
-  CancelOrderResponseV3,
-  ModifyOrderResponseV3,
-} from './types/response/v3/trade.js';
-import { WSAPIResponse } from './types/websockets/ws-api.js';
-import { WSAPIPlaceOrderRequestV3 } from './types/websockets/ws-api-request.js';
-import { WSAPIPlaceOrderResponseV3 } from './types/websockets/ws-api-response.js';
-import {
-  BitgetInstTypeV3,
-  WSClientConfigurableOptions,
-} from './types/websockets/ws-general.js';
-import { DefaultLogger } from './util/logger.js';
-import { WS_KEY_MAP } from './util/websocket-util.js';
-import { WebsocketClientV3 } from './websocket-client-v3.js';
-⋮----
-/**
- * Configurable options specific to only the REST-like WebsocketAPIClient
- */
-export interface WSAPIClientConfigurableOptions {
-  /**
-   * Default: true
-   *
-   * Attach default event listeners, which will console log any high level
-   * events (opened/reconnecting/reconnected/etc).
-   *
-   * If you disable this, you should set your own event listeners
-   * on the embedded WS Client `wsApiClient.getWSClient().on(....)`.
-   */
-  attachEventListeners: boolean;
-}
-⋮----
-/**
-   * Default: true
-   *
-   * Attach default event listeners, which will console log any high level
-   * events (opened/reconnecting/reconnected/etc).
-   *
-   * If you disable this, you should set your own event listeners
-   * on the embedded WS Client `wsApiClient.getWSClient().on(....)`.
-   */
-⋮----
-/**
- * This is a minimal Websocket API wrapper around the WebsocketClient.
- *
- * Note: You can also directly use the sendWSAPIRequest() method to make WS API calls, but some
- * may find the below methods slightly more intuitive.
- *
- * Refer to the WS API promises example for a more detailed example on using sendWSAPIRequest() directly:
- * https://github.com/tiagosiebler/bitget-api/blob/master/examples/V3/ws-api-trade-raw.ts
- */
-export class WebsocketAPIClient
-⋮----
-constructor(
-    options?: WSClientConfigurableOptions &
-      Partial<WSAPIClientConfigurableOptions>,
-    logger?: DefaultLogger,
-)
-⋮----
-public getWSClient(): WebsocketClientV3
-⋮----
-public setTimeOffsetMs(newOffset: number): void
-⋮----
-/*
-   * Bitget WebSocket API Methods
-   * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel
-   */
-⋮----
-/**
-   * Submit a new order
-   *
-   * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel
-   *
-   * @returns
-   */
-submitNewOrder(
-    category: BitgetInstTypeV3,
-    params: WSAPIPlaceOrderRequestV3,
-): Promise<WSAPIResponse<[WSAPIPlaceOrderResponseV3], 'place-order'>>
-⋮----
-/**
-   * Submit a new order
-   *
-   * https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-   *
-   * @returns
-   */
-placeBatchOrders(
-    category: BitgetInstTypeV3,
-    params: WSAPIPlaceOrderRequestV3[],
-): Promise<WSAPIResponse<WSAPIPlaceOrderResponseV3[], 'batch-place'>>
-⋮----
-/*
-   * Bitget WebSocket API Methods
-   * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel
-   */
-⋮----
-/**
-   * Cancel Order
-   *
-   * https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-   *
-   * @returns
-   */
-cancelOrder(
-    category: BitgetInstTypeV3,
-    params: CancelOrderRequestV3,
-): Promise<WSAPIResponse<[CancelOrderResponseV3], 'cancel-order'>>
-⋮----
-/**
-   * Batch Cancel Order
-   *
-   * https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
-   *
-   * @returns
-   */
-cancelBatchOrders(
-    category: BitgetInstTypeV3,
-    params: CancelOrderRequestV3[],
-): Promise<WSAPIResponse<CancelOrderResponseV3[], 'batch-cancel'>>
-⋮----
-modifyOrder(
-    category: BitgetInstTypeV3,
-    params: ModifyOrderRequestV3,
-): Promise<WSAPIResponse<[ModifyOrderResponseV3], 'modify-order'>>
-⋮----
-batchModifyOrders(
-    category: BitgetInstTypeV3,
-    params: ModifyOrderRequestV3[],
-): Promise<WSAPIResponse<ModifyOrderResponseV3[], 'batch-modify'>>
-⋮----
-/**
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   * Private methods for handling some of the convenience/automation provided by the WS API Client
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   */
-⋮----
-private setupDefaultEventListeners()
-⋮----
-/**
-       * General event handlers for monitoring the WebsocketClient
-       */
-⋮----
-// Blind JSON.stringify can fail on circular references
-⋮----
-// JSON.stringify({ ...data, target: 'WebSocket' }),
 
 ================
 File: src/websocket-client-v2.ts
@@ -3751,6 +2835,113 @@ export interface GetSpotDepositRecordRequestV2 {
 }
 
 ================
+File: src/types/request/v3/cfd.ts
+================
+export type CfdYesNoV3 = 'yes' | 'no';
+⋮----
+export type CfdOrderTypeV3 = 'limit' | 'market';
+⋮----
+export type CfdSideV3 = 'buy' | 'sell';
+⋮----
+export type CfdKlineIntervalV3 = '1m' | '15m' | '1h' | '4h' | '1d';
+⋮----
+export type CfdTransferAccountTypeV3 = 'funding' | 'uta';
+⋮----
+export type CfdTransferDirectionV3 = 'in' | 'out';
+⋮----
+export interface GetCfdTickersRequestV3 {
+  symbol?: string;
+}
+⋮----
+export interface GetCfdHistoryCandlestickRequestV3 {
+  symbol: string;
+  interval: CfdKlineIntervalV3;
+  side?: CfdSideV3;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+}
+⋮----
+export interface PlaceCfdOrderRequestV3 {
+  symbol: string;
+  orderType: CfdOrderTypeV3;
+  side: CfdSideV3;
+  qty: string;
+  price?: string;
+  takeProfit?: string;
+  stopLoss?: string;
+}
+⋮----
+export interface ModifyCfdOrderRequestV3 {
+  orderId: string;
+  price?: string;
+  takeProfit?: string;
+  stopLoss?: string;
+}
+⋮----
+export interface CancelCfdOrderRequestV3 {
+  orderId: string;
+}
+⋮----
+export interface CancelAllCfdOrdersRequestV3 {
+  symbol?: string;
+}
+⋮----
+export interface CloseCfdPositionsRequestV3 {
+  positionId: string;
+  qty: string;
+}
+⋮----
+export interface CloseAllCfdPositionsRequestV3 {
+  symbol?: string;
+}
+⋮----
+export interface GetCfdUnfilledOrdersRequestV3 {
+  symbol?: string;
+  subUid?: string;
+}
+⋮----
+export interface GetCfdOrderHistoryRequestV3 {
+  symbol: string;
+  subUid?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+}
+⋮----
+export interface GetCfdCurrentPositionsRequestV3 {
+  symbol?: string;
+  subUid?: string;
+}
+⋮----
+export interface CfdTransferRequestV3 {
+  coin: string;
+  amount: string;
+  accountType: CfdTransferAccountTypeV3;
+  direction: CfdTransferDirectionV3;
+}
+⋮----
+export interface GetCfdTransferRecordsRequestV3 {
+  transferId?: string;
+  subUid?: string;
+  startTime?: string;
+  endTime?: string;
+  direction?: CfdTransferDirectionV3;
+  limit?: string;
+}
+⋮----
+export interface GetCfdFinancialRecordsRequestV3 {
+  type?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+}
+⋮----
+export interface GetCfdInstrumentsRequestV3 {
+  symbol?: string;
+}
+
+================
 File: src/types/request/v3/earn.ts
 ================
 /**
@@ -3796,6 +2987,161 @@ export interface RedeemEarnEliteRequestV3 {
   receiveAccount: 'spot' | 'unified';
   advancedSettle?: 'yes' | 'no';
   coin?: string;
+}
+
+================
+File: src/types/request/v3/grid.ts
+================
+export type GridCategoryV3 = 'SPOT' | 'USDT-FUTURES' | 'USDC-FUTURES';
+⋮----
+export type NeutralGridCategoryV3 = 'USDT-FUTURES' | 'USDC-FUTURES';
+⋮----
+export type GridFundsSourceV3 = 'funding' | 'uta' | 'otc';
+⋮----
+export type GridYesNoV3 = 'yes' | 'no';
+⋮----
+export type GridOrderModeV3 = 'arithmetic' | 'geometric';
+⋮----
+export type GridTypeV3 = 'long' | 'short' | 'neutral' | 'netural';
+⋮----
+export type GridTriggerConditionV3 = 'instant' | 'price' | 'rsi' | 'boll';
+⋮----
+export type GridTerminationConditionV3 = 'rsi' | 'boll';
+⋮----
+export type GridAdjustTypeV3 = 'increase' | 'decrease';
+⋮----
+export interface GridInvestmentAmountV3 {
+  coin: string;
+  amount: string;
+}
+⋮----
+export interface GridIndicatorParamsV3 {
+  indicatorLength?: string;
+  threshold?: string;
+  multiplier?: string;
+  interval?: string;
+}
+⋮----
+export interface GridBotIdRequestV3 {
+  botId: string;
+}
+⋮----
+export interface GetGridBotDetailRequestV3 {
+  botId: string;
+}
+⋮----
+export interface GetGridBotOrderDetailsRequestV3 {
+  category: GridCategoryV3;
+  botId: string;
+}
+⋮----
+export interface CloseGridBotRequestV3 {
+  botId: string;
+}
+⋮----
+export interface AddGridInvestmentRequestV3 {
+  category: GridCategoryV3;
+  botId: string;
+  coin?: string;
+  size?: string;
+  fundsSource: GridFundsSourceV3[];
+  adjustType?: GridAdjustTypeV3;
+  reinvestProfit?: GridYesNoV3;
+}
+⋮----
+export interface CreateGridBotRequestV3 {
+  category: GridCategoryV3;
+  symbol: string;
+  maxPrice: string;
+  minPrice: string;
+  gridNum: string;
+  gridOrderMode: GridOrderModeV3;
+  investmentAmount: GridInvestmentAmountV3[];
+  fundsSource?: GridFundsSourceV3[];
+  slippage?: string;
+  autoTransferProfits?: GridYesNoV3;
+  gridType?: GridTypeV3;
+  leverage?: string;
+  autoReserveMargin?: GridYesNoV3;
+  reservedMargin?: string;
+  triggerCondition?: GridTriggerConditionV3;
+  triggerParams?: GridIndicatorParamsV3[];
+  triggerPrice?: string;
+  terminationCondition?: GridTerminationConditionV3;
+  terminationParams?: GridIndicatorParamsV3[];
+  terminationSell?: GridYesNoV3;
+  stopLoss?: string;
+  takeProfit?: string;
+  trailingGrid?: GridYesNoV3;
+  movingAverageGains?: string;
+  stopUpwardPrice?: string;
+  hodlMode?: GridYesNoV3;
+  marketOpen?: GridYesNoV3;
+  lossReserve?: GridYesNoV3;
+}
+⋮----
+export type ValidateGridBotRequestV3 = CreateGridBotRequestV3;
+⋮----
+export interface ModifyGridBotRequestV3 {
+  botId: string;
+  category: GridCategoryV3;
+  takeProfit?: string;
+  stopLoss?: string;
+  terminationCondition?: GridTerminationConditionV3;
+  terminationParams?: GridIndicatorParamsV3[];
+  hodlMode?: GridYesNoV3;
+  autoTransferProfits?: GridYesNoV3;
+}
+⋮----
+export interface ModifyGridIntervalRequestV3 {
+  category: GridCategoryV3;
+  botId: string;
+  maxPrice: string;
+  minPrice: string;
+  gridNum: string;
+}
+⋮----
+export interface CreateNeutralGridBotRequestV3 {
+  category: NeutralGridCategoryV3;
+  symbol: string;
+  maxPrice: string;
+  minPrice: string;
+  gridNum: string;
+  gridOrderMode: GridOrderModeV3;
+  fundsSource?: GridFundsSourceV3[];
+  leverage?: string;
+  investmentAmount: GridInvestmentAmountV3[];
+  triggerPrice?: string;
+  stopLoss?: string;
+  takeProfit?: string;
+  autoTransferProfits?: GridYesNoV3;
+}
+⋮----
+export type ValidateNeutralGridBotRequestV3 = CreateNeutralGridBotRequestV3;
+⋮----
+export interface ModifyNeutralGridBotRequestV3 {
+  botId: string;
+  category: NeutralGridCategoryV3;
+  takeProfit?: string;
+  stopLoss?: string;
+  autoTransferProfits?: GridYesNoV3;
+}
+⋮----
+export interface ModifyNeutralGridIntervalRequestV3 {
+  category: NeutralGridCategoryV3;
+  botId: string;
+  maxPrice: string;
+  minPrice: string;
+  gridNum: string;
+}
+⋮----
+export interface GetNeutralGridBotDetailRequestV3 {
+  botId: string;
+}
+⋮----
+export interface GetNeutralGridBotOrderDetailsRequestV3 {
+  category: NeutralGridCategoryV3 | GridCategoryV3;
+  botId: string;
 }
 
 ================
@@ -4056,6 +3402,57 @@ export interface P2pOrderActionRequestV3 {
 ⋮----
 export interface GetP2pBalanceRequestV3 {
   token: string;
+}
+
+================
+File: src/types/request/v3/reality.ts
+================
+export interface GetRealityCompanyOverviewRequestV3 {
+  code: string;
+}
+⋮----
+export interface GetRealityValuationIndicatorsRequestV3 {
+  code: string;
+}
+⋮----
+export interface GetRealityEarningsForecastRequestV3 {
+  code: string;
+}
+⋮----
+export interface GetRealitySuspensionResumptionInfoRequestV3 {
+  code: string;
+}
+⋮----
+export interface GetRealityDividendsRequestV3 {
+  code: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetRealityShareCapitalChangeRequestV3 {
+  code: string;
+}
+⋮----
+export interface GetRealityInnerTradesRequestV3 {
+  code: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetRealityExecutiveShareholdingsRequestV3 {
+  code: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetRealityShareholdDetailRequestV3 {
+  code: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetRealityStockInfoRequestV3 {
+  symbol?: string;
 }
 
 ================
@@ -4626,6 +4023,30 @@ export interface AgentCommissionDetailItemV2 {
 export interface AgentCommissionDetailV2 {
   endId: string;
   commissionList: AgentCommissionDetailItemV2[];
+}
+⋮----
+export interface SubAffiliateRebateRateV2 {
+  rebateType: string;
+  rebateRate: string;
+}
+⋮----
+export interface SubAffiliateInfoItemV2 {
+  uid: string;
+  uplineName: string;
+  rebateRateList: SubAffiliateRebateRateV2[];
+  verificationStatus: string;
+  directReferrals: string;
+  subAffiliates: string;
+  subAffiliateDirectReferrals: string;
+  volume: string;
+  deposit: string;
+  transactionFee: string;
+  rebate: string;
+}
+⋮----
+export interface SubAffiliateInfoV2 {
+  list: SubAffiliateInfoItemV2[];
+  endId: string;
 }
 
 ================
@@ -5590,6 +5011,177 @@ export interface InstLoanLTVConvertV2 {
 }
 
 ================
+File: src/types/response/v3/cfd.ts
+================
+import type { CfdOrderTypeV3, CfdSideV3 } from '../../request/v3/cfd.js';
+⋮----
+export interface CfdTickerV3 {
+  symbol: string;
+  /** Replaced by askOpenPriceChange and bidOpenPriceChange */
+  openPriceChange?: string;
+  askOpenPriceChange?: string;
+  bidOpenPriceChange?: string;
+  highPrice: string;
+  lowPrice: string;
+  quoteTime: string;
+  ask1?: string;
+  bid1?: string;
+}
+⋮----
+/** Replaced by askOpenPriceChange and bidOpenPriceChange */
+⋮----
+export interface CfdCandlestickV3 extends Array<string> {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+}
+⋮----
+export interface PlaceCfdOrderResponseV3 {
+  trxId: string;
+}
+⋮----
+export interface ModifyCfdOrderResponseV3 {
+  orderId: string;
+}
+⋮----
+export interface CfdUnfilledOrderV3 {
+  symbol: string;
+  orderType: CfdOrderTypeV3 | string;
+  side: CfdSideV3 | string;
+  price: string;
+  qty: string;
+  takeProfit?: string;
+  stopLoss?: string;
+  trxId: string;
+  orderId: string;
+}
+⋮----
+export interface CfdHistoryOrderV3 {
+  symbol: string;
+  orderType: CfdOrderTypeV3 | string;
+  side: CfdSideV3 | string;
+  price: string;
+  qty: string;
+  cumExecQty?: string;
+  takeProfit?: string;
+  stopLoss?: string;
+  status: string;
+  trxId: string;
+  orderId: string;
+}
+⋮----
+export interface CfdOrderHistoryV3 {
+  list: CfdHistoryOrderV3[];
+}
+⋮----
+export interface CfdCurrentPositionV3 {
+  positionId: string;
+  symbol: string;
+  orderType: CfdOrderTypeV3 | string;
+  side: CfdSideV3 | string;
+  qty: string;
+  openPrice: string;
+  takeProfit?: string;
+  stopLoss?: string;
+  interest: string;
+  unrealizedPnl: string;
+  totalProfit: string;
+}
+⋮----
+export interface CfdFundDetailV3 {
+  leverage: string;
+  balance: string;
+  credit: string;
+  marginStopOut: string;
+  marginUsed: string;
+  marginCall: string;
+  marginFree: string;
+  marginLevel: string;
+  equity: string;
+  pnl: string;
+  status: string;
+  swap: string;
+  frozen: string;
+  currency: string;
+}
+⋮----
+export interface CfdTransferResponseV3 {
+  transferId: string;
+}
+⋮----
+export interface CfdTransferRecordV3 {
+  transferId: string;
+  coin: string;
+  amount: string;
+  direction: string;
+  status: string;
+  accountType: string;
+  createdTime: string;
+  updatedTime: string;
+}
+⋮----
+export interface CfdTransferRecordsV3 {
+  list: CfdTransferRecordV3[];
+  cursor?: string;
+}
+⋮----
+export interface CfdFinancialRecordV3 {
+  id: string | number;
+  symbol: string;
+  side: string | number;
+  qty: string | number;
+  swap: string | number;
+  fee: string | number;
+  cashFlow: string | number;
+  balanceBefore: string | number;
+  balanceChange: string | number;
+  balanceAfter: string | number;
+  creditBefore: string | number;
+  creditChange: string | number;
+  creditAfter: string | number;
+  openPrice: string | number;
+  closePrice: string | number;
+  orderId: string | number;
+  ts: string | number;
+}
+⋮----
+export interface CfdInstrumentV3 {
+  symbol: string;
+  onlineTime: string;
+  currency: string;
+  digits: string;
+  spread: string;
+  contractSize: string;
+  marginCurrency: string;
+  profitCurrency: string;
+  stopLevel: string;
+  enable: string;
+  marginPercent: string;
+  initialMargin: string;
+  marginMode: string;
+  maintMargin: string;
+  maintMarginRateBuy: string;
+  maintMarginRateSell: string;
+  initialMarginRateBuy: string;
+  initialMarginRateSell: string;
+  maxVolume: string;
+  minVolume: string;
+  stepVolume: string;
+  priceCurrency: string;
+  tickSize: string;
+  tickValue: string;
+  leverage: string;
+  tradeTime: string;
+  commissionType: string;
+  commissionRate: string;
+  symbolCategory: string;
+  exchangeRate: string;
+  marginUsdRate: string;
+}
+
+================
 File: src/types/response/v3/earn.ts
 ================
 /**
@@ -5659,7 +5251,11 @@ export interface EarnEliteRecordV3 {
   paymentAccount?: string[];
   settlePoints: string;
   fee: string;
+  /** Business time, Unix ms */
+  bizTime?: string;
 }
+⋮----
+/** Business time, Unix ms */
 ⋮----
 export interface EarnEliteRecordsV3 {
   recordList: EarnEliteRecordV3[];
@@ -5719,6 +5315,111 @@ export interface EarnEliteRedeemInfoV3 {
 ⋮----
 export interface RedeemEarnEliteResultV3 {
   orderId: string;
+}
+
+================
+File: src/types/response/v3/grid.ts
+================
+import type { GridIndicatorParamsV3 } from '../../request/v3/grid.js';
+⋮----
+export interface GridBotIdResponseV3 {
+  botId: string;
+}
+⋮----
+export interface GridValidateResponseV3 {
+  valid: string;
+  reason?: string;
+  minInvestment?: string;
+}
+⋮----
+export interface GridBotOrderItemV3 {
+  orderId: string;
+  delegateCount: string;
+  delegatePrice: string;
+  changeRequired: number | string;
+}
+⋮----
+export interface GridBotOrderDetailsV3 {
+  botId: string;
+  symbol: string;
+  buyOrderList: GridBotOrderItemV3[];
+  sellOrderList: GridBotOrderItemV3[];
+}
+⋮----
+export interface GridBotDetailV3 {
+  botId: string;
+  symbol: string;
+  status: string;
+  totalProfit: string;
+  roi: string;
+  gridProfit: string;
+  gridProfitRate: string;
+  unpairedProfit: string;
+  unpairedProfitRate: string;
+  margin?: string;
+  arbitrageAPR: string;
+  totalAPR: string;
+  createdTime: string;
+  runningTime: string;
+  currentBaseBalance?: string;
+  currentQuoteBalance?: string;
+  initialBaseHoldings?: string;
+  initialQuoteHoldings?: string;
+  reservedBaseTradingFee?: string;
+  reservedQuoteTradingFee?: string;
+  gridStartPrice?: string;
+  gridType?: string;
+  maxPrice: string;
+  minPrice: string;
+  gridNum: string;
+  gridOrderMode: string;
+  baseInvestmentCoin?: string;
+  baseInvestmentAmount?: string;
+  quoteInvestmentCoin?: string;
+  quoteInvestmentAmount?: string;
+  slippage?: string;
+  triggerCondition?: string;
+  triggerParams?: GridIndicatorParamsV3[];
+  triggerPrice?: string;
+  terminationCondition?: string;
+  terminationParams?: GridIndicatorParamsV3[];
+  terminationSell?: string;
+  stopLoss?: string;
+  takeProfit?: string;
+  hodlMode?: string;
+  autoTransferProfits?: string;
+  arbitrageCount?: string;
+  terminationReason?: string;
+}
+⋮----
+export interface NeutralGridBotDetailV3 {
+  botId: string;
+  symbol: string;
+  status: string;
+  totalProfit: string;
+  roi: string;
+  gridProfit: string;
+  gridProfitRate: string;
+  unpairedProfit: string;
+  unpairedProfitRate: string;
+  margin?: string;
+  arbitrageAPR: string;
+  totalAPR: string;
+  createdTime: string;
+  runningTime: string;
+  gridStartPrice?: string;
+  maxPrice: string;
+  minPrice: string;
+  gridNum: string;
+  gridOrderMode: string;
+  triggerPrice?: string;
+  leverage?: string;
+  stopLoss?: string;
+  takeProfit?: string;
+  holdPosition?: string;
+  oneGridMinProfit?: string;
+  oneGridMaxProfit?: string;
+  autoTransferProfits?: string;
 }
 
 ================
@@ -6194,6 +5895,175 @@ export interface P2pOrderInfoV3 {
 }
 
 ================
+File: src/types/response/v3/reality.ts
+================
+export interface RealityCompanyOverviewV3 {
+  peRatio: string;
+  pbRatio: string;
+  totalShares: string;
+  marketCap: string;
+  high52Week: string;
+  low52Week: string;
+  code: string;
+  name: string;
+  ListingDate: string;
+  employees: string;
+  companyAddress: string;
+}
+⋮----
+export interface RealityValuationIndicatorsV3 {
+  date: string;
+  pb: string;
+  pbEd: string;
+  pbPd: string;
+  pbMrq: string;
+  pe: string;
+  peLyr: string;
+  peTtmEd: string;
+  peTtmPd: string;
+  ps: string;
+  psLyr: string;
+  psTtmEd: string;
+  psTtmPd: string;
+  pcf: string;
+  pcfNet: string;
+  pcfNetTtmEd: string;
+  pcfNetTtmPd: string;
+  pcfTtmEd: string;
+  pcfTtmPd: string;
+  evEbitda: string;
+  equityValue: string;
+  grossEv: string;
+  netEv: string;
+  tmvUsd: string;
+  cirTmvUsd: string;
+  dividendYieldTtm: string;
+}
+⋮----
+export interface RealityEarningsForecastV3 {
+  fiscalYear: string;
+  publicationDeadline: string;
+  isActual: boolean;
+  revenue: string;
+  ebit: string;
+  netIncomeParent: string;
+  eps: string;
+  bps: string;
+  cfps: string;
+  roe: string;
+  roa: string;
+  currency: string;
+}
+⋮----
+export interface RealitySuspensionResumptionInfoV3 {
+  code: string;
+  name: string;
+  suspensionDate: string;
+  suspensionTime: string;
+  suspensionReason: string;
+  suspensionPrice: string;
+  resumptionDate: string;
+  resumptionQuoteTime: string;
+  resumptionTradingTime: string;
+}
+⋮----
+export interface RealityDividendItemV3 {
+  type: string;
+  announcementDate: string;
+  recordDate: string;
+  exrightDate: string;
+  dividendDate: string;
+  dividendPerShare: string;
+  stockDividendPerShare: string;
+  splitValidDate: string;
+  splitNumerator: string;
+  splitDenominator: string;
+}
+⋮----
+export interface RealityShareCapitalChangeV3 {
+  announcementDate: string;
+  changeDate: string;
+  totalShares: string;
+  commonShares: string;
+  preferredShares: string;
+  otherShares: string;
+  specialExplain: string;
+  changeReason: string;
+}
+⋮----
+export interface RealityInnerTradeItemV3 {
+  reporterName: string;
+  issueOrgName: string;
+  endDate: string;
+  announcementDate: string;
+  innerType: string;
+  position: string;
+  securityTitle: string;
+  tradeDate: string;
+  designatedExerciseDate: string;
+  innerTradeType: string;
+  actionType: string;
+  tradeVolume: string;
+  tradePrice: string;
+  holdingType: string;
+  indirectHoldingStatement: string;
+  postTradeQuantity: string;
+}
+⋮----
+export interface RealityExecutiveShareholdingItemV3 {
+  name: string;
+  holdingNum: string;
+  holdingRatio: string;
+  voteRatio: string;
+  period: string;
+  announcementDate: string;
+}
+⋮----
+export interface RealityShareholdDetailItemV3 {
+  name: string;
+  holdingNum: string;
+  holdingRatio: string;
+}
+⋮----
+export interface RealityCursorListV3<T> {
+  list: T[];
+  cursor?: string;
+}
+⋮----
+export interface RealityStockInfoV3 {
+  symbol: string;
+  code: string;
+  name: string;
+  tradingPeriod: string[];
+  weekendTradable: 'yes' | 'no' | string;
+}
+⋮----
+export interface RealityMarketSessionStateV3 {
+  state: string;
+  timeZone: string;
+  startTime: string;
+  endTime: string;
+}
+⋮----
+export interface RealityMarketStateV3 {
+  market: string;
+  daylightType: string;
+  stateList: RealityMarketSessionStateV3[];
+}
+⋮----
+export interface RealityMarketSpecificConfigV3 {
+  remark: string;
+  startTime: string;
+  endTime: string;
+}
+⋮----
+export interface RealityMarketCalendarV3 {
+  timeZone: string;
+  specificConfig: RealityMarketSpecificConfigV3[];
+  regularConfig: string[];
+}
+
+================
 File: src/types/response/v3/stockplus.ts
 ================
 /**
@@ -6544,79 +6414,6 @@ export interface StockPlusTransferRecordsV3 {
 }
 
 ================
-File: src/types/response/v3/strategy.ts
-================
-import type {
-  StrategyIcebergParamsV3,
-  StrategyOcoParamsV3,
-  StrategyOrderStatusV3,
-  StrategyOrderTypeV3,
-  StrategyTrailingStopParamsV3,
-  StrategyTriggerByV3,
-  StrategyTriggerOrderTypeV3,
-  StrategyTwapParamsV3,
-} from '../../request/v3/strategy.js';
-⋮----
-export interface PlaceStrategyOrderResponseV3 {
-  orderId: string;
-  clientOid: string;
-}
-⋮----
-export interface ModifyStrategyOrderResponseV3 {
-  orderId: string;
-  clientOid: string;
-}
-⋮----
-export interface StrategyOrderV3 {
-  orderId: string;
-  clientOid: string;
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES' | string;
-  symbol: string;
-  qty: string;
-  posSide: 'long' | 'short';
-  status: StrategyOrderStatusV3;
-  type?: StrategyOrderTypeV3 | string;
-  triggerType?: 'takeProfit' | 'stopLoss';
-  tpTriggerBy?: StrategyTriggerByV3;
-  slTriggerBy?: StrategyTriggerByV3;
-  takeProfit?: string;
-  stopLoss?: string;
-  tpOrderType?: StrategyTriggerOrderTypeV3;
-  slOrderType?: StrategyTriggerOrderTypeV3;
-  tpLimitPrice?: string;
-  slLimitPrice?: string;
-  triggerBy?: StrategyTriggerByV3;
-  triggerPrice?: string;
-  triggerOrderType?: StrategyTriggerOrderTypeV3;
-  triggerOrderPrice?: string;
-  ocoParams?: StrategyOcoParamsV3;
-  trailingStopParams?: StrategyTrailingStopParamsV3;
-  icebergParams?: StrategyIcebergParamsV3;
-  twapParams?: StrategyTwapParamsV3;
-  createdTime: string;
-  updatedTime: string;
-}
-⋮----
-export interface StrategySubOrderV3 {
-  subOrderId: string;
-  subClientOid?: string;
-  orderId?: string;
-  clientOid?: string;
-  category?: string;
-  symbol?: string;
-  side?: string;
-  posSide?: string;
-  orderType?: string;
-  price?: string;
-  qty?: string;
-  cumExecQty?: string;
-  avgPrice?: string;
-  status?: string;
-  createdTime?: string;
-  updatedTime?: string;
-}
-
-================
 File: src/types/shared.ts
 ================
 import { REST_CLIENT_TYPE_ENUM } from '../util/requestUtils.js';
@@ -6656,6 +6453,171 @@ export interface APIResponse<T> {
   msg: 'success' | string;
   data: T;
 }
+
+================
+File: src/websocket-api-client.ts
+================
+import {
+  CancelOrderRequestV3,
+  ModifyOrderRequestV3,
+} from './types/request/v3/trade.js';
+import {
+  CancelOrderResponseV3,
+  ModifyOrderResponseV3,
+} from './types/response/v3/trade.js';
+import { WSAPIResponse } from './types/websockets/ws-api.js';
+import { WSAPIPlaceOrderRequestV3 } from './types/websockets/ws-api-request.js';
+import { WSAPIPlaceOrderResponseV3 } from './types/websockets/ws-api-response.js';
+import {
+  BitgetInstTypeV3,
+  WSClientConfigurableOptions,
+} from './types/websockets/ws-general.js';
+import { DefaultLogger } from './util/logger.js';
+import { WS_KEY_MAP } from './util/websocket-util.js';
+import { WebsocketClientV3 } from './websocket-client-v3.js';
+⋮----
+/**
+ * Configurable options specific to only the REST-like WebsocketAPIClient
+ */
+export interface WSAPIClientConfigurableOptions {
+  /**
+   * Default: true
+   *
+   * Attach default event listeners, which will console log any high level
+   * events (opened/reconnecting/reconnected/etc).
+   *
+   * If you disable this, you should set your own event listeners
+   * on the embedded WS Client `wsApiClient.getWSClient().on(....)`.
+   */
+  attachEventListeners: boolean;
+}
+⋮----
+/**
+   * Default: true
+   *
+   * Attach default event listeners, which will console log any high level
+   * events (opened/reconnecting/reconnected/etc).
+   *
+   * If you disable this, you should set your own event listeners
+   * on the embedded WS Client `wsApiClient.getWSClient().on(....)`.
+   */
+⋮----
+/**
+ * This is a minimal Websocket API wrapper around the WebsocketClient.
+ *
+ * Note: You can also directly use the sendWSAPIRequest() method to make WS API calls, but some
+ * may find the below methods slightly more intuitive.
+ *
+ * Refer to the WS API promises example for a more detailed example on using sendWSAPIRequest() directly:
+ * https://github.com/tiagosiebler/bitget-api/blob/master/examples/V3/ws-api-trade-raw.ts
+ */
+export class WebsocketAPIClient
+⋮----
+constructor(
+    options?: WSClientConfigurableOptions &
+      Partial<WSAPIClientConfigurableOptions>,
+    logger?: DefaultLogger,
+)
+⋮----
+public getWSClient(): WebsocketClientV3
+⋮----
+public setTimeOffsetMs(newOffset: number): void
+⋮----
+/*
+   * Bitget WebSocket API Methods
+   * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel
+   */
+⋮----
+/**
+   * Submit a new order
+   *
+   * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel
+   *
+   * @returns
+   */
+submitNewOrder(
+    category: BitgetInstTypeV3,
+    params: WSAPIPlaceOrderRequestV3,
+): Promise<WSAPIResponse<[WSAPIPlaceOrderResponseV3], 'place-order'>>
+⋮----
+/**
+   * Submit a new order
+   *
+   * https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+   *
+   * @returns
+   */
+placeBatchOrders(
+    category: BitgetInstTypeV3,
+    params: WSAPIPlaceOrderRequestV3[],
+): Promise<WSAPIResponse<WSAPIPlaceOrderResponseV3[], 'batch-place'>>
+⋮----
+/*
+   * Bitget WebSocket API Methods
+   * https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel
+   */
+⋮----
+/**
+   * Cancel Order
+   *
+   * https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+   *
+   * @returns
+   */
+cancelOrder(
+    category: BitgetInstTypeV3,
+    params: CancelOrderRequestV3,
+): Promise<WSAPIResponse<[CancelOrderResponseV3], 'cancel-order'>>
+⋮----
+/**
+   * Batch Cancel Order
+   *
+   * https://www.bitget.com/api-doc/uta/websocket/private/Batch-Cancel-Order-Channel
+   *
+   * @returns
+   */
+cancelBatchOrders(
+    category: BitgetInstTypeV3,
+    params: CancelOrderRequestV3[],
+): Promise<WSAPIResponse<CancelOrderResponseV3[], 'batch-cancel'>>
+⋮----
+updateOrder(
+    category: BitgetInstTypeV3,
+    params: ModifyOrderRequestV3,
+): Promise<WSAPIResponse<[ModifyOrderResponseV3], 'modify-order'>>
+⋮----
+batchUpdateOrders(
+    category: BitgetInstTypeV3,
+    params: ModifyOrderRequestV3[],
+): Promise<WSAPIResponse<ModifyOrderResponseV3[], 'batch-modify'>>
+⋮----
+/**
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   * Private methods for handling some of the convenience/automation provided by the WS API Client
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   */
+⋮----
+private setupDefaultEventListeners()
+⋮----
+/**
+       * General event handlers for monitoring the WebsocketClient
+       */
+⋮----
+// Blind JSON.stringify can fail on circular references
+⋮----
+// JSON.stringify({ ...data, target: 'WebSocket' }),
 
 ================
 File: .npmrc
@@ -7548,6 +7510,15 @@ export interface GetAgentCommissionDetailRequestV2 {
   limit?: string;
   idLessThan?: string;
 }
+⋮----
+export interface GetSubAffiliateInfoRequestV2 {
+  uid?: string;
+  startTime?: string;
+  endTime?: string;
+  idLessThan?: string;
+  limit?: string;
+  includeDownLine?: 'yes' | 'no';
+}
 
 ================
 File: src/types/request/v2/common.ts
@@ -8430,154 +8401,142 @@ export interface GetCopyFuturesProfitDetailsRequestV3 {
   limit?: string;
   cursor?: string;
 }
-
-================
-File: src/types/request/v3/strategy.ts
-================
-export type StrategyOrderTypeV3 =
-  | 'tpsl'
-  | 'trigger'
-  | 'oco'
-  | 'trailing_stop'
-  | 'iceberg'
-  | 'twap';
 ⋮----
-export type StrategyOrderStatusV3 =
-  | 'pending'
-  | 'success'
-  | 'failed'
-  | 'cancelled'
-  | 'submitting';
+export type CopyFuturesCopyTypeV3 = 'fixed_ratio' | 'fixed_margin';
 ⋮----
-export type StrategyTriggerByV3 = 'market' | 'mark';
-⋮----
-export type StrategyTriggerOrderTypeV3 = 'limit' | 'market';
-⋮----
-export interface StrategyOcoParamsV3 {
-  ocoLimitPrice?: string;
-  ocoTriggerPrice?: string;
-  ocoOrderType?: StrategyTriggerOrderTypeV3;
-  ocoOrderPrice?: string;
+export interface GetCopyFuturesPortfolioOverviewRequestV3 {
+  period: '7D' | '30D' | '90D' | '180D';
 }
 ⋮----
-export interface StrategyTrailingStopParamsV3 {
-  activationPrice?: string;
-  activationType?: string;
-  trailType?: string;
-  trailVariance?: string;
-  preOrderType?: StrategyTriggerOrderTypeV3;
-  preOrderPrice?: string;
+export interface CreateCopyFuturesRequestV3 {
+  projectId: string;
+  type: CopyFuturesCopyTypeV3;
+  amount: string;
+  /** Comma-separated: funding, uta, otc */
+  accountType?: string;
+  /** Comma-separated symbols. Omit to copy every pair */
+  tradingPairList?: string;
+  /** Required when type is fixed_margin */
+  marginPerOrder?: string;
+  autoCopy?: 'on' | 'off';
+  leverage?: string;
+  maxEntrySlippage?: string;
+  maxMarginRatio?: string;
+  /** API field name (Bitget spelling). */
+  maxPostionValue?: string;
 }
 ⋮----
-export interface StrategyIcebergParamsV3 {
-  splitMode?: string;
-  qtyPerOrder?: string;
-  splitOrderNumbers?: string;
-  orderPreference?: string;
-  executionStrategy?: string;
-  fixedDistanceType?: string;
-  distance?: string;
-  fixedPrice?: string;
-  priceLimit?: string;
+/** Comma-separated: funding, uta, otc */
+⋮----
+/** Comma-separated symbols. Omit to copy every pair */
+⋮----
+/** Required when type is fixed_margin */
+⋮----
+/** API field name (Bitget spelling). */
+⋮----
+export interface ModifyCopyFuturesFollowerSettingsRequestV3 {
+  projectId: string;
+  /** Pass all to follow every pair */
+  tradingPairList?: string;
+  marginPerOrder?: string;
+  autoCopy?: 'on' | 'off';
+  leverage?: string;
+  maxEntrySlippage?: string;
+  maxMarginRatio?: string;
+  /** API field name (Bitget spelling). */
+  maxPostionValue?: string;
 }
 ⋮----
-export interface StrategyTwapParamsV3 {
-  duration?: string;
-  interval?: string;
-  orderType?: StrategyTriggerOrderTypeV3;
-  limitOffsetType?: string;
-  limitOffsetPercentage?: string;
-  limitOffsetSpread?: string;
-  twapTriggerPrice?: string;
-  twapTerminationPrice?: string;
+/** Pass all to follow every pair */
+⋮----
+/** API field name (Bitget spelling). */
+⋮----
+export interface UnfollowCopyFuturesRequestV3 {
+  projectId: string;
+  closeType?: 'follow_close' | 'instant_close';
 }
 ⋮----
-export interface PlaceStrategyOrderRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol: string;
-  clientOid?: string;
-  type?: StrategyOrderTypeV3;
-  tpslMode?: 'full' | 'partial';
-  /** Required when tpslMode=partial or for trigger orders */
-  qty?: string;
-  side?: 'buy' | 'sell';
-  posSide?: 'long' | 'short';
-  reduceOnly?: 'yes' | 'no';
-  tpTriggerBy?: StrategyTriggerByV3;
-  slTriggerBy?: StrategyTriggerByV3;
-  takeProfit?: string;
-  stopLoss?: string;
-  tpOrderType?: StrategyTriggerOrderTypeV3;
-  slOrderType?: StrategyTriggerOrderTypeV3;
-  tpLimitPrice?: string;
-  slLimitPrice?: string;
-  triggerBy?: StrategyTriggerByV3;
-  triggerPrice?: string;
-  triggerOrderType?: StrategyTriggerOrderTypeV3;
-  triggerOrderPrice?: string;
-  ocoParams?: StrategyOcoParamsV3;
-  trailingStopParams?: StrategyTrailingStopParamsV3;
-  icebergParams?: StrategyIcebergParamsV3;
-  twapParams?: StrategyTwapParamsV3;
+export interface GetCopyFuturesCopySettingsRequestV3 {
+  projectId: string;
 }
 ⋮----
-/** Required when tpslMode=partial or for trigger orders */
-⋮----
-export interface ModifyStrategyOrderRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-  qty: string;
-  tpTriggerBy?: StrategyTriggerByV3;
-  slTriggerBy?: StrategyTriggerByV3;
-  takeProfit?: string;
-  stopLoss?: string;
-  tpOrderType?: StrategyTriggerOrderTypeV3;
-  slOrderType?: StrategyTriggerOrderTypeV3;
-  tpLimitPrice?: string;
-  slLimitPrice?: string;
-  triggerBy?: StrategyTriggerByV3;
-  triggerPrice?: string;
-  triggerOrderType?: StrategyTriggerOrderTypeV3;
-  triggerOrderPrice?: string;
+export interface CopyFuturesFollowerTransferRequestV3 {
+  projectId: string;
+  type: 'in' | 'out';
+  coin: string;
+  amount: string;
+  /** Comma-separated: funding, uta, otc */
+  inAccountType?: string;
 }
 ⋮----
-export interface CancelStrategyOrderRequestV3 {
-  orderId?: string;
-  clientOid?: string;
+/** Comma-separated: funding, uta, otc */
+⋮----
+export interface GetCopyFuturesFollowerTransferRecordRequestV3 {
+  projectId: string;
+  limit?: string;
+  cursor?: string;
 }
 ⋮----
-export interface GetUnfilledStrategyOrdersRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  type?: StrategyOrderTypeV3;
+export interface GetCopyFuturesCurrentCopyRequestV3 {
+  projectId: string;
 }
 ⋮----
-export interface GetHistoryStrategyOrdersRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  type?: StrategyOrderTypeV3;
+export interface GetCopyFuturesCopyProfitDetailsRequestV3 {
+  projectId: string;
   startTime?: string;
   endTime?: string;
   limit?: string;
   cursor?: string;
 }
 ⋮----
-export interface GetStrategySubOrdersRequestV3 {
-  orderId?: string;
-  clientOid?: string;
+export interface CloseCopyFuturesPositionsRequestV3 {
+  projectId: string;
+  symbol: string;
+  qty: string;
+  holdSide: 'long' | 'short';
+}
+⋮----
+export interface CloseAllCopyFuturesRequestV3 {
+  projectId: string;
+}
+⋮----
+export interface GetCopyFuturesCurrentPositionsRequestV3 {
+  projectId: string;
+  symbol?: string;
+  posSide?: 'long' | 'short';
+}
+⋮----
+export interface PlaceCopyFuturesTpSlRequestV3 {
+  projectId: string;
+  positionId: string;
+  tpTriggerBy: 'market' | 'mark';
+  slTriggerBy: 'market' | 'mark';
+  takeProfit: string;
+  stopLoss: string;
+}
+⋮----
+export interface ModifyCopyFuturesTpSlRequestV3 {
+  projectId: string;
+  strategyId: string;
+  tpTriggerBy: 'market' | 'mark';
+  slTriggerBy: 'market' | 'mark';
+  takeProfit: string;
+  stopLoss: string;
+}
+⋮----
+export interface CancelCopyFuturesTpSlRequestV3 {
+  projectId: string;
+  strategyId: string;
+}
+⋮----
+export interface GetCopyFuturesCurrentTpSlOrdersRequestV3 {
+  projectId: string;
+}
+⋮----
+export interface GetCopyFuturesTpSlOrderHistoryRequestV3 {
+  projectId: string;
+  startTime?: string;
+  endTime?: string;
   limit?: string;
   cursor?: string;
 }
@@ -9806,220 +9765,77 @@ export interface GetBrokerSubApiKeyResponseV3 {
 }
 
 ================
-File: src/types/websockets/ws-api-request.ts
+File: src/types/response/v3/strategy.ts
 ================
-import type { FuturesMarginModeV3 } from '../request/v3/trade.js';
+import type {
+  StrategyIcebergParamsV3,
+  StrategyOcoParamsV3,
+  StrategyOrderStatusV3,
+  StrategyOrderTypeV3,
+  StrategyTrailingStopParamsV3,
+  StrategyTriggerByV3,
+  StrategyTriggerOrderTypeV3,
+  StrategyTwapParamsV3,
+} from '../../request/v3/strategy.js';
 ⋮----
-export interface WSAPIPlaceOrderRequestV3 {
+export interface PlaceStrategyOrderResponseV3 {
+  orderId: string;
+  clientOid: string;
+}
+⋮----
+export interface ModifyStrategyOrderResponseV3 {
+  orderId: string;
+  clientOid: string;
+}
+⋮----
+export interface StrategyOrderV3 {
+  orderId: string;
+  clientOid: string;
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES' | string;
   symbol: string;
-  orderType: 'limit' | 'market';
   qty: string;
-  price?: string;
-  side: 'buy' | 'sell';
-  posSide?: 'long' | 'short';
-  timeInForce?: 'gtc' | 'ioc' | 'fok' | 'post_only' | 'rpi';
-  reduceOnly?: 'YES' | 'NO'; // Note: reduceOnly is not supported for batch place WS API. Might be supported starting late Q4 2025, but not supported yet.
-  /** Futures only. Defaults to crossed */
-  marginMode?: FuturesMarginModeV3;
-  clientOid?: string;
-  stpMode?: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
-  tpTriggerBy?: 'market' | 'mark';
-  slTriggerBy?: 'market' | 'mark';
+  posSide: 'long' | 'short';
+  status: StrategyOrderStatusV3;
+  type?: StrategyOrderTypeV3 | string;
+  triggerType?: 'takeProfit' | 'stopLoss';
+  tpTriggerBy?: StrategyTriggerByV3;
+  slTriggerBy?: StrategyTriggerByV3;
   takeProfit?: string;
   stopLoss?: string;
-  tpOrderType?: 'limit' | 'market';
-  slOrderType?: 'limit' | 'market';
+  tpOrderType?: StrategyTriggerOrderTypeV3;
+  slOrderType?: StrategyTriggerOrderTypeV3;
   tpLimitPrice?: string;
   slLimitPrice?: string;
-  /** Order TTL in ms [10, 60000]. Only effective when requestTime is also set on the envelope */
-  receiveWindow?: string;
-  /** Spot only. Default: no */
-  autoBorrow?: 'yes' | 'no';
+  triggerBy?: StrategyTriggerByV3;
+  triggerPrice?: string;
+  triggerOrderType?: StrategyTriggerOrderTypeV3;
+  triggerOrderPrice?: string;
+  ocoParams?: StrategyOcoParamsV3;
+  trailingStopParams?: StrategyTrailingStopParamsV3;
+  icebergParams?: StrategyIcebergParamsV3;
+  twapParams?: StrategyTwapParamsV3;
+  createdTime: string;
+  updatedTime: string;
 }
 ⋮----
-reduceOnly?: 'YES' | 'NO'; // Note: reduceOnly is not supported for batch place WS API. Might be supported starting late Q4 2025, but not supported yet.
-/** Futures only. Defaults to crossed */
-⋮----
-/** Order TTL in ms [10, 60000]. Only effective when requestTime is also set on the envelope */
-⋮----
-/** Spot only. Default: no */
-
-================
-File: src/types/websockets/ws-api.ts
-================
-import { WS_KEY_MAP } from '../../util/websocket-util.js';
-import {
-  CancelOrderRequestV3,
-  ModifyOrderRequestV3,
-} from '../request/v3/trade.js';
-import {
-  CancelOrderResponseV3,
-  ModifyOrderResponseV3,
-} from '../response/v3/trade.js';
-import { WSAPIPlaceOrderRequestV3 } from './ws-api-request.js';
-import { WSAPIPlaceOrderResponseV3 } from './ws-api-response.js';
-import { BitgetInstTypeV3, WsKey } from './ws-general.js';
-⋮----
-export type WSOperation = 'subscribe' | 'unsubscribe' | 'login';
-⋮----
-// When new WS API operations are added, make sure to also update WS_API_Operations[] below
-export type WSAPIOperation =
-  | 'place-order'
-  | 'batch-place'
-  | 'cancel-order'
-  | 'batch-cancel'
-  | 'modify-order'
-  | 'batch-modify';
-⋮----
-export interface WSOperationLoginParams {
-  apiKey: string;
-  passphrase: string;
-  timestamp: number;
-  sign: string;
+export interface StrategySubOrderV3 {
+  subOrderId: string;
+  subClientOid?: string;
+  orderId?: string;
+  clientOid?: string;
+  category?: string;
+  symbol?: string;
+  side?: string;
+  posSide?: string;
+  orderType?: string;
+  price?: string;
+  qty?: string;
+  cumExecQty?: string;
+  avgPrice?: string;
+  status?: string;
+  createdTime?: string;
+  updatedTime?: string;
 }
-⋮----
-export interface WSAPIRequestBitgetV3<TWSParams> {
-  op: 'trade';
-  id: string;
-  category: BitgetInstTypeV3;
-  topic: WSAPIOperation;
-  args: TWSParams | TWSParams[];
-  /** Client-side request timestamp; required for receiveWindow on place-order */
-  requestTime?: string;
-}
-⋮----
-/** Client-side request timestamp; required for receiveWindow on place-order */
-⋮----
-export interface WSAPIRequestFlags {
-  /** If true, will skip auth requirement for WS API connection */
-  authIsOptional?: boolean | undefined;
-}
-⋮----
-/** If true, will skip auth requirement for WS API connection */
-⋮----
-export type Exact<T> = {
-  // This part says: if there's any key that's not in T, it's an error
-  [K: string]: never;
-} & {
-  [K in keyof T]: T[K];
-};
-⋮----
-// This part says: if there's any key that's not in T, it's an error
-⋮----
-/**
-
-/**
- * V2 request looks like this:
-{
-  "op":"subscribe",
-  "args":[
-      {
-          "instType":"SPOT",
-          "channel":"ticker",
-          "instId":"BTCUSDT"
-      },
-      {
-          "instType":"SPOT",
-          "channel":"candle5m",
-          "instId":"BTCUSDT"
-      }
-  ]
-}
- */
-export interface WsRequestOperationBitget<TWSRequestArg> {
-  op: WSOperation;
-  args?: (TWSRequestArg | string | number)[];
-}
-export interface WSAPIRateLimitV3 {
-  limit: string;
-  remaining: string;
-}
-⋮----
-export interface WSAPIResponse<
-  TResponseData extends object = object,
-  TOperation extends WSAPIOperation = WSAPIOperation,
-> {
-  wsKey: WsKey;
-  /** Auto-generated */
-  id: string;
-  event: 'trade';
-  category: BitgetInstTypeV3;
-  topic: TOperation;
-  args: TResponseData;
-  code: '0' | string;
-  msg: 'success' | string;
-  ts: string;
-  /** Connection ID (trade operation responses, May 2026+) */
-  connId?: string;
-  /** Gateway receive time, Unix microseconds */
-  receiveTime?: string;
-  /** Gateway push time, Unix microseconds */
-  pushTime?: string;
-  rateLimit?: WSAPIRateLimitV3[];
-}
-⋮----
-/** Auto-generated */
-⋮----
-/** Connection ID (trade operation responses, May 2026+) */
-⋮----
-/** Gateway receive time, Unix microseconds */
-⋮----
-/** Gateway push time, Unix microseconds */
-⋮----
-/**
- * List of operations supported for this WsKey (connection)
- */
-export interface WsAPIWsKeyTopicMap {
-  [WS_KEY_MAP.v3Private]: WSAPIOperation;
-}
-⋮----
-/**
- * Request parameters expected per operation
- */
-export interface WsAPITopicRequestParamMap {
-  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-  'place-order': WSAPIPlaceOrderRequestV3;
-  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-  'batch-place': WSAPIPlaceOrderRequestV3[];
-  // https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-  'cancel-order': CancelOrderRequestV3;
-  // https://www.bitget.com/docs/uta/websocket/private/Batch-Cancel-Order-Channel
-  'batch-cancel': CancelOrderRequestV3[];
-  'modify-order': ModifyOrderRequestV3;
-  'batch-modify': ModifyOrderRequestV3[];
-}
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-⋮----
-// https://www.bitget.com/docs/uta/websocket/private/Batch-Cancel-Order-Channel
-⋮----
-/**
- * Response structure expected for each operation
- */
-export interface WsAPIOperationResponseMap {
-  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-  'place-order': WSAPIResponse<[WSAPIPlaceOrderResponseV3], 'place-order'>;
-  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-  'batch-place': WSAPIResponse<WSAPIPlaceOrderResponseV3[], 'batch-place'>;
-  // https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-  'cancel-order': WSAPIResponse<[CancelOrderResponseV3], 'cancel-order'>;
-  // https://www.bitget.com/docs/uta/websocket/private/Batch-Cancel-Order-Channel
-  'batch-cancel': WSAPIResponse<CancelOrderResponseV3[], 'batch-cancel'>;
-  'modify-order': WSAPIResponse<[ModifyOrderResponseV3], 'modify-order'>;
-  'batch-modify': WSAPIResponse<ModifyOrderResponseV3[], 'batch-modify'>;
-}
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
-⋮----
-// https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
-⋮----
-// https://www.bitget.com/docs/uta/websocket/private/Batch-Cancel-Order-Channel
 
 ================
 File: src/types/websockets/ws-events.ts
@@ -10136,6 +9952,52 @@ export interface WsDepthBookDataV2 {
 }
 ⋮----
 /** Futures books channel only - previous push serial number */
+⋮----
+/** UTA account channel coin row */
+export interface WsAccountCoinV3 {
+  coin: string;
+  balance: string;
+  /** Coin balance before borrowing-related amounts are deducted */
+  balanceOriginal?: string;
+  available: string;
+  locked: string;
+  equity: string;
+  usdValue: string;
+  borrow: string;
+  debts: string;
+  bonus?: string;
+}
+⋮----
+/** Coin balance before borrowing-related amounts are deducted */
+⋮----
+/** UTA account channel push. action is snapshot or update */
+export interface WsAccountDataV3 {
+  totalEquity: string;
+  effEquity: string;
+  mmr: string;
+  imr: string;
+  mgnRatio: string;
+  positionMgnRatio: string;
+  unrealisedPnL: string;
+  coin: WsAccountCoinV3[];
+}
+⋮----
+/**
+ * UTA books / books50 push.
+ * books and books50: first message is a snapshot, later messages are incremental updates.
+ * pseq is set on those two topics.
+ */
+export interface WsOrderBookDataV3 {
+  a: [string, string][];
+  b: [string, string][];
+  seq: string | number;
+  pseq?: string | number;
+  /** Present on the books topic */
+  maxDepth?: string;
+  ts: string;
+}
+⋮----
+/** Present on the books topic */
 
 ================
 File: src/websocket-client-v3.ts
@@ -10571,6 +10433,157 @@ logger, // Optional: inject a custom logger
      */
 
 ================
+File: src/types/request/v3/strategy.ts
+================
+export type StrategyOrderTypeV3 =
+  | 'tpsl'
+  | 'trigger'
+  | 'oco'
+  | 'trailing_stop'
+  | 'iceberg'
+  | 'twap';
+⋮----
+export type StrategyOrderStatusV3 =
+  | 'pending'
+  | 'success'
+  | 'failed'
+  | 'cancelled'
+  | 'submitting';
+⋮----
+export type StrategyTriggerByV3 = 'market' | 'mark';
+⋮----
+export type StrategyTriggerOrderTypeV3 = 'limit' | 'market';
+⋮----
+export interface StrategyOcoParamsV3 {
+  ocoLimitPrice?: string;
+  ocoTriggerPrice?: string;
+  ocoOrderType?: StrategyTriggerOrderTypeV3;
+  ocoOrderPrice?: string;
+}
+⋮----
+export interface StrategyTrailingStopParamsV3 {
+  activationPrice?: string;
+  activationType?: string;
+  trailType?: string;
+  trailVariance?: string;
+  preOrderType?: StrategyTriggerOrderTypeV3;
+  preOrderPrice?: string;
+}
+⋮----
+export interface StrategyIcebergParamsV3 {
+  splitMode?: string;
+  qtyPerOrder?: string;
+  splitOrderNumbers?: string;
+  orderPreference?: string;
+  executionStrategy?: string;
+  fixedDistanceType?: string;
+  distance?: string;
+  fixedPrice?: string;
+  priceLimit?: string;
+}
+⋮----
+export interface StrategyTwapParamsV3 {
+  duration?: string;
+  interval?: string;
+  orderType?: StrategyTriggerOrderTypeV3;
+  limitOffsetType?: string;
+  limitOffsetPercentage?: string;
+  limitOffsetSpread?: string;
+  twapTriggerPrice?: string;
+  twapTerminationPrice?: string;
+}
+⋮----
+export interface PlaceStrategyOrderRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol: string;
+  clientOid?: string;
+  type?: StrategyOrderTypeV3;
+  tpslMode?: 'full' | 'partial';
+  /** Required when tpslMode=partial or for trigger orders */
+  qty?: string;
+  side?: 'buy' | 'sell';
+  posSide?: 'long' | 'short';
+  reduceOnly?: 'yes' | 'no';
+  tpTriggerBy?: StrategyTriggerByV3;
+  slTriggerBy?: StrategyTriggerByV3;
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: StrategyTriggerOrderTypeV3;
+  slOrderType?: StrategyTriggerOrderTypeV3;
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
+  triggerBy?: StrategyTriggerByV3;
+  triggerPrice?: string;
+  triggerOrderType?: StrategyTriggerOrderTypeV3;
+  triggerOrderPrice?: string;
+  ocoParams?: StrategyOcoParamsV3;
+  trailingStopParams?: StrategyTrailingStopParamsV3;
+  icebergParams?: StrategyIcebergParamsV3;
+  twapParams?: StrategyTwapParamsV3;
+}
+⋮----
+/** Required when tpslMode=partial or for trigger orders */
+⋮----
+export interface ModifyStrategyOrderRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+  qty: string;
+  tpTriggerBy?: StrategyTriggerByV3;
+  slTriggerBy?: StrategyTriggerByV3;
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: StrategyTriggerOrderTypeV3;
+  slOrderType?: StrategyTriggerOrderTypeV3;
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
+  triggerBy?: StrategyTriggerByV3;
+  triggerPrice?: string;
+  triggerOrderType?: StrategyTriggerOrderTypeV3;
+  triggerOrderPrice?: string;
+}
+⋮----
+export interface CancelStrategyOrderRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+}
+⋮----
+export interface GetUnfilledStrategyOrdersRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  type?: StrategyOrderTypeV3;
+}
+⋮----
+export interface GetHistoryStrategyOrdersRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  type?: StrategyOrderTypeV3;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetStrategySubOrdersRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+  limit?: string;
+  cursor?: string;
+}
+
+================
 File: src/types/response/v3/copytrading.ts
 ================
 /**
@@ -10692,6 +10705,332 @@ export interface CopyFuturesProfitDetailsV3 {
   list: CopyFuturesProfitDetailV3[];
   nextCursor: string;
 }
+⋮----
+export interface CopyFuturesPortfolioOverviewV3 {
+  projectId: string;
+  asset: string;
+  roi: string;
+  totalProfit: string;
+  followerProfit: string;
+  maxDrawdown: string;
+}
+⋮----
+export interface CopyFuturesCopySettingsV3 {
+  type: 'fixed_ratio' | 'fixed_margin' | string;
+  amount: string;
+  tradingPairList: string[];
+  marginPerOrder: string;
+  autoCopy: 'on' | 'off' | string;
+  leverage: string;
+  maxEntrySlippage: string;
+  maxMarginRatio: string;
+  /** API field name (Bitget spelling). */
+  maxPostionValue: string;
+}
+⋮----
+/** API field name (Bitget spelling). */
+⋮----
+export interface CopyFuturesFollowerTransferRecordV3 {
+  fromType: string;
+  toType: string;
+  amount: string;
+  coin: string;
+  status: string;
+  createdTime: string;
+}
+⋮----
+export interface CopyFuturesFollowerTransferRecordListV3 {
+  list: CopyFuturesFollowerTransferRecordV3[];
+  nextCursor?: string;
+}
+⋮----
+export interface CopyFuturesCurrentCopyV3 {
+  eliteTrader: string;
+  estNetProfit: string;
+  profitShare: string;
+  estValue: string;
+  available: string;
+  currentInvestment: string;
+}
+⋮----
+export interface CopyFuturesCopyProfitDetailItemV3 {
+  settleTime: string;
+  profit: string;
+  allocatedPnl: string;
+  pendingPnl: string;
+  shareRatio: string;
+  shareProfit: string;
+}
+⋮----
+export interface CopyFuturesCopyProfitDetailsV3 {
+  list: CopyFuturesCopyProfitDetailItemV3[];
+  nextCursor?: string;
+}
+⋮----
+export interface CopyFuturesFollowerPositionV3 {
+  symbol: string;
+  marginCoin: string;
+  posSide: 'long' | 'short' | string;
+  total: string;
+  leverage: string;
+  avgPrice: string;
+  marginMode: string;
+  holdMode: string;
+  createdTime: string;
+  positionId: string;
+}
+⋮----
+export interface CopyFuturesFollowerPositionsV3 {
+  list: CopyFuturesFollowerPositionV3[];
+}
+⋮----
+export interface CopyFuturesTpSlOrderV3 {
+  strategyId: string;
+  category: string;
+  symbol: string;
+  qty: string;
+  posSide: string;
+  status: string;
+  tpTriggerBy: string;
+  slTriggerBy: string;
+  takeProfit: string;
+  stopLoss: string;
+  tpOrderType: string;
+  slOrderType: string;
+}
+⋮----
+export interface CopyFuturesTpSlResponseV3 {
+  strategyId: string;
+}
+⋮----
+export interface CopyFuturesCurrentTpSlOrdersV3 {
+  list: CopyFuturesTpSlOrderV3[];
+}
+⋮----
+export interface CopyFuturesTpSlOrderHistoryV3 {
+  list: CopyFuturesTpSlOrderV3[];
+  cursor?: string;
+}
+
+================
+File: src/types/websockets/ws-api-request.ts
+================
+import type { FuturesMarginModeV3 } from '../request/v3/trade.js';
+⋮----
+export interface WSAPIPlaceOrderRequestV3 {
+  symbol: string;
+  orderType: 'limit' | 'market';
+  qty: string;
+  price?: string;
+  side: 'buy' | 'sell';
+  posSide?: 'long' | 'short';
+  timeInForce?: 'gtc' | 'ioc' | 'fok' | 'post_only' | 'rpi';
+  reduceOnly?: 'YES' | 'NO'; // Note: reduceOnly is not supported for batch place WS API. Might be supported starting late Q4 2025, but not supported yet.
+  /** Futures only. Defaults to crossed */
+  marginMode?: FuturesMarginModeV3;
+  clientOid?: string;
+  stpMode?: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
+  tpTriggerBy?: 'market' | 'mark';
+  slTriggerBy?: 'market' | 'mark';
+  takeProfit?: string;
+  stopLoss?: string;
+  tpOrderType?: 'limit' | 'market';
+  slOrderType?: 'limit' | 'market';
+  tpLimitPrice?: string;
+  slLimitPrice?: string;
+  /** Order TTL in ms [10, 60000]. Only effective when requestTime is also set on the envelope */
+  receiveWindow?: string;
+  /** Spot only. Default: no */
+  autoBorrow?: 'yes' | 'no';
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
+}
+⋮----
+reduceOnly?: 'YES' | 'NO'; // Note: reduceOnly is not supported for batch place WS API. Might be supported starting late Q4 2025, but not supported yet.
+/** Futures only. Defaults to crossed */
+⋮----
+/** Order TTL in ms [10, 60000]. Only effective when requestTime is also set on the envelope */
+⋮----
+/** Spot only. Default: no */
+⋮----
+/** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+
+================
+File: src/types/websockets/ws-api.ts
+================
+import { WS_KEY_MAP } from '../../util/websocket-util.js';
+import {
+  CancelOrderRequestV3,
+  ModifyOrderRequestV3,
+} from '../request/v3/trade.js';
+import {
+  CancelOrderResponseV3,
+  ModifyOrderResponseV3,
+} from '../response/v3/trade.js';
+import { WSAPIPlaceOrderRequestV3 } from './ws-api-request.js';
+import { WSAPIPlaceOrderResponseV3 } from './ws-api-response.js';
+import { BitgetInstTypeV3, WsKey } from './ws-general.js';
+⋮----
+export type WSOperation = 'subscribe' | 'unsubscribe' | 'login';
+⋮----
+// When new WS API operations are added, make sure to also update WS_API_Operations[] below
+export type WSAPIOperation =
+  | 'place-order'
+  | 'batch-place'
+  | 'cancel-order'
+  | 'batch-cancel'
+  | 'modify-order'
+  | 'batch-modify';
+⋮----
+export interface WSOperationLoginParams {
+  apiKey: string;
+  passphrase: string;
+  timestamp: number;
+  sign: string;
+}
+⋮----
+export interface WSAPIRequestBitgetV3<TWSParams> {
+  op: 'trade';
+  id: string;
+  category: BitgetInstTypeV3;
+  topic: WSAPIOperation;
+  args: TWSParams | TWSParams[];
+  /** Client-side request timestamp; required for receiveWindow on place-order */
+  requestTime?: string;
+}
+⋮----
+/** Client-side request timestamp; required for receiveWindow on place-order */
+⋮----
+export interface WSAPIRequestFlags {
+  /** If true, will skip auth requirement for WS API connection */
+  authIsOptional?: boolean | undefined;
+}
+⋮----
+/** If true, will skip auth requirement for WS API connection */
+⋮----
+export type Exact<T> = {
+  // This part says: if there's any key that's not in T, it's an error
+  [K: string]: never;
+} & {
+  [K in keyof T]: T[K];
+};
+⋮----
+// This part says: if there's any key that's not in T, it's an error
+⋮----
+/**
+
+/**
+ * V2 request looks like this:
+{
+  "op":"subscribe",
+  "args":[
+      {
+          "instType":"SPOT",
+          "channel":"ticker",
+          "instId":"BTCUSDT"
+      },
+      {
+          "instType":"SPOT",
+          "channel":"candle5m",
+          "instId":"BTCUSDT"
+      }
+  ]
+}
+ */
+export interface WsRequestOperationBitget<TWSRequestArg> {
+  op: WSOperation;
+  args?: (TWSRequestArg | string | number)[];
+}
+export interface WSAPIRateLimitV3 {
+  limit: string;
+  remaining: string;
+}
+⋮----
+export interface WSAPIResponse<
+  TResponseData extends object = object,
+  TOperation extends WSAPIOperation = WSAPIOperation,
+> {
+  wsKey: WsKey;
+  /** Auto-generated */
+  id: string;
+  event: 'trade';
+  category: BitgetInstTypeV3;
+  topic: TOperation;
+  args: TResponseData;
+  code: '0' | string;
+  msg: 'success' | string;
+  ts: string;
+  /** Connection ID (trade operation responses, May 2026+) */
+  connId?: string;
+  /** Gateway receive time, Unix microseconds */
+  receiveTime?: string;
+  /** Gateway push time, Unix microseconds */
+  pushTime?: string;
+  rateLimit?: WSAPIRateLimitV3[];
+}
+⋮----
+/** Auto-generated */
+⋮----
+/** Connection ID (trade operation responses, May 2026+) */
+⋮----
+/** Gateway receive time, Unix microseconds */
+⋮----
+/** Gateway push time, Unix microseconds */
+⋮----
+/**
+ * List of operations supported for this WsKey (connection)
+ */
+export interface WsAPIWsKeyTopicMap {
+  [WS_KEY_MAP.v3Private]: WSAPIOperation;
+}
+⋮----
+/**
+ * Request parameters expected per operation
+ */
+export interface WsAPITopicRequestParamMap {
+  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+  'place-order': WSAPIPlaceOrderRequestV3;
+  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+  'batch-place': WSAPIPlaceOrderRequestV3[];
+  // https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+  'cancel-order': CancelOrderRequestV3;
+  // https://www.bitget.com/docs/uta/websocket/private/Batch-Cancel-Order-Channel
+  'batch-cancel': CancelOrderRequestV3[];
+  'modify-order': ModifyOrderRequestV3;
+  'batch-modify': ModifyOrderRequestV3[];
+}
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+⋮----
+// https://www.bitget.com/docs/uta/websocket/private/Batch-Cancel-Order-Channel
+⋮----
+/**
+ * Response structure expected for each operation
+ */
+export interface WsAPIOperationResponseMap {
+  // https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+  'place-order': WSAPIResponse<[WSAPIPlaceOrderResponseV3], 'place-order'>;
+  // https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+  'batch-place': WSAPIResponse<WSAPIPlaceOrderResponseV3[], 'batch-place'>;
+  // https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+  'cancel-order': WSAPIResponse<[CancelOrderResponseV3], 'cancel-order'>;
+  // https://www.bitget.com/docs/uta/websocket/private/Batch-Cancel-Order-Channel
+  'batch-cancel': WSAPIResponse<CancelOrderResponseV3[], 'batch-cancel'>;
+  'modify-order': WSAPIResponse<[ModifyOrderResponseV3], 'modify-order'>;
+  'batch-modify': WSAPIResponse<ModifyOrderResponseV3[], 'batch-modify'>;
+}
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Place-Order-Channel#request-parameters
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Batch-Place-Order-Channel
+⋮----
+// https://www.bitget.com/api-doc/uta/websocket/private/Cancel-Order-Channel
+⋮----
+// https://www.bitget.com/docs/uta/websocket/private/Batch-Cancel-Order-Channel
 
 ================
 File: docs/BITGET_SDK_QUICKSTART_GUIDE.md
@@ -12354,22 +12693,26 @@ export interface BatchModifyOrderRequestV3 {
   /** Custom request ID. Numbers within 18 digits. */
   requestId?: number;
   autoCancel?: 'yes' | 'no';
-  /** Required from 30 Sep 2026 */
-  symbol?: string;
-  /** Required from 30 Sep 2026 */
-  category?:
+  /** Required since 30 Sep 2026 */
+  symbol: string;
+  /** Required since 30 Sep 2026 */
+  category:
     | 'SPOT'
     | 'MARGIN'
     | 'USDT-FUTURES'
     | 'COIN-FUTURES'
     | 'USDC-FUTURES';
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }
 ⋮----
 /** Custom request ID. Numbers within 18 digits. */
 ⋮----
-/** Required from 30 Sep 2026 */
+/** Required since 30 Sep 2026 */
 ⋮----
-/** Required from 30 Sep 2026 */
+/** Required since 30 Sep 2026 */
+⋮----
+/** Limit orders only. no rejects a price outside the band (default). yes clamps it */
 ⋮----
 export interface CancelAllOrdersRequestV3 {
   category:
@@ -12498,10 +12841,10 @@ export interface ModifyOrderRequestV3 {
   /** Custom request ID. Numbers within 18 digits. */
   requestId?: number;
   autoCancel?: 'yes' | 'no';
-  /** Required from 30 Sep 2026 */
-  symbol?: string;
-  /** Required from 30 Sep 2026 */
-  category?:
+  /** Required since 30 Sep 2026 */
+  symbol: string;
+  /** Required since 30 Sep 2026 */
+  category:
     | 'SPOT'
     | 'MARGIN'
     | 'USDT-FUTURES'
@@ -12515,13 +12858,17 @@ export interface ModifyOrderRequestV3 {
   slOrderType?: 'limit' | 'market';
   tpLimitPrice?: string;
   slLimitPrice?: string;
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }
 ⋮----
 /** Custom request ID. Numbers within 18 digits. */
 ⋮----
-/** Required from 30 Sep 2026 */
+/** Required since 30 Sep 2026 */
 ⋮----
-/** Required from 30 Sep 2026 */
+/** Required since 30 Sep 2026 */
+⋮----
+/** Limit orders only. no rejects a price outside the band (default). yes clamps it */
 ⋮----
 export interface PlaceRealityOrderRequestV3 {
   category?: 'SPOT' | 'MARGIN';
@@ -12556,7 +12903,11 @@ export interface PlaceBatchOrdersRequestV3 {
   posSide?: 'long' | 'short';
   clientOid?: string;
   reduceOnly?: 'yes' | 'no';
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }
+⋮----
+/** Limit orders only. no rejects a price outside the band (default). yes clamps it */
 ⋮----
 export type FuturesMarginModeV3 = 'crossed' | 'isolated';
 ⋮----
@@ -12589,11 +12940,15 @@ export interface PlaceOrderRequestV3 {
   slLimitPrice?: string;
   /** Spot only. Default: no */
   autoBorrow?: 'yes' | 'no';
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }
 ⋮----
 /** Futures only. Defaults to crossed */
 ⋮----
 /** Spot only. Default: no */
+⋮----
+/** Limit orders only. no rejects a price outside the band (default). yes clamps it */
 ⋮----
 export interface CountdownCancelAllRequestV3 {
   countdown: string; // seconds until auto-cancel (5-60, or 0 to disable)
@@ -12651,6 +13006,7 @@ export interface AccountSettingsV3 {
   holdMode: string;
   stpMode: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
   deltaSwitch?: 'yes' | 'no';
+  repayMode?: 'auto' | 'manual';
   symbolConfigList: AccountSymbolConfigV3[];
   coinConfigList: AccountCoinConfigV3[];
 }
@@ -12679,6 +13035,8 @@ export interface AccountAssetV3 {
   equity: string;
   usdValue: string;
   balance: string;
+  /** Coin balance before borrowing-related amounts are deducted */
+  balanceOriginal?: string;
   available: string;
   debt: string;
   locked: string;
@@ -12688,13 +13046,28 @@ export interface AccountAssetV3 {
   leverage?: string;
   /** USDT bonus amount */
   bonus?: string;
+  /** Interest calculation base */
+  interestBase?: string;
 }
+⋮----
+/** Coin balance before borrowing-related amounts are deducted */
 ⋮----
 /** Position value in USD */
 ⋮----
 /** Account leverage (non-negative) */
 ⋮----
 /** USDT bonus amount */
+⋮----
+/** Interest calculation base */
+⋮----
+export interface BorrowResponseV3 {
+  orderId: string;
+  clientOid?: string;
+}
+⋮----
+export interface MaxBorrowableV3 {
+  maxBorrowable: string;
+}
 ⋮----
 export interface AccountAssetsV3 {
   accountEquity: string;
@@ -13392,489 +13765,6 @@ export interface PositionAdlRankV3 {
 }
 
 ================
-File: src/types/request/v3/account.ts
-================
-// Account Management Request Types
-⋮----
-export type AccountAdjustModeV3 = 'basic' | 'advanced' | 'delta' | 'isolated';
-⋮----
-export interface AdjustAccountModeRequestV3 {
-  mode: AccountAdjustModeV3;
-  /** Enable/disable delta-neutral mode when mode is advanced. `delta` mode is deprecated. */
-  deltaSwitch?: 'yes' | 'no';
-  /** Sub-account UID when the master account switches mode for a sub-account */
-  targetUid?: string;
-}
-⋮----
-/** Enable/disable delta-neutral mode when mode is advanced. `delta` mode is deprecated. */
-⋮----
-/** Sub-account UID when the master account switches mode for a sub-account */
-⋮----
-export interface SetLeverageRequestV3 {
-  category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-  leverage: string;
-  coin?: string;
-  posSide?: 'long' | 'short';
-  /** Futures only. Defaults to crossed */
-  marginMode?: 'crossed' | 'isolated';
-  /** Isolated two-way mode: long leverage. Takes priority over leverage when both set */
-  longLeverage?: string;
-  /** Isolated two-way mode: short leverage. Takes priority over leverage when both set */
-  shortLeverage?: string;
-}
-⋮----
-/** Futures only. Defaults to crossed */
-⋮----
-/** Isolated two-way mode: long leverage. Takes priority over leverage when both set */
-⋮----
-/** Isolated two-way mode: short leverage. Takes priority over leverage when both set */
-⋮----
-export interface GetAllFeeRatesRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol?: string;
-}
-⋮----
-export interface GetConvertRecordsRequestV3 {
-  fromCoin?: string;
-  toCoin?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetFinancialRecordsRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  coin?: string;
-  type?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface RepayRequestV3 {
-  repayableCoinList: string[];
-  paymentCoinList: string[];
-}
-⋮----
-// Sub-account Management Request Types
-⋮----
-export interface CreateSubAccountApiKeyRequestV3 {
-  subUid: string;
-  note: string;
-  type: 'read_write' | 'read_only';
-  passphrase: string;
-  permissions: string[];
-  ips: string[];
-}
-⋮----
-export interface DeleteSubAccountApiKeyRequestV3 {
-  apiKey: string;
-}
-⋮----
-export interface GetSubAccountApiKeysRequestV3 {
-  subUid: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface UpdateSubAccountApiKeyRequestV3 {
-  apiKey: string;
-  passphrase: string;
-  type?: 'read_write' | 'read_only';
-  permissions?: string[];
-  ips?: string[];
-}
-⋮----
-export interface CreateSubAccountRequestV3 {
-  username: string;
-  accountMode?: 'classic' | 'unified';
-  note?: string;
-}
-⋮----
-export interface FreezeSubAccountRequestV3 {
-  subUid: string;
-  operation: 'freeze' | 'unfreeze';
-}
-⋮----
-export interface GetSubAccountListRequestV3 {
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-// Transfer Request Types
-⋮----
-export interface TransferRequestV3 {
-  clientOid?: string;
-  fromType:
-    | 'spot'
-    | 'p2p'
-    | 'coin_futures'
-    | 'usdt_futures'
-    | 'usdc_futures'
-    | 'crossed_margin'
-    | 'isolated_margin'
-    | 'uta';
-  toType:
-    | 'spot'
-    | 'p2p'
-    | 'coin_futures'
-    | 'usdt_futures'
-    | 'usdc_futures'
-    | 'crossed_margin'
-    | 'isolated_margin'
-    | 'uta';
-  amount: string;
-  coin: string;
-  symbol?: string;
-  /** Enable automatic margin borrowing when balance insufficient. yes | no */
-  allowBorrow?: 'yes' | 'no';
-}
-⋮----
-/** Enable automatic margin borrowing when balance insufficient. yes | no */
-⋮----
-export interface GetTransferableCoinsRequestV3 {
-  fromType:
-    | 'spot'
-    | 'p2p'
-    | 'coin_futures'
-    | 'usdt_futures'
-    | 'usdc_futures'
-    | 'crossed_margin'
-    | 'isolated_margin'
-    | 'uta';
-  toType:
-    | 'spot'
-    | 'p2p'
-    | 'coin_futures'
-    | 'usdt_futures'
-    | 'usdc_futures'
-    | 'crossed_margin'
-    | 'isolated_margin'
-    | 'uta';
-}
-⋮----
-export interface GetSubTransferRecordsRequestV3 {
-  subUid?: string;
-  role?: 'initiator' | 'receiver';
-  coin?: string;
-  startTime?: string;
-  endTime?: string;
-  clientOid?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface SubAccountTransferRequestV3 {
-  fromType:
-    | 'spot'
-    | 'p2p'
-    | 'usdt_futures'
-    | 'coin_futures'
-    | 'usdc_futures'
-    | 'crossed_margin'
-    | 'uta';
-  toType:
-    | 'spot'
-    | 'p2p'
-    | 'usdt_futures'
-    | 'coin_futures'
-    | 'usdc_futures'
-    | 'crossed_margin'
-    | 'uta';
-  amount: string;
-  coin: string;
-  fromUserId: string;
-  toUserId: string;
-  clientOid: string;
-  /** Enable automatic margin borrowing when balance insufficient. yes | no */
-  allowBorrow?: 'yes' | 'no';
-}
-⋮----
-/** Enable automatic margin borrowing when balance insufficient. yes | no */
-⋮----
-export interface GetSubUnifiedAssetsRequestV3 {
-  subUid?: string;
-  cursor?: string;
-  limit?: string;
-}
-⋮----
-export interface GetFeeRateRequestV3 {
-  category:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES';
-  symbol: string;
-  /** RPI fee rate flag for market maker users. Default: no */
-  rpiFlag?: 'yes' | 'no';
-}
-⋮----
-/** RPI fee rate flag for market maker users. Default: no */
-⋮----
-export interface GetFundingAssetsRequestV3 {
-  coin?: string;
-}
-⋮----
-export interface SwitchDeductRequestV3 {
-  deduct: 'on' | 'off';
-}
-⋮----
-// Deposit Request Types
-⋮----
-export interface GetDepositAddressRequestV3 {
-  coin: string;
-  chain?: string;
-  size?: string;
-}
-⋮----
-export interface GetSubDepositAddressRequestV3 {
-  subUid: string;
-  coin: string;
-  chain?: string;
-  size?: string;
-}
-⋮----
-export interface GetDepositRecordsRequestV3 {
-  coin?: string;
-  orderId?: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetSubDepositRecordsRequestV3 {
-  coin?: string;
-  subUid: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-// Withdraw Request Types
-⋮----
-export interface WithdrawRequestV3 {
-  coin: string;
-  chain?: string;
-  /** Deduct from funding, uta, and/or otc accounts (comma-separated). Order: funding -> otc -> uta */
-  accountType?: string;
-  transferType: 'on_chain' | 'internal_transfer';
-  address: string;
-  innerToType?: 'uid' | 'email' | 'mobile';
-  areaCode?: string;
-  tag?: string;
-  size: string;
-  remark?: string;
-  clientOid?: string;
-  memberCode?: 'bithumb' | 'korbit' | 'coinone';
-  identityType?: 'company' | 'user';
-  companyName?: string;
-  firstName?: string;
-  lastName?: string;
-}
-⋮----
-/** Deduct from funding, uta, and/or otc accounts (comma-separated). Order: funding -> otc -> uta */
-⋮----
-export interface GetWithdrawRecordsRequestV3 {
-  coin?: string;
-  orderId?: string;
-  clientOid?: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetWithdrawAddressBookRequestV3 {
-  coin?: string;
-  type?: 'EVM' | 'regular' | 'universal' | 'internal';
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface CancelWithdrawalRequestV3 {
-  orderId?: string;
-  clientOid?: string;
-}
-⋮----
-export interface SetDepositAccountRequestV3 {
-  coin: string;
-  accountType: 'funding' | 'unified' | 'otc';
-}
-⋮----
-export interface GetMaxTransferableRequestV3 {
-  coin: string;
-}
-⋮----
-export interface GetOpenInterestLimitRequestV3 {
-  symbol: string;
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-}
-⋮----
-export interface GetTaxRecordsRequestV3 {
-  bizType:
-    | 'SPOT'
-    | 'MARGIN'
-    | 'USDT-FUTURES'
-    | 'COIN-FUTURES'
-    | 'USDC-FUTURES'
-    | 'OTHER';
-  marginType?: 'isolated' | 'crossed';
-  coin?: string;
-  startTime: string;
-  endTime: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export type CollateralTypeV3 = 'mainstream' | 'all' | 'custom';
-⋮----
-export interface SetCollateralTypeRequestV3 {
-  collateralType: CollateralTypeV3;
-  /** Required when collateralType=custom. Comma-separated coin names */
-  collateralCoins?: string;
-}
-⋮----
-/** Required when collateralType=custom. Comma-separated coin names */
-⋮----
-export interface PreSetLeverageRequestV3 {
-  category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-  coin?: string;
-  marginMode: 'isolated' | 'cross';
-  leverage?: string;
-  longLeverage?: string;
-  shortLeverage?: string;
-}
-⋮----
-export interface SetMarginRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol: string;
-  posSide: 'long' | 'short';
-  operation: 'add' | 'remove';
-  amount: string;
-}
-⋮----
-export interface GetMaxWithdrawalRequestV3 {
-  coin: string;
-}
-⋮----
-export interface GetRealityOrderBookRequestV3 {
-  symbol: string;
-}
-⋮----
-export interface GetRealityFillsRequestV3 {
-  symbol: string;
-  limit?: string;
-}
-⋮----
-export interface SubMasterTransferRequestV3 {
-  fromType: 'spot' | 'uta';
-  toType: 'spot' | 'p2p' | 'uta';
-  amount: string;
-  coin: string;
-  clientOid?: string;
-}
-⋮----
-export interface CreateAgentSubAccountRequestV3 {
-  username: string;
-  passphrase: string;
-  note?: string;
-}
-⋮----
-export interface MovePositionItemRequestV3 {
-  symbol: string;
-  side: 'buy' | 'sell';
-  qty: string;
-}
-⋮----
-export interface MovePositionsRequestV3 {
-  fromUid: string;
-  toUid: string;
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  positionList: MovePositionItemRequestV3[];
-}
-⋮----
-export interface GetMovePositionHistoryRequestV3 {
-  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
-  symbol?: string;
-  startTime?: string;
-  endTime?: string;
-  cursor?: string;
-  limit?: string;
-}
-⋮----
-export interface GetEligibleSymbolsRequestV3 {
-  symbol?: string;
-}
-⋮----
-export interface GetEligibleMarginTierRequestV3 {
-  coin?: string;
-}
-⋮----
-export interface GetEligibleLoanInfoRequestV3 {
-  coin?: string;
-}
-⋮----
-export interface GetEligibleDiscountRateRequestV3 {
-  coin?: string;
-}
-⋮----
-export interface GetFundingFinancialRecordsRequestV3 {
-  coin?: string;
-  type?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetSmallAssetsRequestV3 {
-  coin?: string;
-}
-⋮----
-export interface TradeSmallAssetsRequestV3 {
-  fromCoinList: string[];
-  toCoin?: string;
-}
-⋮----
-export interface GetSmallAssetsHistoryRequestV3 {
-  orderId?: string;
-  startTime?: string;
-  endTime?: string;
-  limit?: string;
-  cursor?: string;
-}
-⋮----
-export interface GetRateLimitQuotaRequestV3 {
-  category: 'spot' | 'futures';
-  uid?: string;
-  cursor?: string;
-  limit?: string;
-}
-⋮----
-export interface SetRateLimitQuotaRequestV3 {
-  category: 'spot' | 'futures';
-  uids: string[];
-  quota: string;
-}
-
-================
 File: src/types/websockets/ws-general.ts
 ================
 import type { ClientRequestArgs } from 'http';
@@ -13993,7 +13883,12 @@ export type WsTopicV2 = WsPublicTopicV2 | WsPrivateTopicV2;
  * V3 / UTA list of topics for WebSocket consumers
  *
  */
-export type WsPublicTopicV3 = 'ticker' | 'kline' | 'books' | 'publicTrade';
+export type WsPublicTopicV3 =
+  | 'ticker'
+  | 'kline'
+  | 'books'
+  | 'books50'
+  | 'publicTrade';
 // Also update PRIVATE_TOPICS_V3 if this is updated
 export type WsPrivateTopicV3 =
   | 'account'
@@ -14153,11 +14048,6 @@ export interface WebsocketClientOptions extends WSClientConfigurableOptions {
 }
 
 ================
-File: src/index.ts
-================
-
-
-================
 File: src/rest-client-v2.ts
 ================
 import { FuturesProductTypeV2, MarginType } from './types/request/shared.js';
@@ -14180,6 +14070,7 @@ import {
   GetBrokerTotalCommissionRequestV2,
   GetBrokerTradeVolumeRequestV2,
   GetSubAccountsRequestV2,
+  GetSubAffiliateInfoRequestV2,
   ModifySubAccountApiKeyRequestV2,
   ModifySubRequestV2,
   SubDepositRecordsRequestV2,
@@ -14371,6 +14262,7 @@ import {
   SubaccountApiKeyV2,
   SubaccountDepositV2,
   SubaccountEmailV2,
+  SubAffiliateInfoV2,
 } from './types/response/v2/broker.js';
 import {
   AnnouncementV2,
@@ -15948,6 +15840,10 @@ getAgentSubCustomerList(
     params?: GetAgentSubCustomerListRequestV2,
 ): Promise<APIResponse<AgentSubCustomerListV2>>
 ⋮----
+getSubAffiliateInfo(
+    params?: GetSubAffiliateInfoRequestV2,
+): Promise<APIResponse<SubAffiliateInfoV2>>
+⋮----
 getAgentCustomerTradeVolume(
     params?: AgentCustomerTradeVolumeRequestV2,
 ): Promise<APIResponse<AgentCustomerTradeVolumeItemV2[]>>
@@ -16876,6 +16772,519 @@ getLoanOrder(
 ): Promise<APIResponse<InstLoanOrderV2[]>>
 
 ================
+File: src/types/request/v3/account.ts
+================
+// Account Management Request Types
+⋮----
+export type AccountAdjustModeV3 = 'basic' | 'advanced' | 'delta' | 'isolated';
+⋮----
+export interface AdjustAccountModeRequestV3 {
+  mode: AccountAdjustModeV3;
+  /** Enable/disable delta-neutral mode when mode is advanced. `delta` mode is deprecated. */
+  deltaSwitch?: 'yes' | 'no';
+  /** Sub-account UID when the master account switches mode for a sub-account */
+  targetUid?: string;
+}
+⋮----
+/** Enable/disable delta-neutral mode when mode is advanced. `delta` mode is deprecated. */
+⋮----
+/** Sub-account UID when the master account switches mode for a sub-account */
+⋮----
+export interface SetLeverageRequestV3 {
+  category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  leverage: string;
+  coin?: string;
+  posSide?: 'long' | 'short';
+  /** Futures only. Defaults to crossed */
+  marginMode?: 'crossed' | 'isolated';
+  /** Isolated two-way mode: long leverage. Takes priority over leverage when both set */
+  longLeverage?: string;
+  /** Isolated two-way mode: short leverage. Takes priority over leverage when both set */
+  shortLeverage?: string;
+}
+⋮----
+/** Futures only. Defaults to crossed */
+⋮----
+/** Isolated two-way mode: long leverage. Takes priority over leverage when both set */
+⋮----
+/** Isolated two-way mode: short leverage. Takes priority over leverage when both set */
+⋮----
+export interface GetAllFeeRatesRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol?: string;
+}
+⋮----
+export interface GetConvertRecordsRequestV3 {
+  fromCoin?: string;
+  toCoin?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetFinancialRecordsRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  coin?: string;
+  type?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface RepayRequestV3 {
+  repayableCoinList: string[];
+  paymentCoinList: string[];
+}
+⋮----
+// Sub-account Management Request Types
+⋮----
+export interface CreateSubAccountApiKeyRequestV3 {
+  subUid: string;
+  note: string;
+  type: 'read_write' | 'read_only';
+  passphrase: string;
+  permissions: string[];
+  ips: string[];
+}
+⋮----
+export interface DeleteSubAccountApiKeyRequestV3 {
+  apiKey: string;
+}
+⋮----
+export interface GetSubAccountApiKeysRequestV3 {
+  subUid: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface UpdateSubAccountApiKeyRequestV3 {
+  apiKey: string;
+  passphrase: string;
+  type?: 'read_write' | 'read_only';
+  permissions?: string[];
+  ips?: string[];
+}
+⋮----
+export interface CreateSubAccountRequestV3 {
+  username: string;
+  accountMode?: 'classic' | 'unified';
+  note?: string;
+}
+⋮----
+export interface FreezeSubAccountRequestV3 {
+  subUid: string;
+  operation: 'freeze' | 'unfreeze';
+}
+⋮----
+export interface GetSubAccountListRequestV3 {
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+// Transfer Request Types
+⋮----
+export interface TransferRequestV3 {
+  clientOid?: string;
+  fromType:
+    | 'spot'
+    | 'p2p'
+    | 'coin_futures'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'isolated_margin'
+    | 'uta';
+  toType:
+    | 'spot'
+    | 'p2p'
+    | 'coin_futures'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'isolated_margin'
+    | 'uta';
+  amount: string;
+  coin: string;
+  symbol?: string;
+  /** Enable automatic margin borrowing when balance insufficient. yes | no */
+  allowBorrow?: 'yes' | 'no';
+}
+⋮----
+/** Enable automatic margin borrowing when balance insufficient. yes | no */
+⋮----
+export interface GetTransferableCoinsRequestV3 {
+  fromType:
+    | 'spot'
+    | 'p2p'
+    | 'coin_futures'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'isolated_margin'
+    | 'uta';
+  toType:
+    | 'spot'
+    | 'p2p'
+    | 'coin_futures'
+    | 'usdt_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'isolated_margin'
+    | 'uta';
+}
+⋮----
+export interface GetSubTransferRecordsRequestV3 {
+  subUid?: string;
+  role?: 'initiator' | 'receiver';
+  coin?: string;
+  startTime?: string;
+  endTime?: string;
+  clientOid?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface SubAccountTransferRequestV3 {
+  fromType:
+    | 'spot'
+    | 'p2p'
+    | 'usdt_futures'
+    | 'coin_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'uta';
+  toType:
+    | 'spot'
+    | 'p2p'
+    | 'usdt_futures'
+    | 'coin_futures'
+    | 'usdc_futures'
+    | 'crossed_margin'
+    | 'uta';
+  amount: string;
+  coin: string;
+  fromUserId: string;
+  toUserId: string;
+  clientOid: string;
+  /** Enable automatic margin borrowing when balance insufficient. yes | no */
+  allowBorrow?: 'yes' | 'no';
+}
+⋮----
+/** Enable automatic margin borrowing when balance insufficient. yes | no */
+⋮----
+export interface GetSubUnifiedAssetsRequestV3 {
+  subUid?: string;
+  cursor?: string;
+  limit?: string;
+}
+⋮----
+export interface GetFeeRateRequestV3 {
+  category:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES';
+  symbol: string;
+  /** RPI fee rate flag for market maker users. Default: no */
+  rpiFlag?: 'yes' | 'no';
+}
+⋮----
+/** RPI fee rate flag for market maker users. Default: no */
+⋮----
+export interface GetFundingAssetsRequestV3 {
+  coin?: string;
+}
+⋮----
+export interface SwitchDeductRequestV3 {
+  deduct: 'on' | 'off';
+}
+⋮----
+// Deposit Request Types
+⋮----
+export interface GetDepositAddressRequestV3 {
+  coin: string;
+  chain?: string;
+  size?: string;
+}
+⋮----
+export interface GetSubDepositAddressRequestV3 {
+  subUid: string;
+  coin: string;
+  chain?: string;
+  size?: string;
+}
+⋮----
+export interface GetDepositRecordsRequestV3 {
+  coin?: string;
+  orderId?: string;
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetSubDepositRecordsRequestV3 {
+  coin?: string;
+  subUid: string;
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+// Withdraw Request Types
+⋮----
+export interface WithdrawRequestV3 {
+  coin: string;
+  chain?: string;
+  /** Deduct from funding, uta, and/or otc accounts (comma-separated). Order: funding -> otc -> uta */
+  accountType?: string;
+  transferType: 'on_chain' | 'internal_transfer';
+  address: string;
+  innerToType?: 'uid' | 'email' | 'mobile';
+  areaCode?: string;
+  tag?: string;
+  size: string;
+  remark?: string;
+  clientOid?: string;
+  memberCode?: 'bithumb' | 'korbit' | 'coinone';
+  identityType?: 'company' | 'user';
+  companyName?: string;
+  firstName?: string;
+  lastName?: string;
+}
+⋮----
+/** Deduct from funding, uta, and/or otc accounts (comma-separated). Order: funding -> otc -> uta */
+⋮----
+export interface GetWithdrawRecordsRequestV3 {
+  coin?: string;
+  orderId?: string;
+  clientOid?: string;
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetWithdrawAddressBookRequestV3 {
+  coin?: string;
+  type?: 'EVM' | 'regular' | 'universal' | 'internal';
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface CancelWithdrawalRequestV3 {
+  orderId?: string;
+  clientOid?: string;
+}
+⋮----
+export interface SetDepositAccountRequestV3 {
+  coin: string;
+  accountType: 'funding' | 'unified' | 'otc';
+}
+⋮----
+export interface GetMaxTransferableRequestV3 {
+  coin: string;
+}
+⋮----
+export interface GetOpenInterestLimitRequestV3 {
+  symbol: string;
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+}
+⋮----
+export interface GetTaxRecordsRequestV3 {
+  bizType:
+    | 'SPOT'
+    | 'MARGIN'
+    | 'USDT-FUTURES'
+    | 'COIN-FUTURES'
+    | 'USDC-FUTURES'
+    | 'OTHER';
+  marginType?: 'isolated' | 'crossed';
+  coin?: string;
+  startTime: string;
+  endTime: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export type CollateralTypeV3 = 'mainstream' | 'all' | 'custom';
+⋮----
+export interface SetCollateralTypeRequestV3 {
+  collateralType: CollateralTypeV3;
+  /** Required when collateralType=custom. Comma-separated coin names */
+  collateralCoins?: string;
+  /** Enable Cash+ as collateral. Official field name is allowCashPlus */
+  allowCashPlus?: 'yes' | 'no';
+}
+⋮----
+/** Required when collateralType=custom. Comma-separated coin names */
+⋮----
+/** Enable Cash+ as collateral. Official field name is allowCashPlus */
+⋮----
+export interface BorrowRequestV3 {
+  coin: string;
+  amount: string;
+  clientOid?: string;
+}
+⋮----
+export interface GetMaxBorrowableRequestV3 {
+  coin: string;
+}
+⋮----
+export interface SetRepayModeRequestV3 {
+  /** Account-level. Master and each sub-account keep their own setting */
+  repayMode: 'auto' | 'manual';
+}
+⋮----
+/** Account-level. Master and each sub-account keep their own setting */
+⋮----
+export interface DeleteSubAccountRequestV3 {
+  subUid: string;
+}
+⋮----
+export interface PreSetLeverageRequestV3 {
+  category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  coin?: string;
+  marginMode: 'isolated' | 'cross';
+  leverage?: string;
+  longLeverage?: string;
+  shortLeverage?: string;
+}
+⋮----
+export interface SetMarginRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol: string;
+  posSide: 'long' | 'short';
+  operation: 'add' | 'remove';
+  amount: string;
+}
+⋮----
+export interface GetMaxWithdrawalRequestV3 {
+  coin: string;
+}
+⋮----
+export interface GetRealityOrderBookRequestV3 {
+  symbol: string;
+}
+⋮----
+export interface GetRealityFillsRequestV3 {
+  symbol: string;
+  limit?: string;
+}
+⋮----
+export interface SubMasterTransferRequestV3 {
+  fromType: 'spot' | 'uta';
+  toType: 'spot' | 'p2p' | 'uta';
+  amount: string;
+  coin: string;
+  clientOid?: string;
+}
+⋮----
+export interface CreateAgentSubAccountRequestV3 {
+  username: string;
+  passphrase: string;
+  note?: string;
+}
+⋮----
+export interface MovePositionItemRequestV3 {
+  symbol: string;
+  side: 'buy' | 'sell';
+  qty: string;
+}
+⋮----
+export interface MovePositionsRequestV3 {
+  fromUid: string;
+  toUid: string;
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  positionList: MovePositionItemRequestV3[];
+}
+⋮----
+export interface GetMovePositionHistoryRequestV3 {
+  category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
+  symbol?: string;
+  startTime?: string;
+  endTime?: string;
+  cursor?: string;
+  limit?: string;
+}
+⋮----
+export interface GetEligibleSymbolsRequestV3 {
+  symbol?: string;
+}
+⋮----
+export interface GetEligibleMarginTierRequestV3 {
+  coin?: string;
+}
+⋮----
+export interface GetEligibleLoanInfoRequestV3 {
+  coin?: string;
+}
+⋮----
+export interface GetEligibleDiscountRateRequestV3 {
+  coin?: string;
+}
+⋮----
+export interface GetFundingFinancialRecordsRequestV3 {
+  coin?: string;
+  type?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetSmallAssetsRequestV3 {
+  coin?: string;
+}
+⋮----
+export interface TradeSmallAssetsRequestV3 {
+  fromCoinList: string[];
+  toCoin?: string;
+}
+⋮----
+export interface GetSmallAssetsHistoryRequestV3 {
+  orderId?: string;
+  startTime?: string;
+  endTime?: string;
+  limit?: string;
+  cursor?: string;
+}
+⋮----
+export interface GetRateLimitQuotaRequestV3 {
+  category: 'spot' | 'futures';
+  uid?: string;
+  cursor?: string;
+  limit?: string;
+}
+⋮----
+export interface SetRateLimitQuotaRequestV3 {
+  category: 'spot' | 'futures';
+  uids: string[];
+  quota: string;
+}
+
+================
+File: src/index.ts
+================
+
+
+================
 File: src/types/response/v3/public.ts
 ================
 export interface PublicFillV3 {
@@ -17308,11 +17717,13 @@ File: src/rest-client-v3.ts
 ================
 import {
   AdjustAccountModeRequestV3,
+  BorrowRequestV3,
   CancelWithdrawalRequestV3,
   CreateAgentSubAccountRequestV3,
   CreateSubAccountApiKeyRequestV3,
   CreateSubAccountRequestV3,
   DeleteSubAccountApiKeyRequestV3,
+  DeleteSubAccountRequestV3,
   FreezeSubAccountRequestV3,
   GetAllFeeRatesRequestV3,
   GetConvertRecordsRequestV3,
@@ -17326,6 +17737,7 @@ import {
   GetFinancialRecordsRequestV3,
   GetFundingAssetsRequestV3,
   GetFundingFinancialRecordsRequestV3,
+  GetMaxBorrowableRequestV3,
   GetMaxTransferableRequestV3,
   GetMaxWithdrawalRequestV3,
   GetMovePositionHistoryRequestV3,
@@ -17353,6 +17765,7 @@ import {
   SetLeverageRequestV3,
   SetMarginRequestV3,
   SetRateLimitQuotaRequestV3,
+  SetRepayModeRequestV3,
   SubAccountTransferRequestV3,
   SubMasterTransferRequestV3,
   SwitchDeductRequestV3,
@@ -17392,11 +17805,28 @@ import {
   PlaceCfdOrderRequestV3,
 } from './types/request/v3/cfd.js';
 import {
+  CancelCopyFuturesTpSlRequestV3,
+  CloseAllCopyFuturesRequestV3,
+  CloseCopyFuturesPositionsRequestV3,
+  CopyFuturesFollowerTransferRequestV3,
   CopyFuturesTransferRequestV3,
+  CreateCopyFuturesRequestV3,
+  GetCopyFuturesCopyProfitDetailsRequestV3,
+  GetCopyFuturesCopySettingsRequestV3,
+  GetCopyFuturesCurrentCopyRequestV3,
+  GetCopyFuturesCurrentPositionsRequestV3,
+  GetCopyFuturesCurrentTpSlOrdersRequestV3,
   GetCopyFuturesFollowersRequestV3,
+  GetCopyFuturesFollowerTransferRecordRequestV3,
   GetCopyFuturesMaxTransferableRequestV3,
+  GetCopyFuturesPortfolioOverviewRequestV3,
   GetCopyFuturesProfitDetailsRequestV3,
+  GetCopyFuturesTpSlOrderHistoryRequestV3,
   GetCopyFuturesTransferRecordRequestV3,
+  ModifyCopyFuturesFollowerSettingsRequestV3,
+  ModifyCopyFuturesTpSlRequestV3,
+  PlaceCopyFuturesTpSlRequestV3,
+  UnfollowCopyFuturesRequestV3,
 } from './types/request/v3/copytrading.js';
 import {
   EarnEliteSubscribeRequestV3,
@@ -17560,6 +17990,7 @@ import {
   AccountInfoV3,
   AccountSettingsV3,
   AllSymbolFeeRateV3,
+  BorrowResponseV3,
   CollateralTypeConfigV3,
   ConvertRecordV3,
   CreateAgentSubAccountResponseV3,
@@ -17575,6 +18006,7 @@ import {
   FinancialRecordV3,
   FundingAssetV3,
   FundingFinancialRecordV3,
+  MaxBorrowableV3,
   MaxTransferableV3,
   MaxWithdrawalV3,
   MovePositionHistoryV3,
@@ -17626,12 +18058,21 @@ import {
   PlaceCfdOrderResponseV3,
 } from './types/response/v3/cfd.js';
 import {
+  CopyFuturesCopyProfitDetailsV3,
+  CopyFuturesCopySettingsV3,
+  CopyFuturesCurrentCopyV3,
   CopyFuturesCurrentFollowersV3,
+  CopyFuturesCurrentTpSlOrdersV3,
+  CopyFuturesFollowerPositionsV3,
+  CopyFuturesFollowerTransferRecordListV3,
   CopyFuturesHistoryFollowersV3,
   CopyFuturesMaxTransferableV3,
+  CopyFuturesPortfolioOverviewV3,
   CopyFuturesPositionSummaryV3,
   CopyFuturesProfitDetailsV3,
   CopyFuturesProfitSummaryV3,
+  CopyFuturesTpSlOrderHistoryV3,
+  CopyFuturesTpSlResponseV3,
   CopyFuturesTradingPairV3,
   CopyFuturesTransferRecordListV3,
   CopyFuturesTransferResponseV3,
@@ -18208,6 +18649,74 @@ getCopyFuturesProfitDetails(
     params?: GetCopyFuturesProfitDetailsRequestV3,
 ): Promise<APIResponse<CopyFuturesProfitDetailsV3>>
 ⋮----
+getCopyFuturesPortfolioOverview(
+    params: GetCopyFuturesPortfolioOverviewRequestV3,
+): Promise<APIResponse<CopyFuturesPortfolioOverviewV3>>
+⋮----
+createCopyFutures(
+    params: CreateCopyFuturesRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+modifyCopyFuturesFollowerSettings(
+    params: ModifyCopyFuturesFollowerSettingsRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+unfollowCopyFutures(
+    params: UnfollowCopyFuturesRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+getCopyFuturesCopySettings(
+    params: GetCopyFuturesCopySettingsRequestV3,
+): Promise<APIResponse<CopyFuturesCopySettingsV3>>
+⋮----
+copyFuturesFollowerTransfer(
+    params: CopyFuturesFollowerTransferRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+getCopyFuturesFollowerTransferRecords(
+    params: GetCopyFuturesFollowerTransferRecordRequestV3,
+): Promise<APIResponse<CopyFuturesFollowerTransferRecordListV3>>
+⋮----
+getCopyFuturesCurrentCopy(
+    params: GetCopyFuturesCurrentCopyRequestV3,
+): Promise<APIResponse<CopyFuturesCurrentCopyV3>>
+⋮----
+getCopyFuturesCopyProfitDetails(
+    params: GetCopyFuturesCopyProfitDetailsRequestV3,
+): Promise<APIResponse<CopyFuturesCopyProfitDetailsV3>>
+⋮----
+closeCopyFuturesPositions(
+    params: CloseCopyFuturesPositionsRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+closeAllCopyFuturesPositions(
+    params: CloseAllCopyFuturesRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+getCopyFuturesCurrentPositions(
+    params: GetCopyFuturesCurrentPositionsRequestV3,
+): Promise<APIResponse<CopyFuturesFollowerPositionsV3>>
+⋮----
+placeCopyFuturesTpSl(
+    params: PlaceCopyFuturesTpSlRequestV3,
+): Promise<APIResponse<CopyFuturesTpSlResponseV3>>
+⋮----
+modifyCopyFuturesTpSl(
+    params: ModifyCopyFuturesTpSlRequestV3,
+): Promise<APIResponse<CopyFuturesTpSlResponseV3>>
+⋮----
+cancelCopyFuturesTpSl(
+    params: CancelCopyFuturesTpSlRequestV3,
+): Promise<APIResponse<string>>
+⋮----
+getCopyFuturesCurrentTpSlOrders(
+    params: GetCopyFuturesCurrentTpSlOrdersRequestV3,
+): Promise<APIResponse<CopyFuturesCurrentTpSlOrdersV3>>
+⋮----
+getCopyFuturesTpSlOrderHistory(
+    params: GetCopyFuturesTpSlOrderHistoryRequestV3,
+): Promise<APIResponse<CopyFuturesTpSlOrderHistoryV3>>
+⋮----
 /**
    *
    * =====Stock+=====
@@ -18515,6 +19024,16 @@ getPaymentCoins(): Promise<
    */
 submitRepay(params: RepayRequestV3): Promise<APIResponse<RepayResponseV3>>
 ⋮----
+borrow(params: BorrowRequestV3): Promise<APIResponse<BorrowResponseV3>>
+⋮----
+getMaxBorrowable(
+    params: GetMaxBorrowableRequestV3,
+): Promise<APIResponse<MaxBorrowableV3>>
+⋮----
+setRepayMode(
+    params: SetRepayModeRequestV3,
+): Promise<APIResponse<Record<string, never>>>
+⋮----
 /**
    * Get Convert Records
    */
@@ -18682,6 +19201,10 @@ createAgentSubAccount(
 freezeSubAccount(
     params: FreezeSubAccountRequestV3,
 ): Promise<APIResponse<object>>
+⋮----
+deleteSubAccount(
+    params: DeleteSubAccountRequestV3,
+): Promise<APIResponse<Record<string, never>>>
 ⋮----
 /**
    * Get Sub-account Unified Account Assets
@@ -20196,7 +20719,7 @@ File: package.json
 ================
 {
   "name": "bitget-api",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "Complete Node.js & JavaScript SDK for Bitget V1-V3 REST APIs & WebSockets, with TypeScript & end-to-end tests.",
   "scripts": {
     "test": "jest",
