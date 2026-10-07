@@ -8510,9 +8510,9 @@ export interface PlaceStrategyOrderRequestV3 {
   reduceOnly?: 'yes' | 'no';
   /**
    * Margin mode. Defaults to crossed. Required for isolated positions
-   * (isolated TP/SL fails with 31008 if omitted). Per Bitget staff;
-   * public place-strategy-order docs are not updated yet.
-   * https://t.me/bitgetOpenapi/152235
+   * (isolated TP/SL fails with 31008 if omitted).
+   * Not in Bitget's official API docs yet. Confirmed by Bitget API devs
+   * in their OpenAPI Telegram: https://t.me/bitgetOpenapi/152235
    */
   marginMode?: 'isolated' | 'crossed';
   tpTriggerBy?: StrategyTriggerByV3;
