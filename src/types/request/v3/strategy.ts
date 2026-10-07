@@ -72,6 +72,13 @@ export interface PlaceStrategyOrderRequestV3 {
   side?: 'buy' | 'sell';
   posSide?: 'long' | 'short';
   reduceOnly?: 'yes' | 'no';
+  /**
+   * Margin mode. Defaults to crossed. Required for isolated positions
+   * (isolated TP/SL fails with 31008 if omitted). Per Bitget staff;
+   * public place-strategy-order docs are not updated yet.
+   * https://t.me/bitgetOpenapi/152235
+   */
+  marginMode?: 'isolated' | 'crossed';
   tpTriggerBy?: StrategyTriggerByV3;
   slTriggerBy?: StrategyTriggerByV3;
   takeProfit?: string;
