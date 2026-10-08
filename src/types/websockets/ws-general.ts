@@ -110,7 +110,12 @@ export type WsTopicV2 = WsPublicTopicV2 | WsPrivateTopicV2;
  * V3 / UTA list of topics for WebSocket consumers
  *
  */
-export type WsPublicTopicV3 = 'ticker' | 'kline' | 'books' | 'publicTrade';
+export type WsPublicTopicV3 =
+  | 'ticker'
+  | 'kline'
+  | 'books'
+  | 'books50'
+  | 'publicTrade';
 // Also update PRIVATE_TOPICS_V3 if this is updated
 export type WsPrivateTopicV3 =
   | 'account'

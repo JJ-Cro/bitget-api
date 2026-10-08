@@ -18,6 +18,7 @@ import {
   GetBrokerTotalCommissionRequestV2,
   GetBrokerTradeVolumeRequestV2,
   GetSubAccountsRequestV2,
+  GetSubAffiliateInfoRequestV2,
   ModifySubAccountApiKeyRequestV2,
   ModifySubRequestV2,
   SubDepositRecordsRequestV2,
@@ -209,6 +210,7 @@ import {
   SubaccountApiKeyV2,
   SubaccountDepositV2,
   SubaccountEmailV2,
+  SubAffiliateInfoV2,
 } from './types/response/v2/broker.js';
 import {
   AnnouncementV2,
@@ -2187,6 +2189,12 @@ export class RestClientV2 extends BaseRestClient {
     params?: GetAgentSubCustomerListRequestV2,
   ): Promise<APIResponse<AgentSubCustomerListV2>> {
     return this.getPrivate('/api/v2/broker/sub-customer-list', params);
+  }
+
+  getSubAffiliateInfo(
+    params?: GetSubAffiliateInfoRequestV2,
+  ): Promise<APIResponse<SubAffiliateInfoV2>> {
+    return this.getPrivate('/api/v2/broker/sub-affiliate-info', params);
   }
 
   getAgentCustomerTradeVolume(

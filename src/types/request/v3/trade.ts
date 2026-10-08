@@ -6,15 +6,17 @@ export interface BatchModifyOrderRequestV3 {
   /** Custom request ID. Numbers within 18 digits. */
   requestId?: number;
   autoCancel?: 'yes' | 'no';
-  /** Required from 30 Sep 2026 */
-  symbol?: string;
-  /** Required from 30 Sep 2026 */
-  category?:
+  /** Required since 30 Sep 2026 */
+  symbol: string;
+  /** Required since 30 Sep 2026 */
+  category:
     | 'SPOT'
     | 'MARGIN'
     | 'USDT-FUTURES'
     | 'COIN-FUTURES'
     | 'USDC-FUTURES';
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }
 
 export interface CancelAllOrdersRequestV3 {
@@ -142,10 +144,10 @@ export interface ModifyOrderRequestV3 {
   /** Custom request ID. Numbers within 18 digits. */
   requestId?: number;
   autoCancel?: 'yes' | 'no';
-  /** Required from 30 Sep 2026 */
-  symbol?: string;
-  /** Required from 30 Sep 2026 */
-  category?:
+  /** Required since 30 Sep 2026 */
+  symbol: string;
+  /** Required since 30 Sep 2026 */
+  category:
     | 'SPOT'
     | 'MARGIN'
     | 'USDT-FUTURES'
@@ -159,6 +161,8 @@ export interface ModifyOrderRequestV3 {
   slOrderType?: 'limit' | 'market';
   tpLimitPrice?: string;
   slLimitPrice?: string;
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }
 
 export interface PlaceRealityOrderRequestV3 {
@@ -194,6 +198,8 @@ export interface PlaceBatchOrdersRequestV3 {
   posSide?: 'long' | 'short';
   clientOid?: string;
   reduceOnly?: 'yes' | 'no';
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }
 
 export type FuturesMarginModeV3 = 'crossed' | 'isolated';
@@ -227,6 +233,8 @@ export interface PlaceOrderRequestV3 {
   slLimitPrice?: string;
   /** Spot only. Default: no */
   autoBorrow?: 'yes' | 'no';
+  /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
+  pxAmendType?: 'yes' | 'no';
 }
 
 export interface CountdownCancelAllRequestV3 {

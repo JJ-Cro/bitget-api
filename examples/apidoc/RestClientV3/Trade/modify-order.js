@@ -17,6 +17,7 @@ client
     symbol: 'BTCUSDT',
     category: 'SPOT',
     requestId: 123456,
+    pxAmendType: 'no',
   })
   .then((response) => {
     console.log(response);

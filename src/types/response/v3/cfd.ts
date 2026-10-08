@@ -2,10 +2,15 @@ import type { CfdOrderTypeV3, CfdSideV3 } from '../../request/v3/cfd.js';
 
 export interface CfdTickerV3 {
   symbol: string;
-  openPriceChange: string;
+  /** Replaced by askOpenPriceChange and bidOpenPriceChange */
+  openPriceChange?: string;
+  askOpenPriceChange?: string;
+  bidOpenPriceChange?: string;
   highPrice: string;
   lowPrice: string;
   quoteTime: string;
+  ask1?: string;
+  bid1?: string;
 }
 
 export interface CfdCandlestickV3 extends Array<string> {

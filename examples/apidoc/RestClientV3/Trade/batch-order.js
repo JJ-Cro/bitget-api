@@ -19,6 +19,7 @@ client
       side: 'buy',
       timeInForce: 'gtc',
       clientOid: 'my-oid-1',
+      pxAmendType: 'no',
     },
   ])
   .then((response) => {

@@ -56,6 +56,7 @@ export interface AccountSettingsV3 {
   holdMode: string;
   stpMode: 'none' | 'cancel_taker' | 'cancel_maker' | 'cancel_both';
   deltaSwitch?: 'yes' | 'no';
+  repayMode?: 'auto' | 'manual';
   symbolConfigList: AccountSymbolConfigV3[];
   coinConfigList: AccountCoinConfigV3[];
 }
@@ -80,6 +81,8 @@ export interface AccountAssetV3 {
   equity: string;
   usdValue: string;
   balance: string;
+  /** Coin balance before borrowing-related amounts are deducted */
+  balanceOriginal?: string;
   available: string;
   debt: string;
   locked: string;
@@ -89,6 +92,17 @@ export interface AccountAssetV3 {
   leverage?: string;
   /** USDT bonus amount */
   bonus?: string;
+  /** Interest calculation base */
+  interestBase?: string;
+}
+
+export interface BorrowResponseV3 {
+  orderId: string;
+  clientOid?: string;
+}
+
+export interface MaxBorrowableV3 {
+  maxBorrowable: string;
 }
 
 export interface AccountAssetsV3 {

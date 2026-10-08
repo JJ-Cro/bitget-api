@@ -9,18 +9,11 @@ const client = new RestClientV3({
 });
 
 client
-  .submitNewOrder({
-    category: 'SPOT',
-    symbol: 'BGBUSDT',
-    orderType: 'limit',
-    qty: '123',
-    price: '1.11',
-    side: 'buy',
-    posSide: 'long',
-    timeInForce: 'gtc',
-    reduceOnly: 'no',
-    autoBorrow: 'no',
-    pxAmendType: 'no',
+  .closeCopyFuturesPositions({
+    projectId: '1234567890',
+    symbol: 'BTCUSDT',
+    qty: '0.01',
+    holdSide: 'long',
   })
   .then((response) => {
     console.log(response);
