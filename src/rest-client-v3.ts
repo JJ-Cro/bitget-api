@@ -2380,7 +2380,8 @@ export class RestClientV3 extends BaseRestClient {
   getHistoryStrategyOrders(params: GetHistoryStrategyOrdersRequestV3): Promise<
     APIResponse<{
       list: StrategyOrderV3[];
-      cursor?: string;
+      /** Observed as a number though the docs say string. */
+      cursor?: string | number;
     }>
   > {
     return this.getPrivate('/api/v3/trade/history-strategy-orders', params);

@@ -141,7 +141,8 @@ export interface GetHistoryStrategyOrdersRequestV3 {
   startTime?: string;
   endTime?: string;
   limit?: string;
-  cursor?: string;
+  /** Observed as a number though the docs say string. */
+  cursor?: string | number;
 }
 
 export interface GetStrategySubOrdersRequestV3 {

@@ -8579,7 +8579,8 @@ export interface GetHistoryStrategyOrdersRequestV3 {
   startTime?: string;
   endTime?: string;
   limit?: string;
-  cursor?: string;
+  /** Observed as a number though the docs say string. */
+  cursor?: string | number;
 }
 ⋮----
 export interface GetStrategySubOrdersRequestV3 {
@@ -19260,7 +19261,8 @@ getUnfilledStrategyOrders(
 getHistoryStrategyOrders(params: GetHistoryStrategyOrdersRequestV3): Promise<
     APIResponse<{
       list: StrategyOrderV3[];
-      cursor?: string;
+      /** Observed as a number though the docs say string. */
+      cursor?: string | number;
     }>
   > {
     return this.getPrivate('/api/v3/trade/history-strategy-orders', params);
