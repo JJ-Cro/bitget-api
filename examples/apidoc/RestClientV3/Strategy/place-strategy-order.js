@@ -14,6 +14,7 @@ client
     symbol: 'BTCUSDT',
     type: 'tpsl',
     posSide: 'long',
+    marginMode: 'isolated',
     stopLoss: '99000',
     takeProfit: '100800',
     clientOid: '121211212122',

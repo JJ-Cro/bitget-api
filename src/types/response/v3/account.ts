@@ -23,12 +23,25 @@ export type AccountPermissionV3 =
 export interface AccountInfoV3 {
   userId: string;
   inviterId: string;
-  /** Only set when the calling account is a sub-account */
-  parentId: string;
+  /**
+   * Only set when the calling account is a sub-account.
+   * Confirmed by Bitget devs but not yet in their docs: the API returns
+   * parentId as an integer, not only the string shown in the docs.
+   */
+  parentId: string | number;
   channelCode: string;
   channel: string;
   ips: string;
-  permType: 'read-only' | 'read-and-write';
+  /**
+   * Confirmed by Bitget devs but not yet in their docs: permType uses
+   * underscores (read_and_write). readonly is also possible on demo keys.
+   */
+  permType:
+    | 'read-only'
+    | 'read-and-write'
+    | 'read_only'
+    | 'read_and_write'
+    | 'readonly';
   permissions: AccountPermissionV3[];
   regisTime: string;
 }

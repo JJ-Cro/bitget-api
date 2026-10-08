@@ -72,6 +72,13 @@ export interface PlaceStrategyOrderRequestV3 {
   side?: 'buy' | 'sell';
   posSide?: 'long' | 'short';
   reduceOnly?: 'yes' | 'no';
+  /**
+   * Margin mode. Defaults to crossed. Required for isolated positions
+   * (isolated TP/SL fails with 31008 if omitted).
+   * Not in Bitget's official API docs yet. Confirmed by Bitget API devs
+   * in their OpenAPI Telegram: https://t.me/bitgetOpenapi/152235
+   */
+  marginMode?: 'isolated' | 'crossed';
   tpTriggerBy?: StrategyTriggerByV3;
   slTriggerBy?: StrategyTriggerByV3;
   takeProfit?: string;
@@ -134,7 +141,8 @@ export interface GetHistoryStrategyOrdersRequestV3 {
   startTime?: string;
   endTime?: string;
   limit?: string;
-  cursor?: string;
+  /** Observed as a number though the docs say string. */
+  cursor?: string | number;
 }
 
 export interface GetStrategySubOrdersRequestV3 {
