@@ -65,6 +65,8 @@ export interface EarnEliteRecordV3 {
   paymentAccount?: string[];
   settlePoints: string;
   fee: string;
+  /** Business time, Unix ms */
+  bizTime?: string;
 }
 
 export interface EarnEliteRecordsV3 {

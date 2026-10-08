@@ -2,8 +2,8 @@ import { API_ERROR_CODE } from '../../src/index.js';
 import { RestClientV3 } from '../../src/rest-client-v3.js';
 // prettier-ignore
 import {
-  errorResponseObjectV3,
-  sucessEmptyResponseObject,
+    errorResponseObjectV3,
+    sucessEmptyResponseObject,
 } from '../response.util.js';
 
 describe('Bitget Private REST API V3 Write Endpoints', () => {
@@ -100,6 +100,8 @@ describe('Bitget Private REST API V3 Write Endpoints', () => {
           orderId: '123456789',
           qty: '0.002',
           price: '21000',
+          symbol: 'BTCUSDT',
+          category: 'SPOT',
         });
         expect(res).toMatchObject(sucessEmptyResponseObject());
       } catch (e) {

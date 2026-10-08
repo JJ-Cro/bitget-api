@@ -393,3 +393,27 @@ export interface AgentCommissionDetailV2 {
   endId: string;
   commissionList: AgentCommissionDetailItemV2[];
 }
+
+export interface SubAffiliateRebateRateV2 {
+  rebateType: string;
+  rebateRate: string;
+}
+
+export interface SubAffiliateInfoItemV2 {
+  uid: string;
+  uplineName: string;
+  rebateRateList: SubAffiliateRebateRateV2[];
+  verificationStatus: string;
+  directReferrals: string;
+  subAffiliates: string;
+  subAffiliateDirectReferrals: string;
+  volume: string;
+  deposit: string;
+  transactionFee: string;
+  rebate: string;
+}
+
+export interface SubAffiliateInfoV2 {
+  list: SubAffiliateInfoItemV2[];
+  endId: string;
+}

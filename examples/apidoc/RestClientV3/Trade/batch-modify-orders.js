@@ -18,6 +18,7 @@ client
       symbol: 'BTCUSDT',
       category: 'SPOT',
       requestId: 123456,
+      pxAmendType: 'no',
     },
     {
       orderId: '2',
@@ -27,6 +28,7 @@ client
       symbol: 'BTCUSDT',
       category: 'SPOT',
       requestId: 123457,
+      pxAmendType: 'no',
     },
   ])
   .then((response) => {

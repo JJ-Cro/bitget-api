@@ -9,18 +9,10 @@ const client = new RestClientV3({
 });
 
 client
-  .submitNewOrder({
-    category: 'SPOT',
-    symbol: 'BGBUSDT',
-    orderType: 'limit',
-    qty: '123',
-    price: '1.11',
-    side: 'buy',
-    posSide: 'long',
-    timeInForce: 'gtc',
-    reduceOnly: 'no',
-    autoBorrow: 'no',
-    pxAmendType: 'no',
+  .createCopyFutures({
+    projectId: '1234567890',
+    type: 'fixed_ratio',
+    amount: '1000',
   })
   .then((response) => {
     console.log(response);

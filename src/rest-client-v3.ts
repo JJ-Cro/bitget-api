@@ -1,10 +1,12 @@
 import {
   AdjustAccountModeRequestV3,
+  BorrowRequestV3,
   CancelWithdrawalRequestV3,
   CreateAgentSubAccountRequestV3,
   CreateSubAccountApiKeyRequestV3,
   CreateSubAccountRequestV3,
   DeleteSubAccountApiKeyRequestV3,
+  DeleteSubAccountRequestV3,
   FreezeSubAccountRequestV3,
   GetAllFeeRatesRequestV3,
   GetConvertRecordsRequestV3,
@@ -18,6 +20,7 @@ import {
   GetFinancialRecordsRequestV3,
   GetFundingAssetsRequestV3,
   GetFundingFinancialRecordsRequestV3,
+  GetMaxBorrowableRequestV3,
   GetMaxTransferableRequestV3,
   GetMaxWithdrawalRequestV3,
   GetMovePositionHistoryRequestV3,
@@ -45,6 +48,7 @@ import {
   SetLeverageRequestV3,
   SetMarginRequestV3,
   SetRateLimitQuotaRequestV3,
+  SetRepayModeRequestV3,
   SubAccountTransferRequestV3,
   SubMasterTransferRequestV3,
   SwitchDeductRequestV3,
@@ -84,11 +88,28 @@ import {
   PlaceCfdOrderRequestV3,
 } from './types/request/v3/cfd.js';
 import {
+  CancelCopyFuturesTpSlRequestV3,
+  CloseAllCopyFuturesRequestV3,
+  CloseCopyFuturesPositionsRequestV3,
+  CopyFuturesFollowerTransferRequestV3,
   CopyFuturesTransferRequestV3,
+  CreateCopyFuturesRequestV3,
+  GetCopyFuturesCopyProfitDetailsRequestV3,
+  GetCopyFuturesCopySettingsRequestV3,
+  GetCopyFuturesCurrentCopyRequestV3,
+  GetCopyFuturesCurrentPositionsRequestV3,
+  GetCopyFuturesCurrentTpSlOrdersRequestV3,
   GetCopyFuturesFollowersRequestV3,
+  GetCopyFuturesFollowerTransferRecordRequestV3,
   GetCopyFuturesMaxTransferableRequestV3,
+  GetCopyFuturesPortfolioOverviewRequestV3,
   GetCopyFuturesProfitDetailsRequestV3,
+  GetCopyFuturesTpSlOrderHistoryRequestV3,
   GetCopyFuturesTransferRecordRequestV3,
+  ModifyCopyFuturesFollowerSettingsRequestV3,
+  ModifyCopyFuturesTpSlRequestV3,
+  PlaceCopyFuturesTpSlRequestV3,
+  UnfollowCopyFuturesRequestV3,
 } from './types/request/v3/copytrading.js';
 import {
   EarnEliteSubscribeRequestV3,
@@ -252,6 +273,7 @@ import {
   AccountInfoV3,
   AccountSettingsV3,
   AllSymbolFeeRateV3,
+  BorrowResponseV3,
   CollateralTypeConfigV3,
   ConvertRecordV3,
   CreateAgentSubAccountResponseV3,
@@ -267,6 +289,7 @@ import {
   FinancialRecordV3,
   FundingAssetV3,
   FundingFinancialRecordV3,
+  MaxBorrowableV3,
   MaxTransferableV3,
   MaxWithdrawalV3,
   MovePositionHistoryV3,
@@ -318,12 +341,21 @@ import {
   PlaceCfdOrderResponseV3,
 } from './types/response/v3/cfd.js';
 import {
+  CopyFuturesCopyProfitDetailsV3,
+  CopyFuturesCopySettingsV3,
+  CopyFuturesCurrentCopyV3,
   CopyFuturesCurrentFollowersV3,
+  CopyFuturesCurrentTpSlOrdersV3,
+  CopyFuturesFollowerPositionsV3,
+  CopyFuturesFollowerTransferRecordListV3,
   CopyFuturesHistoryFollowersV3,
   CopyFuturesMaxTransferableV3,
+  CopyFuturesPortfolioOverviewV3,
   CopyFuturesPositionSummaryV3,
   CopyFuturesProfitDetailsV3,
   CopyFuturesProfitSummaryV3,
+  CopyFuturesTpSlOrderHistoryV3,
+  CopyFuturesTpSlResponseV3,
   CopyFuturesTradingPairV3,
   CopyFuturesTransferRecordListV3,
   CopyFuturesTransferResponseV3,
@@ -1064,6 +1096,111 @@ export class RestClientV3 extends BaseRestClient {
     return this.getPrivate('/api/v3/copy/futures/profit-details', params);
   }
 
+  getCopyFuturesPortfolioOverview(
+    params: GetCopyFuturesPortfolioOverviewRequestV3,
+  ): Promise<APIResponse<CopyFuturesPortfolioOverviewV3>> {
+    return this.getPrivate('/api/v3/copy/futures/portfolio-overview', params);
+  }
+
+  createCopyFutures(
+    params: CreateCopyFuturesRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/copy/futures/follower-settings', params);
+  }
+
+  modifyCopyFuturesFollowerSettings(
+    params: ModifyCopyFuturesFollowerSettingsRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate(
+      '/api/v3/copy/futures/modify-follower-settings',
+      params,
+    );
+  }
+
+  unfollowCopyFutures(
+    params: UnfollowCopyFuturesRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/copy/futures/unfollow', params);
+  }
+
+  getCopyFuturesCopySettings(
+    params: GetCopyFuturesCopySettingsRequestV3,
+  ): Promise<APIResponse<CopyFuturesCopySettingsV3>> {
+    return this.getPrivate('/api/v3/copy/futures/copy-settings', params);
+  }
+
+  copyFuturesFollowerTransfer(
+    params: CopyFuturesFollowerTransferRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/copy/futures/copy-transfer', params);
+  }
+
+  getCopyFuturesFollowerTransferRecords(
+    params: GetCopyFuturesFollowerTransferRecordRequestV3,
+  ): Promise<APIResponse<CopyFuturesFollowerTransferRecordListV3>> {
+    return this.getPrivate('/api/v3/copy/futures/copy-transfer-record', params);
+  }
+
+  getCopyFuturesCurrentCopy(
+    params: GetCopyFuturesCurrentCopyRequestV3,
+  ): Promise<APIResponse<CopyFuturesCurrentCopyV3>> {
+    return this.getPrivate('/api/v3/copy/futures/current-copy', params);
+  }
+
+  getCopyFuturesCopyProfitDetails(
+    params: GetCopyFuturesCopyProfitDetailsRequestV3,
+  ): Promise<APIResponse<CopyFuturesCopyProfitDetailsV3>> {
+    return this.getPrivate('/api/v3/copy/futures/copy-profit-details', params);
+  }
+
+  closeCopyFuturesPositions(
+    params: CloseCopyFuturesPositionsRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/copy/futures/close-positions', params);
+  }
+
+  closeAllCopyFuturesPositions(
+    params: CloseAllCopyFuturesRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/copy/futures/close-all', params);
+  }
+
+  getCopyFuturesCurrentPositions(
+    params: GetCopyFuturesCurrentPositionsRequestV3,
+  ): Promise<APIResponse<CopyFuturesFollowerPositionsV3>> {
+    return this.getPrivate('/api/v3/copy/futures/current-positions', params);
+  }
+
+  placeCopyFuturesTpSl(
+    params: PlaceCopyFuturesTpSlRequestV3,
+  ): Promise<APIResponse<CopyFuturesTpSlResponseV3>> {
+    return this.postPrivate('/api/v3/copy/futures/place-tpsl', params);
+  }
+
+  modifyCopyFuturesTpSl(
+    params: ModifyCopyFuturesTpSlRequestV3,
+  ): Promise<APIResponse<CopyFuturesTpSlResponseV3>> {
+    return this.postPrivate('/api/v3/copy/futures/modify-tpsl', params);
+  }
+
+  cancelCopyFuturesTpSl(
+    params: CancelCopyFuturesTpSlRequestV3,
+  ): Promise<APIResponse<string>> {
+    return this.postPrivate('/api/v3/copy/futures/cancel-tpsl', params);
+  }
+
+  getCopyFuturesCurrentTpSlOrders(
+    params: GetCopyFuturesCurrentTpSlOrdersRequestV3,
+  ): Promise<APIResponse<CopyFuturesCurrentTpSlOrdersV3>> {
+    return this.getPrivate('/api/v3/copy/futures/current-tpsl-orders', params);
+  }
+
+  getCopyFuturesTpSlOrderHistory(
+    params: GetCopyFuturesTpSlOrderHistoryRequestV3,
+  ): Promise<APIResponse<CopyFuturesTpSlOrderHistoryV3>> {
+    return this.getPrivate('/api/v3/copy/futures/tpsl-order-history', params);
+  }
+
   /**
    *
    * =====Stock+=====
@@ -1497,6 +1634,22 @@ export class RestClientV3 extends BaseRestClient {
     return this.postPrivate('/api/v3/account/repay', params);
   }
 
+  borrow(params: BorrowRequestV3): Promise<APIResponse<BorrowResponseV3>> {
+    return this.postPrivate('/api/v3/account/borrow', params);
+  }
+
+  getMaxBorrowable(
+    params: GetMaxBorrowableRequestV3,
+  ): Promise<APIResponse<MaxBorrowableV3>> {
+    return this.getPrivate('/api/v3/account/max-borrowable', params);
+  }
+
+  setRepayMode(
+    params: SetRepayModeRequestV3,
+  ): Promise<APIResponse<Record<string, never>>> {
+    return this.postPrivate('/api/v3/account/set-repay-mode', params);
+  }
+
   /**
    * Get Convert Records
    */
@@ -1700,6 +1853,12 @@ export class RestClientV3 extends BaseRestClient {
     params: FreezeSubAccountRequestV3,
   ): Promise<APIResponse<object>> {
     return this.postPrivate('/api/v3/user/freeze-sub', params);
+  }
+
+  deleteSubAccount(
+    params: DeleteSubAccountRequestV3,
+  ): Promise<APIResponse<Record<string, never>>> {
+    return this.postPrivate('/api/v3/user/delete-sub', params);
   }
 
   /**

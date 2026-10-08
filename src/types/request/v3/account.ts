@@ -334,6 +334,27 @@ export interface SetCollateralTypeRequestV3 {
   collateralType: CollateralTypeV3;
   /** Required when collateralType=custom. Comma-separated coin names */
   collateralCoins?: string;
+  /** Enable Cash+ as collateral. Official field name is allowCashPlus */
+  allowCashPlus?: 'yes' | 'no';
+}
+
+export interface BorrowRequestV3 {
+  coin: string;
+  amount: string;
+  clientOid?: string;
+}
+
+export interface GetMaxBorrowableRequestV3 {
+  coin: string;
+}
+
+export interface SetRepayModeRequestV3 {
+  /** Account-level. Master and each sub-account keep their own setting */
+  repayMode: 'auto' | 'manual';
+}
+
+export interface DeleteSubAccountRequestV3 {
+  subUid: string;
 }
 
 export interface PreSetLeverageRequestV3 {

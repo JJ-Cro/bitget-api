@@ -117,3 +117,107 @@ export interface CopyFuturesProfitDetailsV3 {
   list: CopyFuturesProfitDetailV3[];
   nextCursor: string;
 }
+
+export interface CopyFuturesPortfolioOverviewV3 {
+  projectId: string;
+  asset: string;
+  roi: string;
+  totalProfit: string;
+  followerProfit: string;
+  maxDrawdown: string;
+}
+
+export interface CopyFuturesCopySettingsV3 {
+  type: 'fixed_ratio' | 'fixed_margin' | string;
+  amount: string;
+  tradingPairList: string[];
+  marginPerOrder: string;
+  autoCopy: 'on' | 'off' | string;
+  leverage: string;
+  maxEntrySlippage: string;
+  maxMarginRatio: string;
+  /** API field name (Bitget spelling). */
+  maxPostionValue: string;
+}
+
+export interface CopyFuturesFollowerTransferRecordV3 {
+  fromType: string;
+  toType: string;
+  amount: string;
+  coin: string;
+  status: string;
+  createdTime: string;
+}
+
+export interface CopyFuturesFollowerTransferRecordListV3 {
+  list: CopyFuturesFollowerTransferRecordV3[];
+  nextCursor?: string;
+}
+
+export interface CopyFuturesCurrentCopyV3 {
+  eliteTrader: string;
+  estNetProfit: string;
+  profitShare: string;
+  estValue: string;
+  available: string;
+  currentInvestment: string;
+}
+
+export interface CopyFuturesCopyProfitDetailItemV3 {
+  settleTime: string;
+  profit: string;
+  allocatedPnl: string;
+  pendingPnl: string;
+  shareRatio: string;
+  shareProfit: string;
+}
+
+export interface CopyFuturesCopyProfitDetailsV3 {
+  list: CopyFuturesCopyProfitDetailItemV3[];
+  nextCursor?: string;
+}
+
+export interface CopyFuturesFollowerPositionV3 {
+  symbol: string;
+  marginCoin: string;
+  posSide: 'long' | 'short' | string;
+  total: string;
+  leverage: string;
+  avgPrice: string;
+  marginMode: string;
+  holdMode: string;
+  createdTime: string;
+  positionId: string;
+}
+
+export interface CopyFuturesFollowerPositionsV3 {
+  list: CopyFuturesFollowerPositionV3[];
+}
+
+export interface CopyFuturesTpSlOrderV3 {
+  strategyId: string;
+  category: string;
+  symbol: string;
+  qty: string;
+  posSide: string;
+  status: string;
+  tpTriggerBy: string;
+  slTriggerBy: string;
+  takeProfit: string;
+  stopLoss: string;
+  tpOrderType: string;
+  slOrderType: string;
+}
+
+export interface CopyFuturesTpSlResponseV3 {
+  strategyId: string;
+}
+
+export interface CopyFuturesCurrentTpSlOrdersV3 {
+  list: CopyFuturesTpSlOrderV3[];
+}
+
+export interface CopyFuturesTpSlOrderHistoryV3 {
+  list: CopyFuturesTpSlOrderV3[];
+  cursor?: string;
+}
