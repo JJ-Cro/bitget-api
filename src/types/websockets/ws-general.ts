@@ -114,16 +114,20 @@ export type WsPublicTopicV3 =
   | 'ticker'
   | 'kline'
   | 'books'
+  | 'books1'
+  | 'books5'
   | 'books50'
   | 'publicTrade';
-// Also update PRIVATE_TOPICS_V3 if this is updated
+// Also update PRIVATE_TOPICS_V3 if this is updated.
+// `order` includes venue and rTokenTimeInForce for rToken orders.
 export type WsPrivateTopicV3 =
   | 'account'
   | 'position'
   | 'fill'
   | 'order'
   | 'strategy-order'
-  | 'reality-orderbook';
+  | 'reality-orderbook'
+  | 'reality-orderbook-segmented';
 export type WsTopicV3 = WsPublicTopicV3 | WsPrivateTopicV3;
 
 /** This is used to differentiate between each of the available websocket streams */

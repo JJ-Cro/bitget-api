@@ -1,5 +1,8 @@
 // Account Management Response Types
-import type { CollateralTypeV3 } from '../../request/v3/account.js';
+import type {
+  CollateralTypeV3,
+  FinancialRecordTypeV3,
+} from '../../request/v3/account.js';
 
 export interface AccountSymbolConfigV3 {
   category: string;
@@ -136,7 +139,7 @@ export interface FinancialRecordV3 {
   id: string;
   symbol: string;
   coin: string;
-  type: string;
+  type: FinancialRecordTypeV3;
   amount: string;
   fee: string;
   balance: string;
@@ -535,4 +538,36 @@ export interface RateLimitQuotaV3 {
   masterSubQuota: string;
   masterSubCap: string;
   cursor: string;
+}
+
+export interface StpGroupMemberV3 {
+  uid: string;
+  joinedTime: string;
+}
+
+export interface StpGroupV3 {
+  groupId: string;
+  groupName: string;
+  createdTime: string;
+  members?: StpGroupMemberV3[];
+}
+
+export interface StpGroupListV3 {
+  groups: StpGroupV3[];
+}
+
+export interface CreateStpGroupResponseV3 {
+  groupId: string;
+  groupName: string;
+  createdTime: string;
+}
+
+export interface StpGroupUidResultV3 {
+  uid: string;
+}
+
+export interface StpGroupMembersResponseV3 {
+  createdTime: string;
+  successUids: StpGroupUidResultV3[];
+  failedUids: StpGroupUidResultV3[];
 }

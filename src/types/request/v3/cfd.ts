@@ -67,7 +67,14 @@ export interface GetCfdOrderHistoryRequestV3 {
   subUid?: string;
   startTime?: string;
   endTime?: string;
+  /** Default 10, range [1, 50]. The first page may return more rows than limit. */
   limit?: string;
+  pageNo?: string;
+  /**
+   * Not required for the first page.
+   * From the second page, pass the orderId of the last record from the previous page.
+   */
+  cursor?: string;
 }
 
 export interface GetCfdCurrentPositionsRequestV3 {

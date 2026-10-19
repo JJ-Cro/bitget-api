@@ -70,6 +70,76 @@ export interface OpenInterestV3 {
   ts: string;
 }
 
+export interface OpenInterestHistoryItemV3 {
+  symbol: string;
+  openInterest: string;
+  oneSideOpenInterest: string;
+  openInterestValue: string;
+  oneSideOpenInterestValue: string;
+  timestamp: string;
+}
+
+export interface OpenInterestHistoryV3 {
+  list: OpenInterestHistoryItemV3[];
+}
+
+export interface InterestRateHistoryItemV3 {
+  coin: string;
+  dailyInterestRate: string;
+  annualInterestRate: string;
+  ts: string;
+}
+
+export interface InterestRateHistoryV3 {
+  list: InterestRateHistoryItemV3[];
+  cursor?: string;
+}
+
+export interface AnnouncementV3 {
+  annId: string;
+  annTitle: string;
+  language: string;
+  annUrl: string;
+  annType: string;
+  annSubType?: string;
+  /** Documented release time. The live payload uses cTime instead. */
+  createdTime?: string;
+  /** Observed live. Unix ms. Docs call this createdTime. */
+  cTime?: string;
+  /** Observed live. Not in the docs example. */
+  annDesc?: string;
+}
+
+export interface MarketCoinChainV3 {
+  chain: string;
+  needTag: string;
+  withdrawable: string;
+  rechargeable: string;
+  withdrawFee: string;
+  extraWithdrawFee: string;
+  depositConfirm: string;
+  withdrawConfirm: string;
+  minDepositAmount: string;
+  minWithdrawAmount: string;
+  browserUrl: string;
+  contractAddress: string | null;
+  withdrawStep: string;
+  /**
+   * Live field. The docs example names this withdrawPrecision.
+   */
+  withdrawMinScale: string;
+  congestion: string;
+}
+
+export interface MarketCoinV3 {
+  coinId?: string;
+  coin: string;
+  /** "true" / "false" */
+  transfer: string;
+  areaCoin?: string;
+  chains: MarketCoinChainV3[];
+}
+
 export interface PositionTierV3 {
   tier: string;
   minTierValue: string;
@@ -160,6 +230,17 @@ export interface InstrumentV3 {
   quantityMultiplier?: string;
   type?: 'perpetual' | 'delivery';
   symbolType?: 'crypto' | 'metal' | 'stock' | 'commodity';
+  /** Display name. Returned alongside symbolType. */
+  fullName?: string;
+  /**
+   * metal / energy / stock / etf / crypto.
+   * Independent of symbolType, which is still returned.
+   */
+  instrumentType?: 'metal' | 'energy' | 'stock' | 'etf' | 'crypto';
+  /** Set for traditional-finance pairs. Null for crypto. */
+  marketRegion?: string | null;
+  /** ISIN for traditional-finance pairs. Null for crypto. */
+  isin?: string | null;
   maxPositionNum?: string;
   deliveryTime?: string;
   deliveryStartTime?: string;
@@ -234,6 +315,16 @@ export interface RealityOrderBookV3 {
   symbol: string;
   a: string[][];
   b: string[][];
+  ts: string;
+}
+
+/** [price, onshoreQty, offshoreQty] */
+export type RealitySegmentedLevelV3 = [string, string, string];
+
+export interface RealityOrderBookSegmentedV3 {
+  symbol: string;
+  a: RealitySegmentedLevelV3[];
+  b: RealitySegmentedLevelV3[];
   ts: string;
 }
 

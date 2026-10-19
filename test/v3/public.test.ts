@@ -77,6 +77,71 @@ describe('Bitget Public REST API V3 Endpoints', () => {
         symbol: 'BTCUSDT',
       });
       expect(res).toMatchObject(sucessEmptyResponseObject());
+      expect(res.data[0]).toMatchObject({
+        symbol: 'BTCUSDT',
+        fullName: expect.any(String),
+        instrumentType: 'crypto',
+      });
+    });
+
+    it('should return server time in ms and microseconds', async () => {
+      const res = await api.getServerTime();
+      expect(res).toMatchObject(sucessEmptyResponseObject());
+      expect(res.data.serverTime).toEqual(expect.any(String));
+      expect(res.data.serverTimeMicros.length).toBeGreaterThan(
+        res.data.serverTime.length,
+      );
+    });
+
+    it('should return announcements', async () => {
+      const res = await api.getAnnouncements({
+        language: 'en_US',
+        limit: '1',
+      });
+      expect(res).toMatchObject(sucessEmptyResponseObject());
+      expect(res.data[0].annId).toEqual(expect.any(String));
+      expect(res.data[0].cTime ?? res.data[0].createdTime).toEqual(
+        expect.any(String),
+      );
+    });
+
+    it('should return coin info', async () => {
+      const res = await api.getCoins({ coin: 'BTC' });
+      expect(res).toMatchObject(sucessEmptyResponseObject());
+      expect(res.data[0].coin).toBe('BTC');
+      expect(res.data[0].chains[0].withdrawMinScale).toEqual(
+        expect.any(String),
+      );
+    });
+
+    it('should return open interest history', async () => {
+      const res = await api.getOpenInterestHistory({
+        symbol: 'BTCUSDT',
+        period: '5m',
+      });
+      expect(res).toMatchObject(sucessEmptyResponseObject());
+      expect(res.data.list[0]).toMatchObject({
+        symbol: 'BTCUSDT',
+        openInterest: expect.any(String),
+        oneSideOpenInterest: expect.any(String),
+        timestamp: expect.any(String),
+      });
+    });
+
+    it('should return interest rate history for a VIP level', async () => {
+      const res = await api.getInterestRateHistory({
+        coin: 'USDT',
+        level: 'vip0',
+        limit: '2',
+      });
+      expect(res).toMatchObject(sucessEmptyResponseObject());
+      expect(res.data.list).toHaveLength(2);
+      expect(res.data.list[0]).toMatchObject({
+        coin: 'USDT',
+        dailyInterestRate: expect.any(String),
+        annualInterestRate: expect.any(String),
+      });
+      expect(res.data.cursor).toEqual(expect.any(String));
     });
   });
 });

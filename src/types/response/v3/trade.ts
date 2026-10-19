@@ -63,6 +63,13 @@ export interface OrderInfoV3 {
   cumExecValue: string;
   avgPrice: string;
   timeInForce: string;
+  /**
+   * rToken routing. internalization or lit_market.
+   * Also pushed on the WS order channel.
+   */
+  venue?: 'internalization' | 'lit_market' | string;
+  /** rToken time in force. gtd = current session, gtc = 90 days. */
+  rTokenTimeInForce?: 'gtd' | 'gtc' | string;
   orderStatus: string;
   posSide: string;
   holdMode: string;

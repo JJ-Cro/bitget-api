@@ -25,6 +25,8 @@ export interface StrategyOrderV3 {
   category: 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES' | string;
   symbol: string;
   qty: string;
+  /** buy / sell. Same field as the WS order push. */
+  side?: 'buy' | 'sell';
   posSide: 'long' | 'short';
   status: StrategyOrderStatusV3;
   type?: StrategyOrderTypeV3 | string;
