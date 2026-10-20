@@ -89,10 +89,22 @@ export interface WsPositionSnapshotDataUMCBL {
   cashDividend?: string;
 }
 
-/** UTA reality-orderbook push (ts/seq/pseq removed July 2026) */
+/** UTA reality-orderbook push (ts/seq/pseq removed July 2026). Every push is a full snapshot. */
 export interface WsRealityOrderBookDataV3 {
   a: [string, string][];
   b: [string, string][];
+}
+
+/**
+ * UTA reality-orderbook-segmented push.
+ * Each level is [price, onshoreQty, offshoreQty].
+ * Every push is a full snapshot. Whitelist required.
+ * Go-live 20 Oct 2026. Pairs that have not finished the matching-engine upgrade do not push.
+ * A crossed book after the upgrade is expected.
+ */
+export interface WsRealityOrderBookSegmentedDataV3 {
+  a: [string, string, string][];
+  b: [string, string, string][];
 }
 
 export interface WSPositionSnapshotUMCBL extends WsBaseEvent<'snapshot'> {
@@ -142,9 +154,12 @@ export interface WsAccountDataV3 {
 }
 
 /**
- * UTA books / books50 push.
- * books and books50: first message is a snapshot, later messages are incremental updates.
- * pseq is set on those two topics.
+ * UTA depth push.
+ * books1 and books5: every message is a full snapshot.
+ * books and books50: the first message is a snapshot, later messages are incremental updates.
+ * Do not replace the local book with a books or books50 update.
+ * pseq is set on books and books50.
+ * rToken: books1 pushes at all times. books5, books50, and books push only outside US market hours.
  */
 export interface WsOrderBookDataV3 {
   a: [string, string][];

@@ -43,6 +43,151 @@ export interface GetConvertRecordsRequestV3 {
   cursor?: string;
 }
 
+/**
+ * UTA account financial-record type.
+ * https://www.bitget.com/docs/uta/enum
+ * MARIN_BUY_DEAL and MARIN_SELL_DEAL keep Bitget's spelling.
+ */
+export type FinancialRecordTypeV3 =
+  | 'TRANSFER_IN'
+  | 'TRANSFER_OUT'
+  | 'CONVERSION_UPON_DELISTING'
+  | 'ORDER_DEALT_FROZEN_OUT'
+  | 'ORDER_DEALT_IN'
+  | 'ORDER_PLF_FEE_OUT'
+  | 'EXCHANGE_SOURCE_TOKEN_USER_OUT'
+  | 'EXCHANGE_TARGET_TOKEN_USER_IN'
+  | 'OPEN_LONG'
+  | 'OPEN_SHORT'
+  | 'BUY_DEAL'
+  | 'SELL_DEAL'
+  | 'CLOSE_LONG'
+  | 'CLOSE_SHORT'
+  | 'FORCE_CLOSE_LONG'
+  | 'FORCE_CLOSE_SHORT'
+  | 'BURST_CLOSE_LONG'
+  | 'BURST_CLOSE_SHORT'
+  | 'OFFSET_REDUCE_CLOSE_LONG'
+  | 'OFFSET_REDUCE_CLOSE_SHORT'
+  | 'FORCE_BUY_SSM'
+  | 'FORCE_SELL_SSM'
+  | 'BURST_BUY_SSM'
+  | 'BURST_SELL_SSM'
+  | 'RISK_LIQ_USER_IN'
+  | 'INTEREST_SETTLEMENT_OUT'
+  | 'CONTRACT_MAIN_SETTLE_FEE_USER_IN'
+  | 'CONTRACT_MAIN_SETTLE_FEE_USER_OUT'
+  | 'RISK_LIQ_USER_OUT'
+  | 'BORROW'
+  | 'RESERVE_TRANSFER_IN'
+  | 'RESERVE_TRANSFER_OUT'
+  | 'REPAYMENT'
+  | 'INTEREST_REPAYMENT'
+  | 'LIQ_FUND_OUT'
+  | 'LIQ_CONVERT_USER_OUT'
+  | 'LIQ_CONVERT_SYS_IN'
+  | 'LIQ_CONVERT_SYS_OUT'
+  | 'LIQ_CONVERT_USER_IN'
+  | 'LIQ_TRANSFER_IN'
+  | 'LIQ_TRANSFER_OUT'
+  | 'LIQ_FUND_IN'
+  | 'LIQ_FEE'
+  | 'LIQ_REPAYMENT'
+  | 'DELIST_MARGIN_TOKEN_SOURCE_USER_OUT'
+  | 'DELIST_MARGIN_TOKEN_SOURCE_SYS_IN'
+  | 'DELIST_MARGIN_TOKEN_TARGET_SYS_OUT'
+  | 'DELIST_MARGIN_TOKEN_TARGET_USER_IN'
+  | 'CONFISCATE_TOKEN_USER_OUT'
+  | 'CONFISCATE_TOKEN_SYS_IN'
+  | 'DELIST_SMALL_BALANCE_USER_OUT'
+  | 'DELIST_SMALL_BALANCE_SYS_IN'
+  | 'DELIST_SMALL_LIABILITY_SYS_OUT'
+  | 'DELIST_SMALL_LIABILITY_USER_IN'
+  | 'SMALL_ASSET_SOURCE_TOKEN_USER_OUT'
+  | 'SMALL_ASSET_SOURCE_TOKEN_SYS_IN'
+  | 'SMALL_ASSET_TARGET_TOKEN_SYS_OUT'
+  | 'SMALL_ASSET_TARGET_TOKEN_USER_IN'
+  | 'SMALL_ASSET_FEE_SYS_IN'
+  | 'TRACE_SHARE_BENEFIT_USER_OUT'
+  | 'TRACE_SHARE_BENEFIT_SYSTEM_IN'
+  | 'TRACE_SHARE_BENEFIT_SYSTEM_OUT'
+  | 'TRACE_SHARE_BENEFIT_USER_IN'
+  | 'MARGIN_OPEN_LONG'
+  | 'MARGIN_OPEN_SHORT'
+  | 'MARIN_BUY_DEAL'
+  | 'MARIN_SELL_DEAL'
+  | 'MARGIN_BACK'
+  | 'INCREASE_MARGIN'
+  | 'REDUCE_MARGIN'
+  | 'MARGIN_SETTLE_FEE_USER_IN'
+  | 'MARGIN_SETTLE_FEE_USER_OUT'
+  | 'MARGIN_LEVER_ORDER_REFROZEN'
+  | 'MARGIN_LEVER_ORDER_FROZEN'
+  | 'MARGIN_LEVER_POS_IN'
+  | 'MARGIN_OFFSET_IN_SSM_LONG'
+  | 'MARGIN_OFFSET_IN_SSM_SHORT'
+  | 'FIXED_OFFSET_IN_SSM_LONG'
+  | 'FIXED_OFFSET_IN_SSM_SHORT'
+  | 'FIXED_CLOSE_LONG'
+  | 'FIXED_CLOSE_SHORT'
+  | 'FIXED_FORCE_CLOSE_LONG'
+  | 'FIXED_FORCE_CLOSE_SHORT'
+  | 'FIXED_BURST_CLOSE_LONG'
+  | 'FIXED_BURST_CLOSE_SHORT'
+  | 'FIXED_ADL_CLOSE_LONG'
+  | 'FIXED_ADL_CLOSE_SHORT'
+  | 'FIXED_RISK_LIQ_USER_IN'
+  | 'FIXED_RISK_LIQ_USER_OUT'
+  | 'FIXED_FORCE_BUY_SSM'
+  | 'FIXED_FORCE_SELL_SSM'
+  | 'FIXED_BURST_BUY_SSM'
+  | 'FIXED_BURST_SELL_SSM'
+  | 'ON_CHAIN_TRANSFER_REFUND'
+  | 'ON_CHAIN_TRANSFER_OUT'
+  | 'MT5_TRANSFER_IN'
+  | 'MT5_REFUND_IN'
+  | 'MT5_TRANSFER_OUT'
+  | 'TRACE_LOCK_USER_OUT'
+  | 'TRACE_LOCK_USER_IN'
+  | 'TRACE_TRANSFER_USER_OUT'
+  | 'TRACE_TRANSFER_USER_IN'
+  | 'TRACE_TRANSFER_REFUND_IN'
+  | 'FINANCIAL_TRANSFER_OUT'
+  | 'FINANCIAL_TRANSFER_IN'
+  | 'CONVERT_TRANSFER_IN'
+  | 'CONVERT_TRANSFER_OUT'
+  | 'BGPAY_TRANSFER_OUT'
+  | 'BGPAY_REFUND_IN'
+  | 'RWA_FIXED_SETTLE_FEE_USER_IN'
+  | 'RWA_FIXED_SETTLE_FEE_USER_OUT'
+  | 'RWA_CONTRACT_MAIN_SETTLE_FEE_SYSTEM_IN'
+  | 'RWA_CONTRACT_MAIN_SETTLE_FEE_SYSTEM_OUT'
+  | 'RWA_CONTRACT_MAIN_SETTLE_FEE_SYSTEM_KEEP_IN'
+  | 'RWA_CONTRACT_MAIN_SETTLE_FEE_SYSTEM_KEEP_OUT'
+  | 'RWA_CONTRACT_MAIN_SETTLE_FEE_USER_IN'
+  | 'RWA_CONTRACT_MAIN_SETTLE_FEE_USER_OUT'
+  | 'RWA_CONTRACT_REBASE_USER_OPEN_LONG'
+  | 'RWA_CONTRACT_REBASE_USER_OPEN_SHORT'
+  | 'RWA_CONTRACT_REBASE_USER_CLOSE_LONG'
+  | 'RWA_CONTRACT_REBASE_USER_CLOSE_SHORT'
+  | 'RWA_CONTRACT_REBASE_USER_BUY_IN_SSM'
+  | 'RWA_CONTRACT_REBASE_USER_SELL_IN_SSM'
+  | 'RISK_LIQ_DEFAULT_USER_IN'
+  | 'FIXED_RISK_LIQ_DEFAULT_USER_IN'
+  | 'BONUS_GRANT_USER_IN'
+  | 'BONUS_EXPIRE_USER_OUT'
+  | 'BONUS_TRANSFER_USER_OUT'
+  | 'WITHDRAW_TRANSFER_OUT'
+  | 'WITHDRAW_TRANSFER_IN'
+  | 'DELIVERY_LONG'
+  | 'DELIVERY_SHORT'
+  | 'FIXED_DELIVERY_LONG'
+  | 'FIXED_DELIVERY_SHORT'
+  | 'REBASE_COIN_SPLIT_OUT'
+  | 'REBASE_COIN_SPLIT_IN'
+  | 'REBASE_COIN_MERGE_OUT'
+  | 'REBASE_COIN_MERGE_IN';
+
 export interface GetFinancialRecordsRequestV3 {
   category:
     | 'SPOT'
@@ -51,7 +196,7 @@ export interface GetFinancialRecordsRequestV3 {
     | 'COIN-FUTURES'
     | 'USDC-FUTURES';
   coin?: string;
-  type?: string;
+  type?: FinancialRecordTypeV3;
   startTime?: string;
   endTime?: string;
   limit?: string;
@@ -383,6 +528,10 @@ export interface GetRealityOrderBookRequestV3 {
   symbol: string;
 }
 
+export interface GetRealityOrderBookSegmentedRequestV3 {
+  symbol: string;
+}
+
 export interface GetRealityFillsRequestV3 {
   symbol: string;
   limit?: string;
@@ -468,6 +617,10 @@ export interface GetSmallAssetsHistoryRequestV3 {
 
 export interface GetRateLimitQuotaRequestV3 {
   category: 'spot' | 'futures';
+  /**
+   * Omit to list sub-accounts under the master.
+   * Ignored when a sub-account calls this for itself.
+   */
   uid?: string;
   cursor?: string;
   limit?: string;
@@ -475,6 +628,21 @@ export interface GetRateLimitQuotaRequestV3 {
 
 export interface SetRateLimitQuotaRequestV3 {
   category: 'spot' | 'futures';
-  uids: string[];
+  /**
+   * Required when the master account sets quotas.
+   * Not required, and ignored, when a sub-account sets its own quota.
+   */
+  uids?: string[];
   quota: string;
+}
+
+export interface CreateStpGroupRequestV3 {
+  /** Max 32 characters. Must be unique. */
+  groupName: string;
+}
+
+export interface StpGroupMembersRequestV3 {
+  /** Comma-separated sub-account UIDs. Max 50. */
+  uids: string;
+  groupId: string;
 }

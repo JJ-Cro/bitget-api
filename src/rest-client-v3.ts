@@ -3,6 +3,7 @@ import {
   BorrowRequestV3,
   CancelWithdrawalRequestV3,
   CreateAgentSubAccountRequestV3,
+  CreateStpGroupRequestV3,
   CreateSubAccountApiKeyRequestV3,
   CreateSubAccountRequestV3,
   DeleteSubAccountApiKeyRequestV3,
@@ -28,6 +29,7 @@ import {
   GetRateLimitQuotaRequestV3,
   GetRealityFillsRequestV3,
   GetRealityOrderBookRequestV3,
+  GetRealityOrderBookSegmentedRequestV3,
   GetSmallAssetsHistoryRequestV3,
   GetSmallAssetsRequestV3,
   GetSubAccountApiKeysRequestV3,
@@ -49,6 +51,7 @@ import {
   SetMarginRequestV3,
   SetRateLimitQuotaRequestV3,
   SetRepayModeRequestV3,
+  StpGroupMembersRequestV3,
   SubAccountTransferRequestV3,
   SubMasterTransferRequestV3,
   SwitchDeductRequestV3,
@@ -172,8 +175,10 @@ import {
   UpdateP2pAdRequestV3,
 } from './types/request/v3/p2p.js';
 import {
+  GetAnnouncementsRequestV3,
   GetCandlesRequestV3,
   GetCashDividendRecordsRequestV3,
+  GetCoinsRequestV3,
   GetContractsOiRequestV3,
   GetCurrentFundingRateRequestV3,
   GetFuturesTradingDataRequestV3,
@@ -181,6 +186,7 @@ import {
   GetHistoryFundingRateRequestV3,
   GetIndexComponentsRequestV3,
   GetInstrumentsRequestV3,
+  GetInterestRateHistoryRequestV3,
   GetLiquidationsRequestV3,
   GetMarginIsolatedBorrowRequestV3,
   GetMarginLoanGrowthRequestV3,
@@ -188,6 +194,7 @@ import {
   GetMarginLongShortRequestV3,
   GetMarketFeeGroupRequestV3,
   GetMarketScoreWeightsRequestV3,
+  GetOpenInterestHistoryRequestV3,
   GetOpenInterestRequestV3,
   GetOrderBookRequestV3,
   GetPositionTierRequestV3,
@@ -277,6 +284,7 @@ import {
   CollateralTypeConfigV3,
   ConvertRecordV3,
   CreateAgentSubAccountResponseV3,
+  CreateStpGroupResponseV3,
   CreateSubAccountApiKeyResponseV3,
   CreateSubAccountResponseV3,
   CustomCollateralCoinV3,
@@ -303,6 +311,8 @@ import {
   SmallAssetsHistoryItemV3,
   SmallAssetsTradeResponseV3,
   SmallAssetV3,
+  StpGroupListV3,
+  StpGroupMembersResponseV3,
   SubAccountApiKeyV3,
   SubAccountV3,
   SubTransferRecordV3,
@@ -415,6 +425,7 @@ import {
   P2pUserInfoV3,
 } from './types/response/v3/p2p.js';
 import {
+  AnnouncementV3,
   CandlestickV3,
   CashDividendRecordV3,
   ContractOiV3,
@@ -427,19 +438,23 @@ import {
   HistoryFundingRateV3,
   IndexPriceComponentsV3,
   InstrumentV3,
+  InterestRateHistoryV3,
   LiquidationsV3,
   MarginIsolatedBorrowV3,
   MarginLoanGrowthV3,
   MarginLoanV3,
   MarginLongShortV3,
+  MarketCoinV3,
   MarketFeeGroupV3,
   MarketScoreWeightV3,
+  OpenInterestHistoryV3,
   OpenInterestV3,
   OrderBookV3,
   PositionTierV3,
   ProofOfReservesV3,
   PublicFillV3,
   RealityFillV3,
+  RealityOrderBookSegmentedV3,
   RealityOrderBookV3,
   RiskReserveAllV3,
   RiskReserveHourV3,
@@ -604,12 +619,30 @@ export class RestClientV3 extends BaseRestClient {
    *
    */
 
+  /**
+   * Get Server Time
+   * GET /api/v3/market/time
+   * serverTime is Unix ms. serverTimeMicros is Unix microseconds.
+   * /api/v3/public/time returns 404.
+   */
   getServerTime(): Promise<
     APIResponse<{
       serverTime: string;
+      serverTimeMicros: string;
     }>
   > {
-    return this.get('/api/v3/public/time');
+    return this.get('/api/v3/market/time');
+  }
+
+  /**
+   * Get Announcements
+   * Bitget spells the path annoucements.
+   * Live rows use cTime. Docs call that field createdTime.
+   */
+  getAnnouncements(
+    params: GetAnnouncementsRequestV3,
+  ): Promise<APIResponse<AnnouncementV3[]>> {
+    return this.get('/api/v3/public/annoucements', params);
   }
 
   /**
@@ -620,6 +653,9 @@ export class RestClientV3 extends BaseRestClient {
 
   /**
    * Get Instruments
+   * fullName, instrumentType, marketRegion, and isin are set for traditional-finance pairs.
+   * symbolType is still returned alongside instrumentType.
+   * marketRegion and isin are null for crypto.
    */
   getInstruments(
     params: GetInstrumentsRequestV3,
@@ -784,6 +820,9 @@ export class RestClientV3 extends BaseRestClient {
 
   /**
    * Get OrderBook
+   * rToken pairs: weekdays during US market hours return only the level-1 BBO.
+   * Off-hours return onshore depth up to limit.
+   * A crossed book after the rToken matching-engine upgrade is expected.
    */
   getOrderBook(
     params: GetOrderBookRequestV3,
@@ -814,6 +853,25 @@ export class RestClientV3 extends BaseRestClient {
     params: GetOpenInterestRequestV3,
   ): Promise<APIResponse<OpenInterestV3>> {
     return this.get('/api/v3/market/open-interest', params);
+  }
+
+  /**
+   * Get Open Interest History
+   * period default is 5m. Rate limit 10/sec/IP.
+   */
+  getOpenInterestHistory(
+    params: GetOpenInterestHistoryRequestV3,
+  ): Promise<APIResponse<OpenInterestHistoryV3>> {
+    return this.get('/api/v3/market/open-interest-history', params);
+  }
+
+  /**
+   * Get Coins
+   * Omit coin to return every coin.
+   * Live chain rows use withdrawMinScale. The docs example says withdrawPrecision.
+   */
+  getCoins(params?: GetCoinsRequestV3): Promise<APIResponse<MarketCoinV3[]>> {
+    return this.get('/api/v3/market/coins', params);
   }
 
   /**
@@ -888,6 +946,17 @@ export class RestClientV3 extends BaseRestClient {
   }
 
   /**
+   * Get Interest Rate History
+   * Historical margin borrow rate for a coin and VIP tier.
+   * Pass level (vip0-vip7, pro1-pro6). vipLevel is ignored.
+   */
+  getInterestRateHistory(
+    params: GetInterestRateHistoryRequestV3,
+  ): Promise<APIResponse<InterestRateHistoryV3>> {
+    return this.get('/api/v3/market/interest-rate-history', params);
+  }
+
+  /**
    * Get Margin Loan
    */
   getMarginLoans(
@@ -925,11 +994,29 @@ export class RestClientV3 extends BaseRestClient {
 
   /**
    * Get Reality OrderBook
+   * Merged onshore + offshore depth, up to 40 levels. Whitelist required.
+   * A crossed book after the matching-engine upgrade is expected.
    */
   getRealityOrderBook(
     params: GetRealityOrderBookRequestV3,
   ): Promise<APIResponse<RealityOrderBookV3>> {
     return this.getPrivate('/api/v3/account/reality-orderbook', params);
+  }
+
+  /**
+   * Get Reality OrderBook Segmented
+   * Each level is [price, onshoreQty, offshoreQty]. Up to 50 levels.
+   * Whitelist required. Go-live 20 Oct 2026.
+   * Pairs that have not finished the matching-engine upgrade do not return data.
+   * A crossed book after the upgrade is expected.
+   */
+  getRealityOrderBookSegmented(
+    params: GetRealityOrderBookSegmentedRequestV3,
+  ): Promise<APIResponse<RealityOrderBookSegmentedV3>> {
+    return this.getPrivate(
+      '/api/v3/account/reality-orderbook-segmented',
+      params,
+    );
   }
 
   /**
@@ -1421,6 +1508,11 @@ export class RestClientV3 extends BaseRestClient {
     return this.getPrivate('/api/v3/cfd/trade/unfilled-order', params);
   }
 
+  /**
+   * Get CFD Order History
+   * cursor is omitted on the first page. Later pages pass the last orderId.
+   * The first page may return more rows than limit.
+   */
   getCfdOrderHistory(
     params: GetCfdOrderHistoryRequestV3,
   ): Promise<APIResponse<CfdOrderHistoryV3>> {
@@ -1923,16 +2015,67 @@ export class RestClientV3 extends BaseRestClient {
     return this.getPrivate('/api/v3/user/sub-api-list', params);
   }
 
+  /**
+   * Get RateLimit Quota
+   * A sub-account can query its own quota. uid is ignored on that call.
+   */
   getRateLimitQuota(
     params: GetRateLimitQuotaRequestV3,
   ): Promise<APIResponse<RateLimitQuotaV3>> {
     return this.getPrivate('/api/v3/user/rate-limit-quota', params);
   }
 
+  /**
+   * Set RateLimit Quota
+   * A sub-account can set its own quota. uids is not required, and is ignored, on that call.
+   * The master account must still send uids.
+   */
   setRateLimitQuota(
     params: SetRateLimitQuotaRequestV3,
   ): Promise<APIResponse<Record<string, never>>> {
     return this.postPrivate('/api/v3/user/set-rate-limit-quota', params);
+  }
+
+  /**
+   * Create STP Group
+   * MM whitelist only. Sub-accounts in one group do not match each other.
+   */
+  createStpGroup(
+    params: CreateStpGroupRequestV3,
+  ): Promise<APIResponse<CreateStpGroupResponseV3>> {
+    return this.postPrivate('/api/v3/account/create-stp-groups', params);
+  }
+
+  /**
+   * Get STP Groups
+   * MM whitelist only.
+   */
+  getStpGroups(): Promise<APIResponse<StpGroupListV3>> {
+    return this.getPrivate('/api/v3/account/stp-groups');
+  }
+
+  /**
+   * Add STP Group Members
+   * uids is a comma-separated string, max 50.
+   * A sub-account can belong to only one group. Adding it moves it.
+   * MM whitelist only.
+   */
+  addStpGroupMembers(
+    params: StpGroupMembersRequestV3,
+  ): Promise<APIResponse<StpGroupMembersResponseV3>> {
+    return this.postPrivate('/api/v3/account/add-groups-members', params);
+  }
+
+  /**
+   * Remove STP Group Members
+   * uids is a comma-separated string, max 50.
+   * After removal, stp_uid falls back to the parent uid.
+   * MM whitelist only.
+   */
+  removeStpGroupMembers(
+    params: StpGroupMembersRequestV3,
+  ): Promise<APIResponse<StpGroupMembersResponseV3>> {
+    return this.postPrivate('/api/v3/account/remove-groups-members', params);
   }
 
   /**
@@ -2273,6 +2416,8 @@ export class RestClientV3 extends BaseRestClient {
 
   /**
    * Get Max Open Available
+   * marginMode defaults to crossed.
+   * Under isolated margin, available excludes futures trial funds.
    */
   getMaxOpenAvailable(
     params: GetMaxOpenAvailableRequestV3,

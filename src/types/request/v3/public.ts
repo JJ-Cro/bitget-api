@@ -102,6 +102,77 @@ export interface GetOpenInterestRequestV3 {
   symbol?: string;
 }
 
+export type OpenInterestHistoryPeriodV3 =
+  | '5m'
+  | '15m'
+  | '30m'
+  | '1h'
+  | '2h'
+  | '4h'
+  | '6h'
+  | '12h'
+  | '1d';
+
+export interface GetOpenInterestHistoryRequestV3 {
+  symbol: string;
+  /** Default 5m */
+  period: OpenInterestHistoryPeriodV3;
+}
+
+export type InterestRateLevelV3 =
+  | 'vip0'
+  | 'vip1'
+  | 'vip2'
+  | 'vip3'
+  | 'vip4'
+  | 'vip5'
+  | 'vip6'
+  | 'vip7'
+  | 'pro1'
+  | 'pro2'
+  | 'pro3'
+  | 'pro4'
+  | 'pro5'
+  | 'pro6';
+
+export interface GetInterestRateHistoryRequestV3 {
+  coin: string;
+  /**
+   * VIP tier. Query name is level, not vipLevel (vipLevel is ignored).
+   * Omitting it returns the vip0 series.
+   */
+  level?: InterestRateLevelV3;
+  limit?: string;
+  /** Pass the cursor from the previous response. */
+  cursor?: string;
+}
+
+export type AnnouncementTypeV3 =
+  | 'latest_news'
+  | 'coin_listings'
+  | 'product_updates'
+  | 'security'
+  | 'api_trading'
+  | 'maintenance_system_updates'
+  | 'symbol_delisting';
+
+export interface GetAnnouncementsRequestV3 {
+  /** zh_CN or en_US. Unsupported languages fall back to English. */
+  language: string;
+  annType?: AnnouncementTypeV3;
+  startTime?: string;
+  endTime?: string;
+  /** Last annId from the previous page. Omit on the first call. */
+  cursor?: string;
+  /** Default 10. Maximum 10. */
+  limit?: string;
+}
+
+export interface GetCoinsRequestV3 {
+  /** Omit to return every coin. */
+  coin?: string;
+}
+
 export interface GetPositionTierRequestV3 {
   category: 'MARGIN' | 'USDT-FUTURES' | 'COIN-FUTURES' | 'USDC-FUTURES';
   symbol?: string;

@@ -58,6 +58,8 @@ export interface CancelOrderRequestV3 {
     | 'USDC-FUTURES';
 }
 
+export type FuturesMarginModeV3 = 'crossed' | 'isolated';
+
 export interface GetMaxOpenAvailableRequestV3 {
   category:
     | 'SPOT'
@@ -72,6 +74,11 @@ export interface GetMaxOpenAvailableRequestV3 {
   size?: string;
   /** Spot only. Default: no */
   autoBorrow?: 'yes' | 'no';
+  /**
+   * crossed (default) or isolated.
+   * Under isolated margin, available excludes futures trial funds.
+   */
+  marginMode?: FuturesMarginModeV3;
 }
 
 export interface GetOrderInfoRequestV3 {
@@ -173,6 +180,18 @@ export interface PlaceRealityOrderRequestV3 {
   qty: string;
   price?: string;
   clientOid?: string;
+  /**
+   * rToken routing. internalization = on-exchange pool only.
+   * lit_market (default) = internal first, then the public market.
+   * The 13 Oct changelog applies this to place-reality-order as well.
+   * The place-reality-order parameter table does not list it yet.
+   */
+  venue?: 'internalization' | 'lit_market';
+  /**
+   * rToken time in force. gtd (default) = current session.
+   * gtc = 90 days. Same changelog note as venue.
+   */
+  rTokenTimeInForce?: 'gtd' | 'gtc';
 }
 
 export interface CancelRealityOrderRequestV3 {
@@ -200,9 +219,15 @@ export interface PlaceBatchOrdersRequestV3 {
   reduceOnly?: 'yes' | 'no';
   /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
   pxAmendType?: 'yes' | 'no';
+  /**
+   * Unix ms. Used with receiveWindow.
+   * If omitted, receiveWindow has no effect.
+   * An order that reaches the matching engine after requestTime + receiveWindow is canceled.
+   */
+  requestTime?: string;
+  /** Validity window in ms. Range [10, 60000]. Requires requestTime. */
+  receiveWindow?: string;
 }
-
-export type FuturesMarginModeV3 = 'crossed' | 'isolated';
 
 export interface PlaceOrderRequestV3 {
   category:
@@ -235,6 +260,25 @@ export interface PlaceOrderRequestV3 {
   autoBorrow?: 'yes' | 'no';
   /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
   pxAmendType?: 'yes' | 'no';
+  /**
+   * rToken routing. internalization = on-exchange pool only.
+   * lit_market (default) = internal first, then the public market.
+   * Ignored for non-rToken symbols. timeInForce is also ignored for rToken.
+   */
+  venue?: 'internalization' | 'lit_market';
+  /**
+   * rToken time in force. gtd (default) lasts the current session.
+   * gtc lasts 90 days. Ignored for non-rToken symbols.
+   */
+  rTokenTimeInForce?: 'gtd' | 'gtc';
+  /**
+   * Unix ms. Used with receiveWindow.
+   * If omitted, receiveWindow has no effect.
+   * An order that reaches the matching engine after requestTime + receiveWindow is canceled.
+   */
+  requestTime?: string;
+  /** Validity window in ms. Range [10, 60000]. Requires requestTime. */
+  receiveWindow?: string;
 }
 
 export interface CountdownCancelAllRequestV3 {
