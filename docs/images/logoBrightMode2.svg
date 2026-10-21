@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg viewBox="160.788 251.692 695.247 257.58" width="695.247px" height="257.58px"
   xmlns="http://www.w3.org/2000/svg">
+  <rect x="160.788" y="251.692" width="695.247" height="257.58" fill="#ffffff" />
   <g id="logo-group" fill="#FFFFFF" transform="matrix(1, 0, 0, 1, 0, 7.105427357601002e-15)">
     <image id="container" x="51.200000000000045" y="-76.79999999999995" width="921.5999999999999"
       height="921.5999999999999" style="display: none;" transform="translate(0 0)" fill="#FFFFFF" />
