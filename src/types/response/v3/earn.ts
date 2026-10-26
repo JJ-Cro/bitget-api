@@ -1,5 +1,3 @@
-import type { EarnCashPlusRecordTypeV3 } from '../../request/v3/earn.js';
-
 /**
  *
  *
@@ -247,7 +245,11 @@ export interface EarnCashPlusPositionV3 {
 
 export interface EarnCashPlusHistoryOrderV3 {
   recordId: string;
-  recordType: EarnCashPlusRecordTypeV3;
+  recordType:
+    | 'subscribe'
+    | 'redeem'
+    | 'compound_interest'
+    | 'liquidation_redeem';
   status: EarnCashPlusOrderStatusV3;
   amount: string;
   coin: string;
