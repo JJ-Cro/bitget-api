@@ -61,6 +61,13 @@ describe('Bitget Public REST API V3 Endpoints', () => {
         symbol: 'BTCUSDT',
       });
       expect(res).toMatchObject(sucessEmptyResponseObject());
+      expect(res.data[0]).toMatchObject({
+        symbol: 'BTCUSDT',
+        lastFundingRate: expect.any(String),
+        nextFundingRate: expect.any(String),
+        baselnterestRate: expect.any(String),
+        impactMarginNotional: expect.any(String),
+      });
     });
 
     it('should return open interest data', async () => {
@@ -125,6 +132,34 @@ describe('Bitget Public REST API V3 Endpoints', () => {
         openInterest: expect.any(String),
         oneSideOpenInterest: expect.any(String),
         timestamp: expect.any(String),
+      });
+    });
+
+    it('should return margin loans for one coin and for all coins', async () => {
+      const one = await api.getMarginLoansAll({ coin: 'BTC' });
+      expect(one).toMatchObject(sucessEmptyResponseObject());
+      expect(one.data[0]).toMatchObject({
+        coin: 'BTC',
+        dailyInterest: expect.any(String),
+        annualInterest: expect.any(String),
+        limit: expect.any(String),
+      });
+
+      const all = await api.getMarginLoansAll();
+      expect(all).toMatchObject(sucessEmptyResponseObject());
+      expect(all.data.length).toBeGreaterThan(1);
+    });
+
+    it('should return open interest limit ratios', async () => {
+      const res = await api.getContractsOi({
+        category: 'USDT-FUTURES',
+        symbol: 'BTCUSDT',
+      });
+      expect(res).toMatchObject(sucessEmptyResponseObject());
+      expect(res.data[0]).toMatchObject({
+        symbol: 'BTCUSDT',
+        singlePositionRatio: expect.any(String),
+        totalPositionRatio: expect.any(String),
       });
     });
 
