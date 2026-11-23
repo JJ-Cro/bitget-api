@@ -21,24 +21,23 @@ export interface WSAPIPlaceOrderRequestV3 {
   slOrderType?: 'limit' | 'market';
   tpLimitPrice?: string;
   slLimitPrice?: string;
-  /** Order TTL in ms [10, 60000]. Only effective when requestTime is also set on the envelope */
+  /** Order TTL in ms [10, 60000]. Sets the envelope requestTime to String(Date.now()) unless overridden via requestFlags.requestTime */
   receiveWindow?: string;
   /** Spot only. Default: no */
   autoBorrow?: 'yes' | 'no';
   /** Limit orders only. no rejects a price outside the band (default). yes clamps it */
   pxAmendType?: 'yes' | 'no';
+  /** Limit orders only. queue1, queue5, counterparty1, or counterparty5. Ignored for market orders */
+  bboLevel?: 'queue1' | 'queue5' | 'counterparty1' | 'counterparty5';
+  /** Market orders only. Decimal, default 0.02, range 0.01-0.05 */
+  slippageTolerance?: string;
   /**
-   * rToken routing. internalization or lit_market (default).
-   * Ignored for non-rToken symbols.
+   * rToken routing. Accepted: internal_market | lit_market. Omit for default.
+   * internal_market = on-exchange only; lit_market = broker only.
+   * Omit / default = internal first, then broker. Ignored for non-rToken symbols.
+   * Live since 5 Nov 2026.
    */
-  venue?: 'internalization' | 'lit_market';
+  venue?: 'internal_market' | 'lit_market';
   /** rToken time in force. gtd (default) or gtc (90 days). */
   rTokenTimeInForce?: 'gtd' | 'gtc';
-  /**
-   * Broker rebate code. Lifted onto the WS request envelope.
-   * It is not sent inside args. Omit it to use the SDK broker code.
-   * Place-order docs: top-level apiCode. Batch-place uses the same field.
-   * Staff-confirmed: t.me/bitgetOpenapi/153820.
-   */
-  apiCode?: string;
 }

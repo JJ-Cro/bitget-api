@@ -47,7 +47,6 @@ export interface WSAPIRequestBitgetV3<TWSParams> {
   /**
    * Broker rebate code. Top-level, not inside args.
    * Place-order docs name this field. Sent on place-order and batch-place.
-   * Defaults to the SDK broker code unless the caller sets apiCode.
    */
   apiCode?: string;
   /** Client-side request timestamp; required for receiveWindow on place-order */
@@ -57,6 +56,8 @@ export interface WSAPIRequestBitgetV3<TWSParams> {
 export interface WSAPIRequestFlags {
   /** If true, will skip auth requirement for WS API connection */
   authIsOptional?: boolean | undefined;
+  /** Client-side timestamp in ms. Overrides the envelope timestamp, which defaults to String(Date.now()) when any order has receiveWindow */
+  requestTime?: string;
 }
 
 export type Exact<T> = {
